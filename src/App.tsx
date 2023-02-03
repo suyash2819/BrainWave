@@ -1,8 +1,15 @@
 import React from "react";
 import "./App.scss";
+import NavBarMain from "./components/NavBarMain.tsx/NavBarMain";
+import HomePage from "./pages/homePage/HomePage";
 
 function App() {
-  return <div className="App">HEllo</div>;
+  return (
+    <>
+      <NavBarMain />
+      <HomePage />
+    </>
+  );
 }
 
 export default App;
