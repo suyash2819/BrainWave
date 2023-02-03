@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.scss";
 import NavBarMain from "./components/NavBarMain.tsx/NavBarMain";
-import HomePage from "./pages/homePage/HomePage";
+import HomePage from "./pages/HomePage/HomePage";
 import { Routes, Route } from "react-router-dom";
 import FooterMain from "./components/Footer/FooterMain";
 
