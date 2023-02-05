@@ -1,3 +1,29 @@
-.loginPageContainer {
-  color: black;
+.logIn {
+  display: flex;
+  justify-content: center;
+  color: white;
+  .logIn__Heading {
+    color: white;
+    font-size: xx-large;
+    margin-top: 5rem;
+  }
+  .logIn__Container {
+    &__form {
+      flex-direction: column;
+      &__element {
+        display: flex;
+        justify-content: space-between;
+        padding: 2em;
+        &__label {
+          color: black;
+          font-size: large;
+          padding-right: 1.5em;
+        }
+      }
+    }
+    .regdirect_button {
+      margin-top: 2em;
+      margin-left: 4.5em;
+    }
+  }
 }
