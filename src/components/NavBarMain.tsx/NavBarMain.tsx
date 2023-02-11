@@ -18,7 +18,7 @@ const NavBarMain = () => {
                 height="30"
                 className="d-inline-block align-top"
               />{" "} */}
-              <span className="navBarContainer__brand">EdApp</span>
+              <span className="navBarContainer__brand">BrainWave</span>
             </Navbar.Brand>
             {["Courses", "Partners", "Community", "Contact Us"].map(
               (pageLink, index) => (
