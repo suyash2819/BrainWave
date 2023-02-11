@@ -1,11 +1,31 @@
 import React from "react";
 import "./HomePage.scss";
-// @ts-ignore
 import homePageImg from "../../assets/homePageImg.jpg";
+import first from "../../assets/course/1.jpg";
+import second from "../../assets/course/2.jpg";
+import third from "../../assets/course/3.jpg";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 const HomePage = () => {
+  const cardData = [
+    {
+      image: first,
+      data: "Reinvesting the way to study",
+      coach: "John White",
+    },
+    {
+      image: second,
+      data: "Arts and Culture are te way of study",
+      coach: "David Truman",
+    },
+    {
+      image: third,
+      data: "Science and Technology of tomorrow",
+      coach: "Simon Lanback",
+    },
+  ];
+
   return (
     <div className="homePageContainer">
       <div className="homePageContainer__content">
@@ -58,20 +78,29 @@ const HomePage = () => {
               {pageLink}
             </a>
           ))}
-          <div>
-            <Card style={{ width: "18rem" }}>
-              <Card.Img variant="top" src="holder.js/100px180" />
-              <Card.Body>
-                <Card.Title>Card Title</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-          </div>
         </div>
+        <div className="homePageContainer__courses__cardsContainer">
+          {cardData.map((element, index) => {
+            return (
+              <Card
+                className="homePageContainer__courses__cardsContainer__card"
+                key={index}
+              >
+                <Card.Img variant="top" src={element.image} />
+                <Card.Body>
+                  <Card.Title>Card Title</Card.Title>
+                  <Card.Text>{element.data}</Card.Text>
+                  <Button variant="primary">Select Course</Button>
+                </Card.Body>
+              </Card>
+            );
+          })}
+        </div>
+        <hr />
+      </div>
+      <div className="homePageContainer__experience">
+        <h1 className="homePageContainer__experience__title">THE EXPERIENCE</h1>
+        <div></div>
       </div>
     </div>
   );
