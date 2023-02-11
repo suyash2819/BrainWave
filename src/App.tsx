@@ -10,6 +10,8 @@ import RegPage from "./pages/RegPage/RegPage";
 const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs"));
 
 function App() {
+  const queryString = window.location.href;
+
   return (
     <>
       <div className="App">
@@ -20,7 +22,12 @@ function App() {
           <Route path="/aboutUs" element={<AboutUs />} />
           <Route path="/Registration" element={<RegPage />} />
         </Routes>
-        <FooterMain />
+        {queryString.includes("LogIn") ||
+        queryString.includes("Registration") ? (
+          <></>
+        ) : (
+          <FooterMain />
+        )}
       </div>
     </>
   );
