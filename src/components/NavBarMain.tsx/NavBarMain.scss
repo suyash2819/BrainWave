@@ -1,3 +1,14 @@
 .navBarContainer {
   color: black;
+  &__brand {
+    font-size: x-large;
+    color: bisque;
+  }
+  &__NavButton {
+    border-color: white;
+    border-style: solid;
+    margin: 10px;
+    padding-inline: 25px;
+    padding-block: 8px;
+  }
 }

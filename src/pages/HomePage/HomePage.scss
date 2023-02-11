@@ -1,3 +1,59 @@
 .homePageContainer {
   color: black;
+
+  &__content {
+    display: flex;
+    flex-direction: row;
+    background-color: #59d8e6;
+    height: 500px;
+    &__textLine {
+      display: flex;
+      flex-direction: column;
+      margin-inline: 3%;
+      margin-top: 10%;
+      &__header {
+        font-size: 3.9em;
+        line-height: 1;
+        font-weight: 100;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+      &__subText {
+        color: #263238;
+        font-size: 1.14em;
+        line-height: 1.5em;
+        letter-spacing: 0;
+        word-wrap: break-word;
+        margin-bottom: 20px;
+      }
+      &__startButton {
+        text-align: center;
+        width: 40%;
+      }
+    }
+    &__mainPagepPic {
+      width: 35%;
+      margin-top: 8.5em;
+      margin-right: 2%;
+      margin-bottom: 7%;
+    }
+  }
+  &__courses {
+    text-align: center;
+    &__headText {
+      color: #242a2b;
+      font-size: 35px;
+      font-variant: normal;
+      font-weight: 100;
+      margin-top: 30px;
+      text-transform: uppercase;
+    }
+    &__headContainer {
+      margin-top: 20px;
+      &__headlinks {
+        text-decoration: none;
+        padding-inline: 20px;
+      }
+    }
+  }
 }
