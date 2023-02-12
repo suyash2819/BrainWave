@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: row;
     background-color: #59d8e6;
-    height: 500px;
+    height: 700px;
     &__textLine {
       display: flex;
       flex-direction: column;
@@ -32,24 +32,26 @@
       }
     }
     &__mainPagepPic {
-      width: 30%;
+      width: 50%;
       margin-top: 8.5em;
       margin-right: 2%;
       margin-bottom: 7%;
+      border-radius: 40px;
     }
   }
   &__courses {
+    margin-top: 90px;
     text-align: center;
     &__headText {
       color: #242a2b;
       font-size: 35px;
       font-variant: normal;
       font-weight: 100;
-      margin-top: 30px;
       text-transform: uppercase;
     }
     &__headContainer {
       margin-top: 20px;
+      padding-bottom: 100px;
       &__headlinks {
         text-decoration: none;
         padding-inline: 20px;
@@ -72,12 +74,63 @@
     &__title {
       font-weight: 100;
       font-size: 2.875em;
-      font-variant: normal;
       text-transform: uppercase;
       text-align: center;
       margin-bottom: 50px;
-      max-width: 660px;
-      margin: 0 auto 50px;
+      margin: 100px auto 160px;
+      transform: translateY(90px);
+    }
+    &__postContainer {
+      display: flex;
+      flex-direction: row;
+      text-align: center;
+      &__postCard {
+        padding: 5em;
+        &__image {
+          width: 300px;
+          border-radius: 300px;
+          border-color: white;
+          border-width: 10px;
+          border-style: solid;
+        }
+        &__title {
+          font-family: "Roboto", sans-serif;
+          font-size: 29px;
+          font-weight: 300;
+          line-height: 1.2;
+          letter-spacing: 0;
+          margin: 25px 0 25px 0;
+          white-space: nowrap;
+        }
+        &__content {
+          margin-bottom: 25px;
+          font-size: 1em;
+          line-height: 1.714em;
+        }
+        &__button {
+          color: #fcfcfc !important;
+          background-color: #2f3739;
+          border: 1px solid transparent;
+          width: 150px;
+          height: 40px;
+          border-radius: 10px;
+        }
+      }
+    }
+    &__titleBottom {
+      color: #2f3739;
+      font-weight: 200;
+      margin: 0 auto 20px;
+      text-align: center;
+      font-size: 2rem;
+    }
+    &__subTextBottom {
+      color: #2f3739;
+      font-weight: 200;
+      margin: 0 auto 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      padding-bottom: 7%;
     }
   }
 }
