@@ -3,6 +3,7 @@ import "./NavBarMain.scss";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import logo from "../../assets/logo.jpeg";
 
 const NavBarMain = () => {
   return (
@@ -11,13 +12,13 @@ const NavBarMain = () => {
         <Navbar bg="dark" variant="dark">
           <Container>
             <Navbar.Brand>
-              {/* <img
+              <img
                 alt=""
-                src="/logo.svg"
+                src={logo}
                 width="30"
                 height="30"
                 className="d-inline-block align-top"
-              />{" "} */}
+              />{" "}
               <span className="navBarContainer__brand">BrainWave</span>
             </Navbar.Brand>
             {["Courses", "Partners", "Community", "Contact Us"].map(
