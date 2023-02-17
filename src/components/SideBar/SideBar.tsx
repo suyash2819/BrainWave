@@ -2,6 +2,14 @@ import React from "react";
 import "./Sidebar.scss";
 import logo from "../../assets/logo.jpeg";
 import defaultpfp from "../../assets/defaultPfp.jpg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChartBar,
+  faGraduationCap,
+  faUser,
+  faMessage,
+  faRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 
 function SideBar() {
   return (
@@ -33,13 +41,25 @@ function SideBar() {
           </div>
           <hr />
           <div className="d-flex flex-column">
-            <a className="">DashBoard</a>
-            <a>Courses</a>
-            <a>Account</a>
-            <a>Courses</a>
+            <p className="sidebarContainer__options__navs">
+              <FontAwesomeIcon className="pe-3" icon={faChartBar} />
+              DashBoard
+            </p>
+            <p className="sidebarContainer__options__navs">
+              <FontAwesomeIcon className="pe-3" icon={faGraduationCap} />{" "}
+              Courses
+            </p>
+            <p className="sidebarContainer__options__navs">
+              <FontAwesomeIcon className="pe-3" icon={faUser} /> Account
+            </p>
+            <p className="sidebarContainer__options__navs">
+              <FontAwesomeIcon className="pe-3" icon={faMessage} /> Messages
+            </p>
+            <p className="sidebarContainer__options__navs">
+              <FontAwesomeIcon className="pe-3" icon={faRightFromBracket} />{" "}
+              LogOut
+            </p>
             <hr />
-            <a>Help</a>
-            <a>LogOut</a>
           </div>
         </div>
       </div>
