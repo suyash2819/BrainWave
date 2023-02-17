@@ -9,8 +9,6 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 
-//import axios from "axios";
-
 const RegPage = () => {
   const [formVals, setFormVals] = useState({
     name: "",
@@ -20,20 +18,6 @@ const RegPage = () => {
     password: "",
   });
   //const navigate = useNavigate();
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    // const result = await axios.post(
-    //   "https://api-nodejs-todolist.herokuapp.com/user/register",
-    //   JSON.stringify(formVals),
-    //   { headers: { "Content-Type": "application/json" } }
-    // );
-    // if (result.status === 201) {
-    //   localStorage.setItem("sessionkey", result.data.token);
-    //   navigate(0);
-    //   navigate("/DashBoard");
-    // }
-  }
-
   const createUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
@@ -89,7 +73,7 @@ const RegPage = () => {
   return (
     <>
       <div className="regContainer">
-        <form className="regContainer__form" onSubmit={handleSubmit}>
+        <form className="regContainer__form">
           <RegInput
             title="Name"
             formVals={formVals}
