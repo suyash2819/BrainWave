@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./LoginPage.scss";
 import { useNavigate } from "react-router-dom";
 import "../RegPage/RegPage.scss";
+import { auth } from "../../config/firebase";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const LoginPage = () => {
   const [loginVals, setLoginVals] = useState({
@@ -21,6 +23,34 @@ const LoginPage = () => {
   const handleRegdirect = () => {
     navigate("/Registration");
   };
+
+  const userSignIn = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, loginVals.email, loginVals.password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        if (user.emailVerified) {
+          console.log("user signed in");
+        } else {
+          signOut(auth)
+            .then(() => {
+              // Sign-out successful.
+
+              console.log("please verify email address, user signed out");
+            })
+            .catch((err) => {
+              // An error happened.
+              console.log(err);
+            });
+        }
+        // ...
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="logIn">
       <h3 className="logIn__Heading">Welcome! Please Login!</h3>
@@ -64,7 +94,10 @@ const LoginPage = () => {
             />
           </div>
           <div className="regContainer__LogIn_button">
-            <button className="regContainer__form__submitButton">
+            <button
+              className="regContainer__form__submitButton"
+              onClick={userSignIn}
+            >
               <span
                 aria-label="LoginButton"
                 className="regContainer__form__submitButton__text"
