@@ -1,8 +1,8 @@
 .navdashContainer {
   color: black;
-  height: 300px;
-  &__brand {
-    font-size: x-large;
-    color: bisque;
+  background-color: rgb(233, 179, 249);
+  &__headerTitle {
+    font-size: 3rem;
+    font-weight: 300;
   }
 }
