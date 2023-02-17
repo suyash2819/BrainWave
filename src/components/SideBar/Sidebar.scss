@@ -1,0 +1,29 @@
+.sidebarContainer {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  &__header {
+    background-color: rgb(73, 24, 88);
+    text-align: center;
+    height: 70px;
+    &__title {
+      color: white;
+      font-size: x-large;
+      padding-top: 20px;
+    }
+  }
+  &__options {
+    height: 100%;
+    background-color: rgb(35, 0, 63);
+    color: rgb(255, 255, 184);
+    &__profile {
+      align-items: center;
+      &__img {
+        border-radius: 50px;
+      }
+      &__name {
+        margin-top: 30px;
+      }
+    }
+  }
+}
