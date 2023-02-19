@@ -3,7 +3,6 @@ import "./App.scss";
 import NavBarMain from "./components/NavBarMain.tsx/NavBarMain";
 import HomePage from "./pages/HomePage/HomePage";
 import { Routes, Route } from "react-router-dom";
-import FooterMain from "./components/Footer/FooterMain";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RegPage from "./pages/RegPage/RegPage";
 import DashBoard from "./pages/DashBoard/DashBoard";
@@ -24,13 +23,6 @@ function App() {
           <Route path="/Registration" element={<RegPage />} />
           <Route path="/Dashboard" element={<DashBoard />} />
         </Routes>
-        {queryString.includes("LogIn") ||
-        queryString.includes("Registration") ||
-        queryString.includes("Dashboard") ? (
-          <></>
-        ) : (
-          <FooterMain />
-        )}
       </div>
     </>
   );

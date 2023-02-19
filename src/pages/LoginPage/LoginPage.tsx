@@ -4,12 +4,21 @@ import { useNavigate } from "react-router-dom";
 import "../RegPage/RegPage.scss";
 import { auth } from "../../config/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const LoginPage = () => {
   const [loginVals, setLoginVals] = useState({
     email: "",
     password: "",
   });
+
+  const [showAlert, setShowAlert] = useState({
+    success: null || true || false,
+    message: "",
+    show: false,
+    type: "",
+  });
+
   const navigate = useNavigate();
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -24,6 +33,10 @@ const LoginPage = () => {
     navigate("/Registration");
   };
 
+  const alertMessageDisplay = () => {
+    setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
+
   const userSignIn = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, loginVals.email, loginVals.password)
@@ -32,22 +45,46 @@ const LoginPage = () => {
         const user = userCredential.user;
         if (user.emailVerified) {
           console.log("user signed in");
+          setShowAlert({
+            success: true,
+            message: "sign in successful",
+            show: true,
+            type: "",
+          });
+          setLoginVals({
+            email: "",
+            password: "",
+          });
         } else {
           signOut(auth)
             .then(() => {
               // Sign-out successful.
-
-              console.log("please verify email address, user signed out");
+              setShowAlert({
+                success: false,
+                message: "please verify email address",
+                show: true,
+                type: "",
+              });
             })
             .catch((err) => {
               // An error happened.
-              console.log(err);
+              setShowAlert({
+                success: false,
+                message: err.message,
+                show: true,
+                type: "",
+              });
             });
         }
         // ...
       })
       .catch((err) => {
-        console.log(err);
+        setShowAlert({
+          success: false,
+          message: err.message,
+          show: true,
+          type: "",
+        });
       });
   };
 
@@ -116,6 +153,15 @@ const LoginPage = () => {
                   Log In
                 </span>
               </button>
+            <div>
+              {showAlert.show ? (
+                <AlertMessage
+                  success={showAlert.success}
+                  message={showAlert.message}
+                  alertDisplay={alertMessageDisplay}
+                  type={showAlert.type}
+                />
+              ) : null}
             </div>
           </div>
         </div>
