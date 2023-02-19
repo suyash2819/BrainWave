@@ -4,8 +4,15 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import logo from "../../assets/logo.jpeg";
+import { useNavigate } from "react-router-dom";
 
 const NavBarMain = () => {
+  const navigate = useNavigate();
+
+  const handleNav = (navString: string) => {
+    navigate("/" + navString);
+  };
+
   return (
     <>
       <div className="navBarContainer">
@@ -35,10 +42,16 @@ const NavBarMain = () => {
               )
             )}
             <Navbar.Collapse className="justify-content-end">
-              <Nav.Link className="text-white m-1">
+              <Nav.Link
+                className="text-white m-1"
+                onClick={() => handleNav("LogIn")}
+              >
                 <span className="navBarContainer__NavButton">Log In</span>
               </Nav.Link>
-              <Nav.Link className="text-white m-1">
+              <Nav.Link
+                className="text-white m-1"
+                onClick={() => handleNav("Registration")}
+              >
                 <span className="navBarContainer__NavButton">Register</span>
               </Nav.Link>
             </Navbar.Collapse>

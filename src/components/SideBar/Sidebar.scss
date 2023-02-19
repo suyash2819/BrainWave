@@ -5,6 +5,7 @@
   flex-direction: column;
   position: fixed;
   z-index: 1;
+
   &__header {
     background-color: rgb(73, 24, 88);
     text-align: center;
@@ -36,6 +37,43 @@
         &:nth-child(#{$i}):hover {
           background-color: rgb(54, 13, 67);
         }
+      }
+    }
+    .accordion {
+      border: none;
+      background-color: transparent;
+
+      .accordion-button {
+        font-size: large;
+        color: rgb(255, 255, 184);
+        background-color: rgb(35, 0, 63);
+        padding: 0px 0px 0px 0px;
+        border: none;
+        border-radius: 0;
+        margin: 0;
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+          background-color: rgb(54, 13, 67);
+        }
+      }
+
+      .accordion-collapse {
+        background-color: rgb(54, 13, 67);
+
+        .sidebarContainer__options__navs {
+          color: rgb(255, 255, 184);
+        }
+        .sidebarContainer__options__navs_courses {
+          color: rgb(255, 255, 184);
+        }
+      }
+      .accordion-button::after {
+        display: none;
+      }
+      .accordion-item:not(:last-child) {
+        border-bottom: 1px solid rgb(35, 0, 63);
       }
     }
   }
