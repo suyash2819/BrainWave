@@ -1,14 +1,13 @@
 import React from "react";
 import { Alert } from "react-bootstrap";
+import { IAlertProps } from "./IAlertProps";
 
-interface Props {
-  success: Boolean;
-  message: String;
-  alertDisplay: Function;
-  type: String;
-}
-
-const AlertMessage = ({ success, message, alertDisplay, type }: Props) => {
+const AlertMessage = ({
+  success,
+  message,
+  alertDisplay,
+  type,
+}: IAlertProps) => {
   return (
     <Alert
       variant={success ? "success" : type === "primary" ? "primary" : "danger"}

@@ -8,7 +8,7 @@ import {
   signOut,
   sendEmailVerification,
 } from "firebase/auth";
-import AlertMessage from "../../components/AlertMessage";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const RegPage = () => {
   const [formVals, setFormVals] = useState({

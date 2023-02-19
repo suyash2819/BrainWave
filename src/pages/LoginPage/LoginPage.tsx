@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../RegPage/RegPage.scss";
 import { auth } from "../../config/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import AlertMessage from "../../components/AlertMessage";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const LoginPage = () => {
   const [loginVals, setLoginVals] = useState({
