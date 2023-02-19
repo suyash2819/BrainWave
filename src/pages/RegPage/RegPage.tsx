@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import GoogleButton from 'react-google-button'
 import "./RegPage.scss";
 import RegInput from "../../components/RegPage/RegInput";
 import { Link } from "react-router-dom";
@@ -11,6 +12,7 @@ import {
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const RegPage = () => {
+
   const [formVals, setFormVals] = useState({
     name: "",
     username: "",
@@ -102,13 +104,15 @@ const RegPage = () => {
         });
       });
   };
-
   return (
     <>
+
+      <div className="googleSignInButton"></div>
+
       <div className="regContainer">
         <form className="regContainer__form">
           <RegInput
-            title="Name"
+            title="Firstname"
             formVals={formVals}
             setFormVals={setFormVals}
             mandateText={true}
@@ -116,12 +120,20 @@ const RegPage = () => {
             type={""}
           />
           <RegInput
-            title="Username"
+            title="Lastname"
             formVals={formVals}
             setFormVals={setFormVals}
             mandateText={true}
-            pattern=".+"
+            pattern="[A-Za-z]*"
             type={""}
+          />
+          <RegInput
+            title="ContactNo"
+            formVals={formVals}
+            type="number"
+            setFormVals={setFormVals}
+            mandateText={false}
+            pattern="[\d]{10}"
           />
           <RegInput
             title="Email"
@@ -132,12 +144,12 @@ const RegPage = () => {
             type={""}
           />
           <RegInput
-            title="ContactNo"
+            title="Username"
             formVals={formVals}
-            type="number"
             setFormVals={setFormVals}
-            mandateText={false}
-            pattern="[\d]{10}"
+            mandateText={true}
+            pattern=".+"
+            type={""}
           />
           <RegInput
             title="Password"
@@ -157,7 +169,20 @@ const RegPage = () => {
             <span className="regContainer__form__submitButton__text">
               Register
             </span>
+            
           </button>
+
+          <GoogleButton className="regContainer__google_signin_button"
+            onClick={() => { console.log('Google button clicked') }}
+          />
+
+          <Link to="/LogIn">
+          <button className="regContainer__LogIn_button">
+            <span className="regContainer__LogIn_button__text">
+              Sign in instead
+       </span>
+          </button>
+        </Link>
         </form>
 
         <div>
@@ -171,14 +196,7 @@ const RegPage = () => {
           ) : null}
         </div>
       </div>
-      <div className="regContainer__LogIn_button">
-        <Link to="/LogIn">
-          <button className="regContainer__form__submitButton">
-            <span className="regContainer__form__submitButton__text">
-              Log In
-            </span>
-          </button>
-        </Link>
+
       </div>
     </>
   );

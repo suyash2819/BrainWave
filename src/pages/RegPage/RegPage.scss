@@ -1,21 +1,22 @@
 .regContainer {
-  margin-top: 10ch;
-  border-width: 6px;
-  border-radius: 20px;
-  border-color: #ccd6dd;
+  margin-top: 1ch;
+  border-width: 10px;
+  border-radius: 5px;
+  border-color: #020200;
   padding: 2ch;
   border-style: solid;
-  color: #55acee;
-  margin-left: 25%;
+  color: #02090f;
+  margin-left:30%;
+  margin-right:30%;
   &__form {
     flex-direction: column;
 
     &__element {
-      padding: 1.2em;
+      padding: 0.8em;
       display: flex;
       justify-content: space-between;
       &__label {
-        margin-right: 1rem;
+        margin-right: 0.5rem;
         font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
           sans-serif;
         font-size: larger;
@@ -25,7 +26,7 @@
       &__input {
         font-size: medium;
         border-radius: 10px;
-        border-color: aqua;
+        border-color: rgb(30, 1, 9);
         text-align: center;
         height: 35px;
       }
@@ -69,6 +70,78 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+
+.regContainer__google_signin_button{
+  margin-left: 25%;
+  margin-top:2%;
+  margin-right: 2%;
+
 .regContainer__LogIn_button {
   margin-left: 10%;
 }
+
+.regContainer__form__submitButton {
+  padding: 17px 40px;
+  border-radius: 50px;
+  border: 0;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all .5s ease;
+  margin-left: 33%;
+  margin-top: 2%;
+  margin-right: 10%;
+ }
+ 
+.regContainer__form__submitButton:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+ }
+ 
+.regContainer__form__submitButton:active {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
+ }
+
+
+
+ 
+
+.regContainer__LogIn_button {
+  padding: 17px 40px;
+  border-radius: 50px;
+  border: 0;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all .5s ease;
+  margin-left: 26%;
+  margin-top: 2%;
+  margin-right: 10%;
+  }
+  
+.regContainer__LogIn_button:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+  }
+  
+.regContainer__LogIn_button:active {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
+  }

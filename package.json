@@ -7,8 +7,8 @@
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@react-oauth/google": "^0.7.1",
     "@reduxjs/toolkit": "^1.9.2",
-    "@types/jest": "^27.5.2",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/react-fontawesome": "^1.6.5",
@@ -20,6 +20,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-dom": "^18.2.0",
+    "react-google-button": "^0.7.2",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.0",
     "react-scripts": "^5.0.1",
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@types/node": "^16.18.12",
     "@types/node-sass": "^4.11.3",
+    "html-webpack-plugin": "^5.5.0",
     "node-sass": "^7.0.3"
   }
 }
