@@ -1,0 +1,22 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: './src/index.tsx',
+  output: {
+    filename: 'bundle.js',
+    path: __dirname + '/dist'
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js']
+  },
+  module: {
+    rules: [
+      { test: /\.tsx?$/, loader: 'ts-loader' }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: '/Users/prasku/Library/CloudStorage/OneDrive-IndianaUniversity/Subjects/SE/git_code_repo/front_end/SP23_P565_Team10_frontend/index.html'
+    })
+  ]
+};
