@@ -10,6 +10,7 @@ import thirdExp from "../../assets/experience/third.png";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import FooterMain from "../../components/Footer/FooterMain";
+import NavBarMain from "../../components/NavBarMain.tsx/NavBarMain";
 
 const HomePage = () => {
   const cardData = [
@@ -55,7 +56,7 @@ const HomePage = () => {
 
   return (
     <>
-      {" "}
+      <NavBarMain />
       <div className="homePageContainer">
         <div className="homePageContainer__content">
           <div className="homePageContainer__content__textLine">

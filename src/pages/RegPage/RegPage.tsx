@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import GoogleButton from 'react-google-button'
+import GoogleButton from "react-google-button";
 import "./RegPage.scss";
 import RegInput from "../../components/RegPage/RegInput";
 import { Link } from "react-router-dom";
@@ -12,7 +12,6 @@ import {
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const RegPage = () => {
-
   const [formVals, setFormVals] = useState({
     name: "",
     username: "",
@@ -106,7 +105,6 @@ const RegPage = () => {
   };
   return (
     <>
-
       <div className="googleSignInButton"></div>
 
       <div className="regContainer">
@@ -169,20 +167,22 @@ const RegPage = () => {
             <span className="regContainer__form__submitButton__text">
               Register
             </span>
-            
           </button>
 
-          <GoogleButton className="regContainer__google_signin_button"
-            onClick={() => { console.log('Google button clicked') }}
+          <GoogleButton
+            className="regContainer__google_signin_button"
+            onClick={() => {
+              console.log("Google button clicked");
+            }}
           />
 
           <Link to="/LogIn">
-          <button className="regContainer__LogIn_button">
-            <span className="regContainer__LogIn_button__text">
-              Sign in instead
-       </span>
-          </button>
-        </Link>
+            <button className="regContainer__LogIn_button">
+              <span className="regContainer__LogIn_button__text">
+                Sign in instead
+              </span>
+            </button>
+          </Link>
         </form>
 
         <div>
@@ -195,8 +195,6 @@ const RegPage = () => {
             />
           ) : null}
         </div>
-      </div>
-
       </div>
     </>
   );

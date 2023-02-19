@@ -1,6 +1,5 @@
 import React, { lazy } from "react";
 import "./App.scss";
-import NavBarMain from "./components/NavBarMain.tsx/NavBarMain";
 import HomePage from "./pages/HomePage/HomePage";
 import { Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
@@ -10,12 +9,9 @@ import DashBoard from "./pages/DashBoard/DashBoard";
 const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs"));
 
 function App() {
-  const queryString = window.location.href;
-
   return (
     <>
       <div className="App">
-        {queryString.includes("Dashboard") ? <></> : <NavBarMain />}
         <Routes>
           <Route path="/Home" element={<HomePage />} />
           <Route path="/Login" element={<LoginPage />} />

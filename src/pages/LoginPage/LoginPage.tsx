@@ -5,6 +5,7 @@ import "../RegPage/RegPage.scss";
 import { auth } from "../../config/firebase";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
+import GoogleButton from "react-google-button";
 
 const LoginPage = () => {
   const [loginVals, setLoginVals] = useState({
@@ -141,7 +142,7 @@ const LoginPage = () => {
                 Register
               </span>
             </button>
-            <div className="regContainer__LogIn_button">
+            <div className="regContainer__LogIn_button ms-5">
               <button
                 className="regContainer__form__submitButton"
                 onClick={userSignIn}
@@ -153,6 +154,8 @@ const LoginPage = () => {
                   Log In
                 </span>
               </button>
+            </div>
+
             <div>
               {showAlert.show ? (
                 <AlertMessage
@@ -164,6 +167,12 @@ const LoginPage = () => {
               ) : null}
             </div>
           </div>
+          <GoogleButton
+            className="regContainer__google_signin_button mt-5"
+            onClick={() => {
+              console.log("Google button clicked");
+            }}
+          />
         </div>
       </div>
     </>
