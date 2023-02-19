@@ -1,23 +1,49 @@
 .logIn {
   display: flex;
   justify-content: center;
-  color: white;
+  color: rgb(0, 0, 0);
+  font-family: montserrat;
+  background: linear-gradient(120deg, #616364, #86b7d8);
+  height: 100vh;
+  overflow: hidden;
   .logIn__Heading {
-    color: white;
-    font-size: xx-large;
-    margin-top: 5rem;
+    position: absolute;
+    top: 20%;
+    left: 57%;
+    transform: translate(-50%, -50%);
+    width: 600px;
   }
   .logIn__Container {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    text-align: center;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid silver;
     &__form {
-      flex-direction: column;
+      padding: 0 40px;
+      box-sizing: border-box;
       &__element {
-        display: flex;
         justify-content: space-between;
-        padding: 2em;
+        display: flex;
+        position: relative;
+        border-bottom: 2px solid #adadad;
+        margin: 30px 0;
+        width: 100%;
+        padding: 0 5px;
+        height: 40px;
+        font-size: 16px;
+        border: none;
+        background: none;
+        outline: none;
+
         &__label {
-          color: black;
+          outline: none;
+          color: rgb(0, 0, 0);
           font-size: large;
-          padding-right: 1.5em;
+          padding-right: 0.5em;
+          display: flex;
+          align-items: center;
         }
       }
     }

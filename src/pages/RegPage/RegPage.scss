@@ -19,18 +19,21 @@
         font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
           sans-serif;
         font-size: larger;
+        display: flex;
+        align-items: center;
       }
       &__input {
         font-size: medium;
         border-radius: 10px;
         border-color: aqua;
         text-align: center;
+        height: 35px;
       }
     }
     &__submitButton {
       background-color: #ccd6dd;
       border-radius: 20px;
-      padding: 10px 30px 10px 30px;
+      padding: 10px 40px 10px 40px;
       cursor: pointer;
       &__text {
         color: rgb(0, 0, 0);
@@ -67,7 +70,5 @@ input::-webkit-inner-spin-button {
 }
 
 .regContainer__LogIn_button {
-  margin-left: 20%;
-  margin-top: 2%;
-  margin-right: 2%;
+  margin-left: 10%;
 }

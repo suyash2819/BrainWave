@@ -52,71 +52,75 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="logIn">
-      <h3 className="logIn__Heading">Welcome! Please Login!</h3>
-      <div className="logIn__Container">
-        <form className="logIn__Container__form" onSubmit={handleLogin}>
-          <div className="logIn__Container__form__element">
-            <label
-              className={"logIn__Container__form__element__label mandateText"}
-            >
-              Email:
-            </label>
-            <input
-              className="regContainer__form__element__input"
-              type="text"
-              name="Email"
-              id="Email"
-              minLength={7}
-              required
-              pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
-              value={loginVals["email"]}
-              onChange={(e) =>
-                setLoginVals({ ...loginVals, email: e.target.value })
-              }
-            />
-          </div>
-          <div className="logIn__Container__form__element">
-            <label className="logIn__Container__form__element__label mandateText">
-              Password:
-            </label>
-            <input
-              className="regContainer__form__element__input"
-              type="password"
-              name="Password"
-              id="Password"
-              minLength={8}
-              required
-              value={loginVals["password"]}
-              onChange={(e) =>
-                setLoginVals({ ...loginVals, password: e.target.value })
-              }
-            />
-          </div>
-          <div className="regContainer__LogIn_button">
+    <>
+      <div className="logIn">
+        <h3 className="logIn__Heading">Welcome to Brainwave, Please Login!</h3>
+        <div className="logIn__Container">
+          <form className="logIn__Container__form" onSubmit={handleLogin}>
+            <div className="logIn__Container__form__element">
+              <label
+                className={"logIn__Container__form__element__label mandateText"}
+              >
+                Email:
+              </label>
+              <input
+                className="regContainer__form__element__input"
+                type="text"
+                name="Email"
+                id="Email"
+                minLength={7}
+                required
+                pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                value={loginVals["email"]}
+                onChange={(e) =>
+                  setLoginVals({ ...loginVals, email: e.target.value })
+                }
+              />
+            </div>
+            <div className="logIn__Container__form__element">
+              <label className="logIn__Container__form__element__label mandateText">
+                Password:
+              </label>
+              <input
+                className="regContainer__form__element__input"
+                type="password"
+                name="Password"
+                id="Password"
+                minLength={8}
+                required
+                value={loginVals["password"]}
+                onChange={(e) =>
+                  setLoginVals({ ...loginVals, password: e.target.value })
+                }
+              />
+            </div>
+          </form>
+          <div className="d-flex flex-row ms-5">
             <button
               className="regContainer__form__submitButton"
-              onClick={userSignIn}
+              onClick={handleRegdirect}
             >
-              <span
-                aria-label="LoginButton"
-                className="regContainer__form__submitButton__text"
-              >
-                Log In
+              <span className="regContainer__form__submitButton__text">
+                Register
               </span>
             </button>
+            <div className="regContainer__LogIn_button">
+              <button
+                className="regContainer__form__submitButton"
+                onClick={userSignIn}
+              >
+                <span
+                  aria-label="LoginButton"
+                  className="regContainer__form__submitButton__text"
+                >
+                  Log In
+                </span>
+              </button>
+            </div>
           </div>
-        </form>
-        <button
-          className="regContainer__form__submitButton regdirect_button"
-          onClick={handleRegdirect}
-        >
-          <span className="regContainer__form__submitButton__text">
-            Register
-          </span>
-        </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
