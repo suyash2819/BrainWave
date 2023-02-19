@@ -8,6 +8,7 @@ import {
   signOut,
   sendEmailVerification,
 } from "firebase/auth";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const RegPage = () => {
   const [formVals, setFormVals] = useState({
@@ -17,7 +18,18 @@ const RegPage = () => {
     contactNo: "",
     password: "",
   });
+
+  const [showAlert, setShowAlert] = useState({
+    success: null || true || false,
+    message: "",
+    show: false,
+    type: "",
+  });
   //const navigate = useNavigate();
+  const alertMessageDisplay = () => {
+    setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
+
   const createUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
@@ -31,21 +43,36 @@ const RegPage = () => {
           sendEmailVerification(euser)
             .then(() => {
               // Email verification sent!
-              // ...
-              console.log("email sent");
+              setShowAlert({
+                success: true,
+                message: "Email Verification Sent at the provided Email",
+                show: true,
+                type: "",
+              });
               signOut(auth)
                 .then(() => {
                   // Sign-out successful.
-
                   console.log("user signed out");
                 })
                 .catch((err) => {
                   // An error happened.
+                  setShowAlert({
+                    success: false,
+                    message: err.message,
+                    show: true,
+                    type: "",
+                  });
                   console.log(err);
                 });
             })
             .catch((err) => {
               // An error happened.
+              setShowAlert({
+                success: false,
+                message: err.message,
+                show: true,
+                type: "",
+              });
               console.log(err);
             });
         }
@@ -60,6 +87,12 @@ const RegPage = () => {
       })
       .catch((err) => {
         console.log(err);
+        setShowAlert({
+          success: false,
+          message: err.message,
+          show: true,
+          type: "",
+        });
         setFormVals({
           name: "",
           username: "",
@@ -126,6 +159,17 @@ const RegPage = () => {
             </span>
           </button>
         </form>
+
+        <div>
+          {showAlert.show ? (
+            <AlertMessage
+              success={showAlert.success}
+              message={showAlert.message}
+              alertDisplay={alertMessageDisplay}
+              type=""
+            />
+          ) : null}
+        </div>
       </div>
       <div className="regContainer__LogIn_button">
         <Link to="/LogIn">
