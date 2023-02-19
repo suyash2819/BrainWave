@@ -91,8 +91,9 @@ const LoginPage = () => {
 
   return (
     <>
+      <div className="gradient_top_logReg"></div>
       <div className="logIn">
-        <h3 className="logIn__Heading">Welcome to Brainwave, Please Login!</h3>
+        <h3 className="logIn__Heading">Welcome, Please Login!</h3>
         <div className="logIn__Container">
           <form className="logIn__Container__form" onSubmit={handleLogin}>
             <div className="logIn__Container__form__element">

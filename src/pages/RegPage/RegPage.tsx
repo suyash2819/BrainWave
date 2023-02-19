@@ -105,8 +105,7 @@ const RegPage = () => {
   };
   return (
     <>
-      <div className="googleSignInButton"></div>
-
+      <div className="gradient_top_logReg"></div>
       <div className="regContainer">
         <form className="regContainer__form">
           <RegInput
