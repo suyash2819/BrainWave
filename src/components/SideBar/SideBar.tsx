@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Sidebar.scss";
 import logo from "../../assets/logo.jpeg";
 import defaultpfp from "../../assets/defaultPfp.jpg";
+// import Navbar from "react-bootstrap/Navbar";
+// import Nav from "react-bootstrap/Nav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
@@ -9,9 +11,19 @@ import {
   faUser,
   faMessage,
   faRightFromBracket,
+  faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
+import { Accordion } from "react-bootstrap";
 
 function SideBar() {
+  const courses_items = {
+    "Browse Courses": faUser,
+    "My Courses": faUser,
+    Assignments: faUser,
+  };
+
+  const [rotateCourse, setRotateCourse] = useState<boolean>(false);
+
   return (
     <>
       <div className="sidebarContainer">
@@ -40,15 +52,44 @@ function SideBar() {
             </p>
           </div>
           <hr />
-          <div className="d-flex flex-column">
+
+          <div
+            className="d-flex flex-column"
+            style={{ height: "400px", overflow: "scroll" }}
+          >
             <p className="sidebarContainer__options__navs">
               <FontAwesomeIcon className="pe-3" icon={faChartBar} />
               DashBoard
             </p>
-            <p className="sidebarContainer__options__navs">
-              <FontAwesomeIcon className="pe-3" icon={faGraduationCap} />{" "}
-              Courses
-            </p>
+
+            <Accordion flush className="my-accordion">
+              {/* COURSES _ START */}
+              <Accordion.Item eventKey="0">
+                <Accordion.Header
+                  onClick={() => setRotateCourse(!rotateCourse)}
+                >
+                  <p className="sidebarContainer__options__navs">
+                    <FontAwesomeIcon className="pe-3" icon={faGraduationCap} />{" "}
+                    Courses
+                  </p>
+                  <FontAwesomeIcon
+                    style={{
+                      transform: rotateCourse ? "rotate(180deg)" : "rotate(0)",
+                      transition: "all 0.2s linear",
+                    }}
+                    className="px-4 mb-3 ms-5"
+                    icon={faCaretDown}
+                  />
+                </Accordion.Header>
+                <Accordion.Body>
+                  {Object.entries(courses_items).map(([key, icon]) => (
+                    <p className="sidebarContainer__options__navs_courses">
+                      <FontAwesomeIcon className="pe-3" icon={icon} /> {key}
+                    </p>
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
             <p className="sidebarContainer__options__navs">
               <FontAwesomeIcon className="pe-3" icon={faUser} /> Account
             </p>

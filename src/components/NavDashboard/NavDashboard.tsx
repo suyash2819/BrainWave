@@ -5,7 +5,25 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCalendarWeek } from "@fortawesome/free-solid-svg-icons";
+import Dropdown from "react-bootstrap/Dropdown";
+import defaultpfp from "../../assets/defaultPfp.jpg";
+import Image from "react-bootstrap/Image";
 const NavDashboard = () => {
+  const profileMenuItems = [
+    {
+      title: "Account",
+      link: "/account",
+    },
+    {
+      title: "Billing",
+      link: "/billing",
+    },
+    {
+      title: "Logout",
+      link: "/logout",
+    },
+  ];
+
   return (
     <>
       <div className="navdashContainer">
@@ -23,7 +41,32 @@ const NavDashboard = () => {
               </Nav.Link>
 
               <Nav.Link className=" m-1">
-                <span className="navdashContainer__profile">profile</span>
+                <Dropdown className=" m-1">
+                  <Dropdown.Toggle
+                    as={Nav.Link}
+                    className="navdashContainer__profile"
+                  >
+                    <Image
+                      alt=""
+                      src={defaultpfp}
+                      roundedCircle
+                      height={25}
+                      width={25}
+                      className="mr-2"
+                      style={{ marginRight: "3px" }}
+                    />
+                    Options
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="dropdown-menu-left">
+                    {profileMenuItems.map((item, index) => {
+                      return (
+                        <Dropdown.Item key={index} href={item.link}>
+                          {item.title}
+                        </Dropdown.Item>
+                      );
+                    })}
+                  </Dropdown.Menu>
+                </Dropdown>
               </Nav.Link>
             </Navbar.Collapse>
           </Container>
