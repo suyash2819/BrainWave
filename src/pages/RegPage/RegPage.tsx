@@ -6,18 +6,20 @@ import { Link } from "react-router-dom";
 import { auth } from "../../config/firebase";
 import {
   createUserWithEmailAndPassword,
-  signOut,
   sendEmailVerification,
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
+import { storeUserDetails } from "../../services/userService";
 
 const RegPage = () => {
   const [formVals, setFormVals] = useState({
-    name: "",
+    firstname: "",
+    lastname: "",
     username: "",
+    role: "",
     email: "",
-    contactNo: "",
     password: "",
+    uid: "",
   });
 
   const [showAlert, setShowAlert] = useState({
@@ -26,11 +28,9 @@ const RegPage = () => {
     show: false,
     type: "",
   });
-  //const navigate = useNavigate();
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
-
   const createUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
@@ -50,21 +50,7 @@ const RegPage = () => {
                 show: true,
                 type: "",
               });
-              signOut(auth)
-                .then(() => {
-                  // Sign-out successful.
-                  console.log("user signed out");
-                })
-                .catch((err) => {
-                  // An error happened.
-                  setShowAlert({
-                    success: false,
-                    message: err.message,
-                    show: true,
-                    type: "",
-                  });
-                  console.log(err);
-                });
+              storeUserDetails({ ...formVals, isVerifiedByAdmin: false });
             })
             .catch((err) => {
               // An error happened.
@@ -79,11 +65,13 @@ const RegPage = () => {
         }
 
         setFormVals({
-          name: "",
+          firstname: "",
+          lastname: "",
           username: "",
+          role: "",
           email: "",
-          contactNo: "",
           password: "",
+          uid: "",
         });
       })
       .catch((err) => {
@@ -95,11 +83,14 @@ const RegPage = () => {
           type: "",
         });
         setFormVals({
-          name: "",
+          firstname: "",
+          lastname: "",
           username: "",
+          role: "",
           email: "",
-          contactNo: "",
           password: "",
+          uid: "",
+          // isVerifiedByAdmin: false,
         });
       });
   };
