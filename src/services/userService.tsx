@@ -1,6 +1,5 @@
-// import { doc, setDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getCountFromServer } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 
@@ -10,7 +9,7 @@ export async function storeUserDetails(userDetails: {
   username: string;
   role: string;
   email: string;
-  uid: string;
+  uid: number;
   isVerifiedByAdmin: boolean;
 }) {
   try {
@@ -28,4 +27,10 @@ export async function storeUserDetails(userDetails: {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+}
+
+export async function getUserCount() {
+  const coll = collection(db, "users");
+  const snapshot = await getCountFromServer(coll);
+  return snapshot.data().count;
 }
