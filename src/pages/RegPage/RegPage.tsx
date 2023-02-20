@@ -9,7 +9,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
-import { storeUserDetails } from "../../services/userService";
+import { storeUserDetails, getUserCount } from "../../services/userService";
 
 const RegPage = () => {
   const [formVals, setFormVals] = useState({
@@ -19,7 +19,6 @@ const RegPage = () => {
     role: "",
     email: "",
     password: "",
-    uid: "",
   });
 
   const [showAlert, setShowAlert] = useState({
@@ -50,7 +49,13 @@ const RegPage = () => {
                 show: true,
                 type: "",
               });
-              storeUserDetails({ ...formVals, isVerifiedByAdmin: false });
+              getUserCount().then((totalUsers) => {
+                storeUserDetails({
+                  ...formVals,
+                  isVerifiedByAdmin: false,
+                  uid: 200001 + totalUsers,
+                });
+              });
             })
             .catch((err) => {
               // An error happened.
@@ -71,7 +76,6 @@ const RegPage = () => {
           role: "",
           email: "",
           password: "",
-          uid: "",
         });
       })
       .catch((err) => {
@@ -89,7 +93,6 @@ const RegPage = () => {
           role: "",
           email: "",
           password: "",
-          uid: "",
           // isVerifiedByAdmin: false,
         });
       });
