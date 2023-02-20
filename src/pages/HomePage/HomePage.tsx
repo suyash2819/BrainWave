@@ -13,12 +13,14 @@ import FooterMain from "../../components/Footer/FooterMain";
 import NavBarMain from "../../components/NavBarMain.tsx/NavBarMain";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [show, setShow] = useState<boolean>(false);
   const [emailVal, setEmailVal] = useState<string>("");
   const [innerTextVal, setInnerTextVal] = useState<string>("");
   const [showError, setShowError] = useState<[boolean, string]>([false, ""]);
+  const navigate = useNavigate();
   const cardData = [
     {
       image: first,
@@ -59,6 +61,9 @@ const HomePage = () => {
       buttonText: "Explore Options",
     },
   ];
+  const handleRegdirect = () => {
+    navigate("/Registration");
+  };
   const handleClose = () => {
     setEmailVal("");
     setInnerTextVal("");
@@ -111,6 +116,7 @@ const HomePage = () => {
               variant="secondary mt-5"
               className="homePageContainer__content__textLine__startButton"
               size="lg"
+              onClick={handleRegdirect}
             >
               Get Started Today
             </Button>
