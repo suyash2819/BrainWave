@@ -5,6 +5,9 @@
   flex-direction: column;
   position: fixed;
   z-index: 1;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
   &__header {
     background-color: rgb(73, 24, 88);
