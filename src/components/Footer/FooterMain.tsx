@@ -7,8 +7,11 @@ type FooterItem = {
   buttonText?: string;
   inputText?: string;
 };
+type StateProps = {
+  setState: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const FooterMain: React.FC = () => {
+const FooterMain = ({ setState }: StateProps) => {
   const footerData: FooterItem[] = [
     {
       title: "Powered by IU",
@@ -35,7 +38,16 @@ const FooterMain: React.FC = () => {
           <p className="footer-data">{item.data}</p>
           {item.inputText && <input type="text" placeholder={item.inputText} />}
           {item.buttonText && (
-            <button className="footer-button">{item.buttonText}</button>
+            <button
+              className="footer-button"
+              onClick={() => {
+                if (item.buttonText === "CONTACT US NOW") {
+                  setState(true);
+                }
+              }}
+            >
+              {item.buttonText}
+            </button>
           )}
         </div>
       ))}

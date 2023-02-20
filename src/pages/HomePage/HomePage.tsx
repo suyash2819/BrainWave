@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./HomePage.scss";
 import homePageImg from "../../assets/homePageImg.jpg";
 import first from "../../assets/course/1.jpg";
@@ -11,8 +11,14 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import FooterMain from "../../components/Footer/FooterMain";
 import NavBarMain from "../../components/NavBarMain.tsx/NavBarMain";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
 
 const HomePage = () => {
+  const [show, setShow] = useState<boolean>(false);
+  const [emailVal, setEmailVal] = useState<string>("");
+  const [innerTextVal, setInnerTextVal] = useState<string>("");
+  const [showError, setShowError] = useState<[boolean, string]>([false, ""]);
   const cardData = [
     {
       image: first,
@@ -53,7 +59,39 @@ const HomePage = () => {
       buttonText: "Explore Options",
     },
   ];
-
+  const handleClose = () => {
+    setEmailVal("");
+    setInnerTextVal("");
+    setShowError([false, "text"]);
+    setShow(false);
+  };
+  const onEmailChange = (email: string) => {
+    setShowError([false, "email"]);
+    setEmailVal(email);
+  };
+  const onInnerTextChange = (InnerText: string) => {
+    setShowError([false, "text"]);
+    setInnerTextVal(InnerText);
+  };
+  const handleSubmit = () => {
+    if (!emailVal.length && !innerTextVal.length) {
+      setShowError([true, "empty"]);
+      return;
+    } else {
+      if (emailVal.length) {
+        if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(emailVal)) {
+        } else {
+          setShowError([true, "email"]);
+          return;
+        }
+      }
+      if (innerTextVal.length < 2) {
+        setShowError([true, "text"]);
+        return;
+      }
+      handleClose();
+    }
+  };
   return (
     <>
       <NavBarMain />
@@ -166,7 +204,64 @@ const HomePage = () => {
           </p>
         </div>
       </div>
-      <FooterMain />
+      <FooterMain setState={setShow} />
+      {show ? (
+        <Modal backdrop="static" show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Hit us Up!!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  required
+                  type="email"
+                  placeholder="name@example.com"
+                  autoFocus
+                  onChange={(e) => {
+                    onEmailChange(e.target.value);
+                  }}
+                />
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
+              >
+                <Form.Label>Stuff that you want to say</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  required
+                  rows={3}
+                  placeholder="Something...(Also please include your name :D)"
+                  onChange={(e) => {
+                    onInnerTextChange(e.target.value);
+                  }}
+                />
+              </Form.Group>
+            </Form>
+            {showError[1] === "email" && showError[0] ? (
+              <span>That doesn't seem like an email address...</span>
+            ) : showError[1] === "text" && showError[0] ? (
+              <span>Message is way less than I expected :'(</span>
+            ) : showError[1] === "empty" && showError[0] ? (
+              <span>Empty? that's just spam ;)</span>
+            ) : (
+              <></>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => handleSubmit()}>
+              Send!
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      ) : (
+        <></>
+      )}
     </>
   );
 };
