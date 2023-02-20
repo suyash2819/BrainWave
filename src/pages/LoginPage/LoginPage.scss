@@ -1,64 +1,44 @@
-.gradient_top_logReg {
-  background: rgb(2, 0, 36);
+.logIn {
+  display: flex;
+  justify-content: center;
+  color: wheat;
   background: linear-gradient(
     90deg,
     rgba(2, 0, 36, 1) 0%,
     rgba(118, 9, 121, 1) 35%,
     rgba(0, 212, 255, 1) 100%
   );
-  height: 100px;
-}
-
-.logIn {
-  display: flex;
-  justify-content: center;
-  color: rgb(0, 0, 0);
-  background: linear-gradient(120deg, #616364, #86b7d8);
   height: 100vh;
-  overflow: hidden;
 
   .logIn__Heading {
     position: absolute;
     top: 20%;
-    left: 64%;
-    transform: translate(-50%, -50%);
-    width: 600px;
+    text-align: center;
+    color: rgb(215, 140, 0);
   }
   .logIn__Container {
     position: absolute;
     top: 30%;
-    left: 40%;
     text-align: center;
-    padding: 0 0 20px 0;
     &__form {
       padding: 0 40px;
       box-sizing: border-box;
       &__element {
         justify-content: space-between;
         display: flex;
-        position: relative;
         margin: 30px 0;
         width: 100%;
         padding: 0 5px;
         height: 40px;
         font-size: 16px;
-        border: none;
-        background: none;
-        outline: none;
 
         &__label {
-          outline: none;
-          color: rgb(0, 0, 0);
-          font-size: large;
-          padding-right: 0.5em;
+          font-size: x-large;
+          padding-right: 2em;
           display: flex;
           align-items: center;
         }
       }
-    }
-    .regdirect_button {
-      margin-top: 2em;
-      margin-left: 4.5em;
     }
   }
 }

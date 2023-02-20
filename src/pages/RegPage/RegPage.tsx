@@ -105,9 +105,9 @@ const RegPage = () => {
   };
   return (
     <>
-      <div className="gradient_top_logReg"></div>
       <div className="regContainer">
         <form className="regContainer__form">
+          <h3 className="regContainer__Heading">Welcome, Please Register!</h3>
           <RegInput
             title="Firstname"
             formVals={formVals}
@@ -156,32 +156,34 @@ const RegPage = () => {
             type="Password"
             pattern=".+"
           />
-          <button
-            aria-label="RegisterButton"
-            className="regContainer__form__submitButton"
-            id="registerButton"
-            type="submit"
-            onClick={createUser}
-          >
-            <span className="regContainer__form__submitButton__text">
-              Register
-            </span>
-          </button>
+          <div className="mt-4">
+            {" "}
+            <Link to="/LogIn">
+              <button className="regContainer__form__submitButton ms-3">
+                <span className="regContainer__LogIn_button__text">
+                  Sign in Instead?
+                </span>
+              </button>
+            </Link>
+            <button
+              aria-label="RegisterButton"
+              className="regContainer__form__submitButton ms-5"
+              id="registerButton"
+              type="submit"
+              onClick={createUser}
+            >
+              <span className="regContainer__form__submitButton__text">
+                Register
+              </span>
+            </button>
+          </div>
 
           <GoogleButton
-            className="regContainer__google_signin_button"
+            className="regContainer__google_signin_button mt-5"
             onClick={() => {
               console.log("Google button clicked");
             }}
           />
-
-          <Link to="/LogIn">
-            <button className="regContainer__LogIn_button">
-              <span className="regContainer__LogIn_button__text">
-                Sign in instead
-              </span>
-            </button>
-          </Link>
         </form>
 
         <div>

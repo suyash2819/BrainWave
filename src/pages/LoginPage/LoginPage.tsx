@@ -91,7 +91,6 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="gradient_top_logReg"></div>
       <div className="logIn">
         <h3 className="logIn__Heading">Welcome, Please Login!</h3>
         <div className="logIn__Container">
@@ -134,13 +133,13 @@ const LoginPage = () => {
               />
             </div>
           </form>
-          <div className="d-flex flex-row ms-5">
+          <div className="d-flex flex-row">
             <button
               className="regContainer__form__submitButton"
               onClick={handleRegdirect}
             >
               <span className="regContainer__form__submitButton__text">
-                Register
+                Not a user? Register
               </span>
             </button>
             <div className="regContainer__LogIn_button ms-5">
