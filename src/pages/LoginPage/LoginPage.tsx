@@ -12,14 +12,14 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-
+  const [showEmailError, setShowEmailError] = useState<boolean>(false);
+  const [showPasswordError, setShowPasswordError] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState({
     success: null || true || false,
     message: "",
     show: false,
     type: "",
   });
-
   const navigate = useNavigate();
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -37,9 +37,9 @@ const LoginPage = () => {
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
-
   const userSignIn = (e: { preventDefault: () => void }) => {
     e.preventDefault();
+
     signInWithEmailAndPassword(auth, loginVals.email, loginVals.password)
       .then((userCredential) => {
         // Signed in
@@ -82,17 +82,39 @@ const LoginPage = () => {
       .catch((err) => {
         setShowAlert({
           success: false,
-          message: err.message,
+          message:
+            err.message === "Firebase: Error (auth/invalid-email)."
+              ? "Please enter the proper Email!"
+              : err.message === "Firebase: Error (auth/user-not-found)."
+              ? "User is not Found, Please register!"
+              : err.message === "Firebase: Error (auth/internal-error)."
+              ? "Incorrect password, Please verify"
+              : "",
           show: true,
-          type: "",
+          type: "danger",
         });
+        if (err.message === "Firebase: Error (auth/internal-error).") {
+          setShowPasswordError(true);
+        } else if (err.message === "Firebase: Error (auth/invalid-email).") {
+          setShowEmailError(true);
+        }
       });
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginVals({ ...loginVals, email: e.target.value });
+    setShowEmailError(false);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginVals({ ...loginVals, password: e.target.value });
+    setShowPasswordError(false);
   };
 
   return (
     <>
       <div className="logIn">
-        <h3 className="logIn__Heading">Welcome, Please Login!</h3>
+        <h3 className="logIn__Heading">Welcome , Please Login!</h3>
         <div className="logIn__Container">
           <form className="logIn__Container__form" onSubmit={handleLogin}>
             <div className="logIn__Container__form__element">
@@ -106,13 +128,11 @@ const LoginPage = () => {
                 type="text"
                 name="Email"
                 id="Email"
-                minLength={7}
-                required
-                pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                style={{
+                  borderColor: showEmailError ? "red" : "",
+                }}
                 value={loginVals["email"]}
-                onChange={(e) =>
-                  setLoginVals({ ...loginVals, email: e.target.value })
-                }
+                onChange={(e) => handleEmailChange(e)}
               />
             </div>
             <div className="logIn__Container__form__element">
@@ -124,12 +144,11 @@ const LoginPage = () => {
                 type="password"
                 name="Password"
                 id="Password"
-                minLength={8}
-                required
+                style={{
+                  borderColor: showPasswordError ? "red" : "",
+                }}
                 value={loginVals["password"]}
-                onChange={(e) =>
-                  setLoginVals({ ...loginVals, password: e.target.value })
-                }
+                onChange={(e) => handlePasswordChange(e)}
               />
             </div>
           </form>
@@ -155,17 +174,6 @@ const LoginPage = () => {
                 </span>
               </button>
             </div>
-
-            <div>
-              {showAlert.show ? (
-                <AlertMessage
-                  success={showAlert.success}
-                  message={showAlert.message}
-                  alertDisplay={alertMessageDisplay}
-                  type={showAlert.type}
-                />
-              ) : null}
-            </div>
           </div>
           <GoogleButton
             className="regContainer__google_signin_button mt-5"
@@ -173,6 +181,16 @@ const LoginPage = () => {
               console.log("Google button clicked");
             }}
           />
+        </div>
+        <div>
+          {showAlert.show ? (
+            <AlertMessage
+              success={showAlert.success}
+              message={showAlert.message}
+              alertDisplay={alertMessageDisplay}
+              type={showAlert.type}
+            />
+          ) : null}
         </div>
       </div>
     </>

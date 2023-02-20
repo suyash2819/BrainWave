@@ -1,6 +1,7 @@
 import React from "react";
 import { Alert } from "react-bootstrap";
 import { IAlertProps } from "./IAlertProps";
+import "./AlertMessage.scss";
 
 const AlertMessage = ({
   success,
@@ -10,6 +11,7 @@ const AlertMessage = ({
 }: IAlertProps) => {
   return (
     <Alert
+      className="AlertMessage"
       variant={success ? "success" : type === "primary" ? "primary" : "danger"}
       onClose={() => alertDisplay()}
       dismissible

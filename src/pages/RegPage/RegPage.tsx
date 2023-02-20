@@ -125,14 +125,6 @@ const RegPage = () => {
             type={""}
           />
           <RegInput
-            title="ContactNo"
-            formVals={formVals}
-            type="number"
-            setFormVals={setFormVals}
-            mandateText={false}
-            pattern="[\d]{10}"
-          />
-          <RegInput
             title="Email"
             formVals={formVals}
             setFormVals={setFormVals}
