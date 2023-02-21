@@ -14,7 +14,6 @@ import Form from "react-bootstrap/Form";
 
 const RegPage = () => {
   (function () {
-    "use strict";
     let forms = document.querySelectorAll(".needs-validation");
     Array.prototype.slice.call(forms).forEach(function (form) {
       form.addEventListener(
@@ -24,7 +23,6 @@ const RegPage = () => {
             event.preventDefault();
             event.stopPropagation();
           }
-
           form.classList.add("was-validated");
         },
         false
@@ -39,7 +37,6 @@ const RegPage = () => {
     email: "",
     password: "",
   });
-
   const [passwordConf, setPasswordConf] = useState<string>("");
   const [showAlert, setShowAlert] = useState({
     success: null || true || false,
@@ -50,75 +47,77 @@ const RegPage = () => {
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
-  const createUser = (e: { preventDefault: () => void }) => {
+  const createUser = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (passwordConf !== formVals.password) return;
-    if (formVals.firstname.length < 1 && formVals.lastname.length < 1)
-      createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          const euser = auth.currentUser;
-          console.log("user created", user);
-          if (euser === null) {
-            console.log("null user");
-          } else {
-            sendEmailVerification(euser)
-              .then(() => {
-                // Email verification sent!
-                setShowAlert({
-                  success: true,
-                  message: "Email Verification sent to the provided Email",
-                  show: true,
-                  type: "",
-                });
-                getUserCount().then((totalUsers) => {
-                  storeUserDetails({
-                    ...formVals,
-                    isVerifiedByAdmin: false,
-                    uid: 200001 + totalUsers,
-                  });
-                });
-              })
-              .catch((err) => {
-                // An error happened.
-                setShowAlert({
-                  success: false,
-                  message: err.message,
-                  show: true,
-                  type: "",
-                });
-                console.log(err);
+    createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const euser = auth.currentUser;
+        console.log("user created", user);
+        if (euser === null) {
+          console.log("null user");
+        } else {
+          sendEmailVerification(euser)
+            .then(() => {
+              // Email verification sent!
+              setShowAlert({
+                success: true,
+                message: "Email Verification sent! Please check your Email",
+                show: true,
+                type: "",
               });
-          }
+              getUserCount().then((totalUsers) => {
+                storeUserDetails({
+                  ...formVals,
+                  isVerifiedByAdmin: false,
+                  uid: 200001 + totalUsers,
+                });
+              });
+            })
+            .catch((err) => {
+              // An error happened.
+              setShowAlert({
+                success: false,
+                message: err.message,
+                show: true,
+                type: "",
+              });
+              console.log(err);
+            });
+        }
 
-          setFormVals({
-            firstname: "",
-            lastname: "",
-            username: "",
-            role: "",
-            email: "",
-            password: "",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          setShowAlert({
-            success: false,
-            message: err.message,
-            show: true,
-            type: "",
-          });
-          setFormVals({
-            firstname: "",
-            lastname: "",
-            username: "",
-            role: "",
-            email: "",
-            password: "",
-            // isVerifiedByAdmin: false,
-          });
+        setFormVals({
+          firstname: "",
+          lastname: "",
+          username: "",
+          role: "",
+          email: "",
+          password: "",
         });
+      })
+      .catch((err) => {
+        console.log(err);
+        setShowAlert({
+          success: false,
+          message:
+            err.message === "Firebase: Error (auth/invalid-email)."
+              ? "Please enter correct E-mail on which link can be sent!"
+              : err.message === "Firebase: Error (auth/email-already-in-use)."
+              ? "Email is already in use!"
+              : err.message,
+          show: true,
+          type: "",
+        });
+        setFormVals({
+          firstname: "",
+          lastname: "",
+          username: "",
+          role: "",
+          email: "",
+          password: "",
+          // isVerifiedByAdmin: false,
+        });
+      });
   };
   return (
     <>
@@ -153,19 +152,20 @@ const RegPage = () => {
           <div className="d-flex flex-row justify-content-between">
             <div className="col-12 mb-3">
               {" "}
-              <Form.Select aria-label="Default select example">
+              <Form.Select
+                aria-label="Default select example"
+                onChange={(e) => {
+                  setFormVals({ ...formVals, role: e.target.value });
+                }}
+              >
                 <option>Select the role...</option>
-                <option value="1">Faculty</option>
-                <option value="2">Student</option>
-                <option value="3">Administrator</option>
+                <option value="Faculty">Faculty</option>
+                <option value="Student">Student</option>
+                <option value="Administrator">Administrator</option>
               </Form.Select>
             </div>
           </div>
-          <form
-            className="needs-validation"
-            noValidate
-            onSubmit={() => createUser}
-          >
+          <form className="needs-validation" onSubmit={createUser} noValidate>
             <div className="row">
               <div className="col-6">
                 <input
@@ -256,8 +256,9 @@ const RegPage = () => {
                   onChange={(e) => setPasswordConf(e.target.value)}
                 />
                 {passwordConf !== formVals.password &&
-                formVals.password.length > 7 ? (
-                  <div className="feedback">Passwords donot match!</div>
+                formVals.password.length > 7 &&
+                passwordConf.length > 7 ? (
+                  <small style={{ color: "red" }}>Passwords don't match!</small>
                 ) : (
                   <></>
                 )}
@@ -283,7 +284,8 @@ const RegPage = () => {
           </form>
 
           <GoogleButton
-            className="regContainer__google_signin_button mt-3 mb-2"
+            style={{ marginLeft: "25%" }}
+            className="regContainer__google_signin_button mt-3"
             onClick={() => {
               console.log("Google button clicked");
             }}

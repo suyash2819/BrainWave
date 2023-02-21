@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./LoginPage.scss";
-import { useNavigate } from "react-router-dom";
 import "../RegPage/RegPage.scss";
 import { auth } from "../../config/firebase";
 import {
@@ -14,39 +13,39 @@ import logo from "../../assets/logo.jpeg";
 import { Link } from "react-router-dom";
 
 const LoginPage = () => {
+  (function () {
+    let forms = document.querySelectorAll(".needs-validation");
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event: React.ChangeEvent<HTMLInputElement>) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
   const [loginVals, setLoginVals] = useState({
     email: "",
     password: "",
   });
-  const [showEmailError, setShowEmailError] = useState<boolean>(false);
-  const [showPasswordError, setShowPasswordError] = useState<boolean>(false);
+
   const [showAlert, setShowAlert] = useState({
     success: null || true || false,
     message: "",
     show: false,
     type: "",
   });
-  const navigate = useNavigate();
-
-  async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    //dispatchLoginDetails(userLogIn(JSON.stringify(loginVals)));
-    console.log(loginVals);
-    // navigate(0);
-    // navigate("/Dashboard");
-  }
-
-  const handleRegdirect = () => {
-    navigate("/Registration");
-  };
 
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
 
   const passwordReset = () => {
-    console.log("yes", loginVals.email);
-
     sendPasswordResetEmail(auth, loginVals.email)
       .then((s) => {
         // Password reset email sent!
@@ -117,34 +116,17 @@ const LoginPage = () => {
         setShowAlert({
           success: false,
           message:
-            err.message === "Firebase: Error (auth/invalid-email)."
-              ? "Incorrect E-mail, Please check."
-              : err.message === "Firebase: Error (auth/user-not-found)."
+            err.message === "Firebase: Error (auth/user-not-found)."
               ? "User is not Found, Please Register!"
               : err.message === "Firebase: Error (auth/internal-error)."
-              ? "Please fill the required fields!, Please verify"
+              ? "Something went wrong!"
               : err.message === "Firebase: Error (auth/wrong-password)."
-              ? "Incorrect Password!, Please check."
+              ? "Incorrect Password! Please check."
               : err.message,
           show: true,
           type: "danger",
         });
-        if (err.message === "Firebase: Error (auth/internal-error).") {
-          setShowPasswordError(true);
-        } else if (err.message === "Firebase: Error (auth/invalid-email).") {
-          setShowEmailError(true);
-        }
       });
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginVals({ ...loginVals, email: e.target.value });
-    setShowEmailError(false);
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginVals({ ...loginVals, password: e.target.value });
-    setShowPasswordError(false);
   };
 
   return (
@@ -164,8 +146,7 @@ const LoginPage = () => {
             </p>
           </Link>
         </div>
-
-        <div>
+        <div className="logPageAlert">
           {showAlert.show ? (
             <AlertMessage
               success={showAlert.success}
@@ -175,82 +156,64 @@ const LoginPage = () => {
             />
           ) : null}
         </div>
-        <h3 className="logIn__Heading">Welcome , Please Login!</h3>
+
         <div className="logIn__Container">
-          <form className="logIn__Container__form" onSubmit={handleLogin}>
-            <div className="logIn__Container__form__element">
-              <label
-                className={"logIn__Container__form__element__label mandateText"}
-              >
-                Email:
-              </label>
-              <input
-                className="regContainer__form__element__input"
-                type="text"
-                name="Email"
-                id="Email"
-                style={{
-                  borderColor: showEmailError ? "red" : "",
-                }}
-                value={loginVals["email"]}
-                onChange={(e) => handleEmailChange(e)}
-              />
+          <h3 className="logIn__Heading mb-5">Welcome , Please Login!</h3>
+          <form className="needs-validation" onSubmit={userSignIn} noValidate>
+            <div className="col mx-5">
+              <div className="row">
+                <input
+                  type="email"
+                  className="form-control"
+                  id="inputEmail3"
+                  placeholder="Email"
+                  required
+                  onChange={(e) =>
+                    setLoginVals({ ...loginVals, email: e.target.value })
+                  }
+                />
+                <div className="invalid-feedback">
+                  Please enter valid Email!
+                </div>
+              </div>
+              <div className="row mt-3">
+                <input
+                  type="password"
+                  className="form-control"
+                  id="inputPassword"
+                  placeholder="Password"
+                  required
+                  minLength={8}
+                  onChange={(e) =>
+                    setLoginVals({ ...loginVals, password: e.target.value })
+                  }
+                />
+                <div className="invalid-feedback">
+                  <small>Password should be atleast 8 characters</small>
+                </div>
+              </div>
             </div>
-            <div className="logIn__Container__form__element">
-              <label className="logIn__Container__form__element__label mandateText">
-                Password:
-              </label>
-              <input
-                className="regContainer__form__element__input"
-                type="password"
-                name="Password"
-                id="Password"
-                style={{
-                  borderColor: showPasswordError ? "red" : "",
-                }}
-                value={loginVals["password"]}
-                onChange={(e) => handlePasswordChange(e)}
-              />
-            </div>
-            <div className="forgot_pwd">
-              <p
-                className="pwd_link"
-                onClick={() => {
-                  passwordReset();
-                }}
-              >
-                Forgot password?
-              </p>
+            <div className="d-flex flex-column justify-content-center mt-3">
+              <button type="submit" className="btn btn-primary mx-5 px-3">
+                <span>Sign In</span>
+              </button>
+              <div className="d-flex flex-row justify-content-center  mt-3">
+                <small id="emailHelp" className="form-text text-muted me-2">
+                  Not a user?
+                </small>
+                <Link
+                  className="mt-1"
+                  style={{ textDecoration: "none", fontSize: "0.9em" }}
+                  to="/Registration"
+                >
+                  Register
+                </Link>
+              </div>
             </div>
           </form>
-          <div className="d-flex flex-row">
-            <button
-              className="regContainer__form__submitButton"
-              onClick={handleRegdirect}
-            >
-              <span className="regContainer__form__submitButton__text">
-                Not a user? Register
-              </span>
-            </button>
-            <div className="regContainer__LogIn_button ms-5">
-              <button
-                className="regContainer__form__submitButton"
-                onClick={userSignIn}
-              >
-                <span
-                  aria-label="LoginButton"
-                  className="regContainer__form__submitButton__text"
-                >
-                  Log In
-                </span>
-              </button>
-            </div>
-          </div>
           <GoogleButton
-            className="regContainer__google_signin_button mt-5"
-            onClick={() => {
-              console.log("Google button clicked");
-            }}
+            className="regContainer__google_signin_button mt-3"
+            onClick={() => passwordReset}
           />
         </div>
       </div>

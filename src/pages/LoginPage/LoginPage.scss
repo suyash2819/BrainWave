@@ -19,35 +19,21 @@
   height: 100vh;
 
   .logIn__Heading {
-    position: absolute;
     top: 20%;
     text-align: center;
     color: rgb(215, 140, 0);
   }
   .logIn__Container {
-    position: absolute;
-    top: 30%;
-    text-align: center;
-    &__form {
-      padding: 0 40px;
-      box-sizing: border-box;
-      &__element {
-        justify-content: space-between;
-        display: flex;
-        margin: 30px 0;
-        width: 100%;
-        padding: 0 5px;
-        height: 40px;
-        font-size: 16px;
-
-        &__label {
-          font-size: x-large;
-          padding-right: 2em;
-          display: flex;
-          align-items: center;
-        }
-      }
-    }
+    font-size: large;
+    flex-direction: column;
+    margin-top: 10%;
+    background-color: #12003d;
+    padding-inline: 4em;
+    padding-top: 2em;
+    padding-bottom: 3em;
+    border-radius: 30px;
+    height: 450px;
+    width: 500px;
   }
   .pwd_link {
     color: white;

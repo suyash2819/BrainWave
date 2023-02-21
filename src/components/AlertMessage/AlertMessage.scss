@@ -7,5 +7,10 @@
 .regPageAlert {
   margin-inline: 35%;
   position: absolute;
-  transform: translate(80px, -100px);
+  transform: translateY(-100px);
+}
+
+.logPageAlert {
+  margin-inline: 35%;
+  position: absolute;
 }
