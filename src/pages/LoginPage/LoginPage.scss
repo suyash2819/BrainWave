@@ -41,4 +41,14 @@
       }
     }
   }
+  .pwd_link {
+    color: white;
+    text-decoration: none;
+  }
+  .forgot_pwd {
+    margin-bottom: 10%;
+  }
+  .forgot_pwd:hover {
+    cursor: pointer;
+  }
 }

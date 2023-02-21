@@ -3,7 +3,11 @@ import "./LoginPage.scss";
 import { useNavigate } from "react-router-dom";
 import "../RegPage/RegPage.scss";
 import { auth } from "../../config/firebase";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import GoogleButton from "react-google-button";
 
@@ -37,6 +41,35 @@ const LoginPage = () => {
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
+
+  const passwordReset = () => {
+    console.log("yes", loginVals.email);
+
+    sendPasswordResetEmail(auth, loginVals.email)
+      .then((s) => {
+        // Password reset email sent!
+        console.log(s);
+
+        setShowAlert({
+          success: true,
+          message: "password reset mail sent",
+          show: true,
+          type: "",
+        });
+      })
+      .catch((error) => {
+        // ..
+        console.log("reset err", error);
+
+        setShowAlert({
+          success: false,
+          message: error.message,
+          show: true,
+          type: "",
+        });
+      });
+  };
+
   const userSignIn = (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
@@ -151,7 +184,18 @@ const LoginPage = () => {
                 onChange={(e) => handlePasswordChange(e)}
               />
             </div>
+            <div className="forgot_pwd">
+              <p
+                className="pwd_link"
+                onClick={() => {
+                  passwordReset();
+                }}
+              >
+                Forgot password?
+              </p>
+            </div>
           </form>
+
           <div className="d-flex flex-row">
             <button
               className="regContainer__form__submitButton"
@@ -161,6 +205,7 @@ const LoginPage = () => {
                 Not a user? Register
               </span>
             </button>
+
             <div className="regContainer__LogIn_button ms-5">
               <button
                 className="regContainer__form__submitButton"
