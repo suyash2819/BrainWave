@@ -29,6 +29,7 @@ const LoginPage = () => {
       );
     });
   })();
+  const [forgotpswd, setForgotpwd] = useState<boolean>(false);
   const [loginVals, setLoginVals] = useState({
     email: "",
     password: "",
@@ -45,7 +46,8 @@ const LoginPage = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
 
-  const passwordReset = () => {
+  const passwordReset = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
     sendPasswordResetEmail(auth, loginVals.email)
       .then((s) => {
         // Password reset email sent!
@@ -53,7 +55,7 @@ const LoginPage = () => {
 
         setShowAlert({
           success: true,
-          message: "password reset mail sent",
+          message: "Link to reset password is sent!",
           show: true,
           type: "",
         });
@@ -80,7 +82,6 @@ const LoginPage = () => {
 
   const userSignIn = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     signInWithEmailAndPassword(auth, loginVals.email, loginVals.password)
       .then((userCredential) => {
         // Signed in
@@ -158,8 +159,14 @@ const LoginPage = () => {
         </div>
 
         <div className="logIn__Container">
-          <h3 className="logIn__Heading mb-5">Welcome, Please Login!</h3>
-          <form className="needs-validation" onSubmit={userSignIn} noValidate>
+          <h3 className="logIn__Heading mb-5">
+            {forgotpswd ? "Password Reset" : "Welcome, Please Login!"}
+          </h3>
+          <form
+            className="needs-validation"
+            onSubmit={forgotpswd ? passwordReset : userSignIn}
+            noValidate
+          >
             <div className="col mx-5">
               <div className="row">
                 <input
@@ -176,45 +183,65 @@ const LoginPage = () => {
                   Please enter valid Email!
                 </div>
               </div>
-              <div className="row mt-3">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="inputPassword"
-                  placeholder="Password"
-                  required
-                  minLength={8}
-                  onChange={(e) =>
-                    setLoginVals({ ...loginVals, password: e.target.value })
-                  }
-                />
-                <div className="invalid-feedback">
-                  <small>Password should be atleast 8 characters</small>
+              {!forgotpswd ? (
+                <div className="row mt-3">
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="inputPassword"
+                    placeholder="Password"
+                    required
+                    minLength={8}
+                    onChange={(e) =>
+                      setLoginVals({ ...loginVals, password: e.target.value })
+                    }
+                  />
+                  <div className="invalid-feedback">
+                    <small>Password should be atleast 8 characters</small>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <></>
+              )}
               <div className="row mt-3">
                 <button type="submit" className="btn btn-primary">
-                  <span>Sign In</span>
+                  <span>{!forgotpswd ? "Sign In" : "Send Link"}</span>
                 </button>
-                <div className="d-flex flex-row justify-content-center  mt-3">
-                  <small id="emailHelp" className="form-text text-muted me-2">
-                    Not a user?
-                  </small>
-                  <Link
-                    className="mt-1"
-                    style={{ textDecoration: "none", fontSize: "0.9em" }}
-                    to="/Registration"
-                  >
-                    Register
-                  </Link>
-                </div>
+                {!forgotpswd ? (
+                  <div className="d-flex flex-row justify-content-center  mt-3">
+                    <small
+                      id="emailHelp"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setForgotpwd(true)}
+                      className="form-text text-muted me-2 link"
+                    >
+                      Forgot Password?
+                    </small>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </form>
           <GoogleButton
             className="regContainer__google_signin_button mt-3"
-            onClick={() => passwordReset}
+            onClick={() => {
+              console.log(`1`);
+            }}
           />
+          <div className="d-flex flex-row justify-content-center  mt-3">
+            <small id="emailHelp" className="form-text text-muted me-2">
+              Not a user?
+            </small>
+            <Link
+              className="mt-1"
+              style={{ textDecoration: "none", fontSize: "0.9em" }}
+              to="/Registration"
+            >
+              Register
+            </Link>
+          </div>
         </div>
       </div>
     </>
