@@ -7,11 +7,12 @@
 }
 
 .regContainer {
-  color: wheat;
+  color: white;
   height: 100vh;
+  background-image: url("../../assets/backreglog.jpg");
   &__Heading {
     text-align: center;
-    color: rgb(215, 140, 0);
+
     transform: translateY(-10px);
     margin-bottom: 1em;
   }
@@ -19,7 +20,7 @@
     font-size: large;
     flex-direction: column;
     margin-inline: 30%;
-    background-color: #12003d;
+    background-color: #010d1e;
     padding-inline: 4em;
     padding-top: 2em;
     padding-bottom: 1em;

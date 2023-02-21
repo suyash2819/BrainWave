@@ -123,7 +123,7 @@ const RegPage = () => {
     <>
       <div className="regContainer">
         <div className="brand__heading__reg d-flex flex-row">
-          <Link style={{ textDecoration: "none", color: "wheat" }} to="/Home">
+          <Link style={{ textDecoration: "none", color: "white" }} to="/Home">
             <p className="brand__heading__reg__text">
               {" "}
               <img
@@ -148,7 +148,9 @@ const RegPage = () => {
           ) : null}
         </div>
         <div className="regContainer__form">
-          <h3 className="regContainer__Heading">Welcome, Please Register!</h3>
+          <h3 className="regContainer__Heading mt-1">
+            Welcome, Please Register!
+          </h3>
           <div className="d-flex flex-row justify-content-between">
             <div className="col-12 mb-3">
               {" "}
@@ -285,7 +287,7 @@ const RegPage = () => {
 
           <GoogleButton
             style={{ marginLeft: "25%" }}
-            className="regContainer__google_signin_button mt-3"
+            className="regContainer__google_signin_button mt-3 mb-4"
             onClick={() => {
               console.log("Google button clicked");
             }}

@@ -133,7 +133,7 @@ const LoginPage = () => {
     <>
       <div className="logIn">
         <div className="brand__heading d-flex flex-row">
-          <Link style={{ textDecoration: "none", color: "wheat" }} to="/Home">
+          <Link style={{ textDecoration: "none", color: "white" }} to="/Home">
             <p className="brand__heading__text">
               <img
                 alt=""
@@ -158,7 +158,7 @@ const LoginPage = () => {
         </div>
 
         <div className="logIn__Container">
-          <h3 className="logIn__Heading mb-5">Welcome , Please Login!</h3>
+          <h3 className="logIn__Heading mb-5">Welcome, Please Login!</h3>
           <form className="needs-validation" onSubmit={userSignIn} noValidate>
             <div className="col mx-5">
               <div className="row">
@@ -192,22 +192,22 @@ const LoginPage = () => {
                   <small>Password should be atleast 8 characters</small>
                 </div>
               </div>
-            </div>
-            <div className="d-flex flex-column justify-content-center mt-3">
-              <button type="submit" className="btn btn-primary mx-5 px-3">
-                <span>Sign In</span>
-              </button>
-              <div className="d-flex flex-row justify-content-center  mt-3">
-                <small id="emailHelp" className="form-text text-muted me-2">
-                  Not a user?
-                </small>
-                <Link
-                  className="mt-1"
-                  style={{ textDecoration: "none", fontSize: "0.9em" }}
-                  to="/Registration"
-                >
-                  Register
-                </Link>
+              <div className="row mt-3">
+                <button type="submit" className="btn btn-primary">
+                  <span>Sign In</span>
+                </button>
+                <div className="d-flex flex-row justify-content-center  mt-3">
+                  <small id="emailHelp" className="form-text text-muted me-2">
+                    Not a user?
+                  </small>
+                  <Link
+                    className="mt-1"
+                    style={{ textDecoration: "none", fontSize: "0.9em" }}
+                    to="/Registration"
+                  >
+                    Register
+                  </Link>
+                </div>
               </div>
             </div>
           </form>
