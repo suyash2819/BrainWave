@@ -14,6 +14,7 @@ import NavBarMain from "../../components/NavBarMain.tsx/NavBarMain";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
+import { storeContactUsInfo } from "../../services/userService";
 
 const HomePage = () => {
   const [show, setShow] = useState<boolean>(false);
@@ -65,6 +66,7 @@ const HomePage = () => {
     navigate("/Registration");
   };
   const handleClose = () => {
+    storeContactUsInfo(emailVal, innerTextVal);
     setEmailVal("");
     setInnerTextVal("");
     setShowError([false, "text"]);

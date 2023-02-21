@@ -34,3 +34,13 @@ export async function getUserCount() {
   const snapshot = await getCountFromServer(coll);
   return snapshot.data().count;
 }
+
+export async function storeContactUsInfo(email: string, text: string) {
+  try {
+    const contactUs = { email, text };
+    const docRef = await addDoc(collection(db, "contactus"), contactUs);
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
