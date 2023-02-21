@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import "./FooterMain.scss";
-
+import "firebase/firestore";
+import { db } from "../../config/firebase";
+import { addDoc, collection } from "firebase/firestore";
 type FooterItem = {
   title: string;
   data: string;
   buttonText?: string;
   inputText?: string;
 };
+
 type StateProps = {
   setState: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -29,6 +32,24 @@ const FooterMain = ({ setState }: StateProps) => {
       buttonText: "STAY IN TOUCH",
     },
   ];
+  const [footer_email, set_footerEmail] = useState("");
+  useState("");
+
+  // const [isSaving, setIsSaving] = useState(false);
+
+  const footer_emailCollection = collection(db, "newsLetterSubscription");
+
+  const handle_footerSubscribe = async () => {
+    try {
+      await addDoc(footer_emailCollection, { footer_email });
+      console.log("Email saved successfully");
+      alert("Successfully subscribed!");
+      set_footerEmail("");
+    } catch (error) {
+      alert("invalid email");
+      console.error("Error saving email:", error);
+    }
+  };
 
   return (
     <footer className="footer-main">
@@ -36,13 +57,24 @@ const FooterMain = ({ setState }: StateProps) => {
         <div key={index} className="footer-item">
           <h3 className="footer-title">{item.title}</h3>
           <p className="footer-data">{item.data}</p>
-          {item.inputText && <input type="text" placeholder={item.inputText} />}
+          {item.inputText && (
+            <input
+              onChange={(e) => set_footerEmail(e.target.value)}
+              type="text"
+              pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+              value={footer_email}
+              placeholder={item.inputText}
+            />
+          )}
+
           {item.buttonText && (
             <button
               className="footer-button"
               onClick={() => {
                 if (item.buttonText === "CONTACT US NOW") {
                   setState(true);
+                } else if (item.buttonText === "STAY IN TOUCH") {
+                  handle_footerSubscribe();
                 }
               }}
             >
