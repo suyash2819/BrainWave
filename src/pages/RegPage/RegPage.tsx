@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import GoogleButton from "react-google-button";
 import "./RegPage.scss";
-import RegInput from "../../components/RegPage/RegInput";
 import { Link } from "react-router-dom";
 import { auth } from "../../config/firebase";
 import {
@@ -10,8 +9,28 @@ import {
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import { storeUserDetails, getUserCount } from "../../services/userService";
+import logo from "../../assets/logo.jpeg";
+import Form from "react-bootstrap/Form";
 
 const RegPage = () => {
+  (function () {
+    "use strict";
+    let forms = document.querySelectorAll(".needs-validation");
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event: React.ChangeEvent<HTMLInputElement>) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
   const [formVals, setFormVals] = useState({
     firstname: "",
     lastname: "",
@@ -21,6 +40,7 @@ const RegPage = () => {
     password: "",
   });
 
+  const [passwordConf, setPasswordConf] = useState<string>("");
   const [showAlert, setShowAlert] = useState({
     success: null || true || false,
     message: "",
@@ -32,147 +52,93 @@ const RegPage = () => {
   };
   const createUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const euser = auth.currentUser;
-        console.log("user created", user);
-        if (euser === null) {
-          console.log("null user");
-        } else {
-          sendEmailVerification(euser)
-            .then(() => {
-              // Email verification sent!
-              setShowAlert({
-                success: true,
-                message: "Email Verification Sent at the provided Email",
-                show: true,
-                type: "",
-              });
-              getUserCount().then((totalUsers) => {
-                storeUserDetails({
-                  ...formVals,
-                  isVerifiedByAdmin: false,
-                  uid: 200001 + totalUsers,
-                });
-              });
-            })
-            .catch((err) => {
-              // An error happened.
-              setShowAlert({
-                success: false,
-                message: err.message,
-                show: true,
-                type: "",
-              });
-              console.log(err);
-            });
-        }
 
-        setFormVals({
-          firstname: "",
-          lastname: "",
-          username: "",
-          role: "",
-          email: "",
-          password: "",
+    if (passwordConf !== formVals.password) return;
+    if (formVals.firstname.length < 1 && formVals.lastname.length < 1)
+      createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          const euser = auth.currentUser;
+          console.log("user created", user);
+          if (euser === null) {
+            console.log("null user");
+          } else {
+            sendEmailVerification(euser)
+              .then(() => {
+                // Email verification sent!
+                setShowAlert({
+                  success: true,
+                  message: "Email Verification sent to the provided Email",
+                  show: true,
+                  type: "",
+                });
+                getUserCount().then((totalUsers) => {
+                  storeUserDetails({
+                    ...formVals,
+                    isVerifiedByAdmin: false,
+                    uid: 200001 + totalUsers,
+                  });
+                });
+              })
+              .catch((err) => {
+                // An error happened.
+                setShowAlert({
+                  success: false,
+                  message: err.message,
+                  show: true,
+                  type: "",
+                });
+                console.log(err);
+              });
+          }
+
+          setFormVals({
+            firstname: "",
+            lastname: "",
+            username: "",
+            role: "",
+            email: "",
+            password: "",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setShowAlert({
+            success: false,
+            message: err.message,
+            show: true,
+            type: "",
+          });
+          setFormVals({
+            firstname: "",
+            lastname: "",
+            username: "",
+            role: "",
+            email: "",
+            password: "",
+            // isVerifiedByAdmin: false,
+          });
         });
-      })
-      .catch((err) => {
-        console.log(err);
-        setShowAlert({
-          success: false,
-          message: err.message,
-          show: true,
-          type: "",
-        });
-        setFormVals({
-          firstname: "",
-          lastname: "",
-          username: "",
-          role: "",
-          email: "",
-          password: "",
-          // isVerifiedByAdmin: false,
-        });
-      });
   };
   return (
     <>
       <div className="regContainer">
-        <form className="regContainer__form">
-          <h3 className="regContainer__Heading">Welcome, Please Register!</h3>
-          <RegInput
-            title="Firstname"
-            formVals={formVals}
-            setFormVals={setFormVals}
-            mandateText={true}
-            pattern="[A-Za-z]*"
-            type={""}
-          />
-          <RegInput
-            title="Lastname"
-            formVals={formVals}
-            setFormVals={setFormVals}
-            mandateText={true}
-            pattern="[A-Za-z]*"
-            type={""}
-          />
-          <RegInput
-            title="Email"
-            formVals={formVals}
-            setFormVals={setFormVals}
-            mandateText={true}
-            pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
-            type={""}
-          />
-          <RegInput
-            title="Username"
-            formVals={formVals}
-            setFormVals={setFormVals}
-            mandateText={true}
-            pattern=".+"
-            type={""}
-          />
-          <RegInput
-            title="Password"
-            formVals={formVals}
-            setFormVals={setFormVals}
-            mandateText={true}
-            type="Password"
-            pattern=".+"
-          />
-          <div className="mt-4">
-            {" "}
-            <Link to="/LogIn">
-              <button className="regContainer__form__submitButton ms-3">
-                <span className="regContainer__LogIn_button__text">
-                  Sign in Instead?
-                </span>
-              </button>
-            </Link>
-            <button
-              aria-label="RegisterButton"
-              className="regContainer__form__submitButton ms-5"
-              id="registerButton"
-              type="submit"
-              onClick={createUser}
-            >
-              <span className="regContainer__form__submitButton__text">
-                Register
-              </span>
-            </button>
-          </div>
-
-          <GoogleButton
-            className="regContainer__google_signin_button mt-5"
-            onClick={() => {
-              console.log("Google button clicked");
-            }}
-          />
-        </form>
-
-        <div>
+        <div className="brand__heading__reg d-flex flex-row">
+          <Link style={{ textDecoration: "none", color: "wheat" }} to="/Home">
+            <p className="brand__heading__reg__text">
+              {" "}
+              <img
+                alt=""
+                src={logo}
+                width="50"
+                height="50"
+                className="d-inline-block p-1 m-3"
+              />
+              BrainWave
+            </p>
+          </Link>
+        </div>
+        <div className="regPageAlert">
           {showAlert.show ? (
             <AlertMessage
               success={showAlert.success}
@@ -181,6 +147,147 @@ const RegPage = () => {
               type=""
             />
           ) : null}
+        </div>
+        <div className="regContainer__form">
+          <h3 className="regContainer__Heading">Welcome, Please Register!</h3>
+          <div className="d-flex flex-row justify-content-between">
+            <div className="col-12 mb-3">
+              {" "}
+              <Form.Select aria-label="Default select example">
+                <option>Select the role...</option>
+                <option value="1">Faculty</option>
+                <option value="2">Student</option>
+                <option value="3">Administrator</option>
+              </Form.Select>
+            </div>
+          </div>
+          <form
+            className="needs-validation"
+            noValidate
+            onSubmit={() => createUser}
+          >
+            <div className="row">
+              <div className="col-6">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="First name"
+                  required={true}
+                  onChange={(e) =>
+                    setFormVals({ ...formVals, firstname: e.target.value })
+                  }
+                />
+                <div className="invalid-feedback">First Name is required!</div>
+              </div>
+              <div className="col">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Last name"
+                  required
+                  onChange={(e) =>
+                    setFormVals({ ...formVals, lastname: e.target.value })
+                  }
+                />
+                <div className="invalid-feedback">Last Name is required!</div>
+              </div>
+            </div>
+            <div className="row mt-3">
+              <div className="col">
+                <input
+                  type="email"
+                  className="form-control"
+                  id="inputEmail3"
+                  placeholder="Email"
+                  required
+                  onChange={(e) =>
+                    setFormVals({ ...formVals, email: e.target.value })
+                  }
+                />
+                <div className="invalid-feedback">
+                  Please enter valid Email!
+                </div>
+              </div>
+              <div className="col">
+                <div className="input-group mb-2">
+                  {" "}
+                  <div className="input-group-prepend">
+                    <div className="input-group-text">@</div>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="inlineFormInputGroup"
+                    placeholder="Username"
+                    required
+                    onChange={(e) =>
+                      setFormVals({ ...formVals, username: e.target.value })
+                    }
+                  />
+                  <div className="invalid-feedback">UserName is required!</div>
+                </div>
+              </div>
+            </div>
+            <div className="row mt-3">
+              <div className="col">
+                <input
+                  type="password"
+                  className="form-control"
+                  id="inputPassword"
+                  placeholder="Password"
+                  required
+                  minLength={8}
+                  onChange={(e) =>
+                    setFormVals({ ...formVals, password: e.target.value })
+                  }
+                />
+                <div className="invalid-feedback">
+                  <small>Password should be atleast 8 characters</small>
+                </div>
+              </div>
+              <div className="col-6">
+                <input
+                  type="password"
+                  className="form-control"
+                  id="inputPassword"
+                  minLength={8}
+                  required
+                  placeholder="Confirm Password"
+                  onChange={(e) => setPasswordConf(e.target.value)}
+                />
+                {passwordConf !== formVals.password &&
+                formVals.password.length > 7 ? (
+                  <div className="feedback">Passwords donot match!</div>
+                ) : (
+                  <></>
+                )}
+              </div>
+            </div>
+            <div className="d-flex flex-column justify-content-center mt-4">
+              <button type="submit" className="btn btn-primary px-5">
+                <span>Register</span>
+              </button>
+              <div className="d-flex flex-row justify-content-center  mt-3">
+                <small id="emailHelp" className="form-text text-muted me-2">
+                  Already have an account?
+                </small>
+                <Link
+                  className="mt-1"
+                  style={{ textDecoration: "none", fontSize: "0.9em" }}
+                  to="/LogIn"
+                >
+                  Sign In
+                </Link>
+              </div>
+            </div>
+          </form>
+
+          <GoogleButton
+            className="regContainer__google_signin_button mt-3 mb-2"
+            onClick={() => {
+              console.log("Google button clicked");
+            }}
+          />
         </div>
       </div>
     </>

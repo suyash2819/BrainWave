@@ -10,6 +10,8 @@ import {
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import GoogleButton from "react-google-button";
+import logo from "../../assets/logo.jpeg";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [loginVals, setLoginVals] = useState({
@@ -63,7 +65,14 @@ const LoginPage = () => {
 
         setShowAlert({
           success: false,
-          message: error.message,
+          message:
+            error.message === "Firebase: Error (auth/missing-email)."
+              ? "Please fill the E-mail field on which link can be sent!"
+              : error.message === "Firebase: Error (auth/invalid-email)."
+              ? "Please enter correct E-mail on which link can be sent!"
+              : error.message === "Firebase: Error (auth/user-not-found)."
+              ? "User is not found! Please verify E-mail."
+              : error.message,
           show: true,
           type: "",
         });
@@ -79,23 +88,14 @@ const LoginPage = () => {
         const user = userCredential.user;
         if (user.emailVerified) {
           console.log("user signed in");
-          setShowAlert({
-            success: true,
-            message: "sign in successful",
-            show: true,
-            type: "",
-          });
-          setLoginVals({
-            email: "",
-            password: "",
-          });
+          //
         } else {
           signOut(auth)
             .then(() => {
-              // Sign-out successful.
               setShowAlert({
                 success: false,
-                message: "please verify email address",
+                message:
+                  "Please verify your email address from the link sent in mail by Brainwave!",
                 show: true,
                 type: "",
               });
@@ -113,16 +113,19 @@ const LoginPage = () => {
         // ...
       })
       .catch((err) => {
+        console.log(err.message);
         setShowAlert({
           success: false,
           message:
             err.message === "Firebase: Error (auth/invalid-email)."
-              ? "Please enter the proper Email!"
+              ? "Incorrect E-mail, Please check."
               : err.message === "Firebase: Error (auth/user-not-found)."
-              ? "User is not Found, Please register!"
+              ? "User is not Found, Please Register!"
               : err.message === "Firebase: Error (auth/internal-error)."
-              ? "Incorrect password, Please verify"
-              : "",
+              ? "Please fill the required fields!, Please verify"
+              : err.message === "Firebase: Error (auth/wrong-password)."
+              ? "Incorrect Password!, Please check."
+              : err.message,
           show: true,
           type: "danger",
         });
@@ -147,6 +150,31 @@ const LoginPage = () => {
   return (
     <>
       <div className="logIn">
+        <div className="brand__heading d-flex flex-row">
+          <Link style={{ textDecoration: "none", color: "wheat" }} to="/Home">
+            <p className="brand__heading__text">
+              <img
+                alt=""
+                src={logo}
+                width="50"
+                height="50"
+                className="d-inline-block p-1 m-3"
+              />
+              BrainWave
+            </p>
+          </Link>
+        </div>
+
+        <div>
+          {showAlert.show ? (
+            <AlertMessage
+              success={showAlert.success}
+              message={showAlert.message}
+              alertDisplay={alertMessageDisplay}
+              type={showAlert.type}
+            />
+          ) : null}
+        </div>
         <h3 className="logIn__Heading">Welcome , Please Login!</h3>
         <div className="logIn__Container">
           <form className="logIn__Container__form" onSubmit={handleLogin}>
@@ -195,7 +223,6 @@ const LoginPage = () => {
               </p>
             </div>
           </form>
-
           <div className="d-flex flex-row">
             <button
               className="regContainer__form__submitButton"
@@ -205,7 +232,6 @@ const LoginPage = () => {
                 Not a user? Register
               </span>
             </button>
-
             <div className="regContainer__LogIn_button ms-5">
               <button
                 className="regContainer__form__submitButton"
@@ -226,16 +252,6 @@ const LoginPage = () => {
               console.log("Google button clicked");
             }}
           />
-        </div>
-        <div>
-          {showAlert.show ? (
-            <AlertMessage
-              success={showAlert.success}
-              message={showAlert.message}
-              alertDisplay={alertMessageDisplay}
-              type={showAlert.type}
-            />
-          ) : null}
         </div>
       </div>
     </>

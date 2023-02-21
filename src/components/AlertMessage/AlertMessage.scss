@@ -1,6 +1,11 @@
 .AlertMessage {
   display: overlay;
   z-index: 1;
-  position: absolute;
   margin-top: 3%;
+}
+
+.regPageAlert {
+  margin-inline: 35%;
+  position: absolute;
+  transform: translate(80px, -100px);
 }

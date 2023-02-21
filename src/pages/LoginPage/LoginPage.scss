@@ -1,3 +1,11 @@
+.brand__heading {
+  transform: translateX(-600px);
+  position: absolute;
+  &__text {
+    font-size: 3em;
+  }
+}
+
 .logIn {
   display: flex;
   justify-content: center;

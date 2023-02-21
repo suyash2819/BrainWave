@@ -1,3 +1,11 @@
+.brand__heading__reg {
+  justify-content: left;
+  text-decoration: none;
+  &__text {
+    font-size: 3em;
+  }
+}
+
 .regContainer {
   color: wheat;
   background: linear-gradient(
@@ -8,40 +16,26 @@
   );
   height: 100vh;
   &__Heading {
-    top: 20%;
     text-align: center;
     color: rgb(215, 140, 0);
+    transform: translateY(-10px);
+    margin-bottom: 2em;
   }
   &__form {
     font-size: large;
     flex-direction: column;
-    margin-inline: 35%;
-    padding-top: 3em;
-    &__element {
-      padding: 0.8em;
-      display: flex;
-      justify-content: space-between;
-      &__label {
-        margin-right: 0.5rem;
-        font-size: larger;
-        display: flex;
-        align-items: center;
-      }
-      &__input {
-        font-size: medium;
-        border-radius: 10px;
-        border-color: rgb(30, 1, 9);
-        text-align: center;
-        height: 35px;
-      }
-    }
+    margin-inline: 30%;
+    background-color: #12003d;
+    padding-inline: 4em;
+    padding-top: 2em;
+    padding-bottom: 1em;
+    border-radius: 30px;
     &__submitButton {
       background-color: #ccd6dd;
       border-radius: 10px;
       padding: 10px 40px 10px 40px;
       cursor: pointer;
       &__text {
-        color: rgb(0, 0, 0);
         font-size: large;
       }
     }
@@ -61,19 +55,8 @@
   }
 }
 
-.mandateText::after {
-  content: "*";
-  color: red;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 .regContainer__google_signin_button {
-  margin-left: 20%;
+  margin-left: 25%;
 
   .regContainer__LogIn_button {
     margin-left: 10%;
