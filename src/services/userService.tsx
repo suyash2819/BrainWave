@@ -1,5 +1,12 @@
 import { db } from "../config/firebase";
-import { collection, addDoc, getCountFromServer } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getCountFromServer,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 
@@ -46,5 +53,18 @@ export async function storeContactUsInfo(email: string, text: string) {
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);
+  }
+}
+
+export async function getUserSpecificDetails(email: string) {
+  try {
+    const userDetails = query(
+      collection(db, "users"),
+      where("email", "==", email)
+    );
+    const querySnapshot = await getDocs(userDetails);
+    return querySnapshot;
+  } catch (e) {
+    console.log(e);
   }
 }

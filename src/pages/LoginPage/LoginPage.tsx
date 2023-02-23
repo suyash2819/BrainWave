@@ -15,6 +15,7 @@ import logo from "../../assets/logo.jpeg";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { getUserSpecificDetails } from "../../services/userService";
 
 const LoginPage = () => {
   (function () {
@@ -121,7 +122,14 @@ const LoginPage = () => {
         // Signed in
         const user = userCredential.user;
         if (user.emailVerified) {
-          console.log("user signed in");
+          console.log("user signed in", user);
+          const userData = getUserSpecificDetails(loginVals.email);
+          userData?.then((data) => {
+            data?.forEach((doc) => {
+              //store doc.data in redux store
+              console.log(doc.data());
+            });
+          });
           user?.getIdToken().then(function (token) {
             localStorage.setItem("bwUser", token);
           });
