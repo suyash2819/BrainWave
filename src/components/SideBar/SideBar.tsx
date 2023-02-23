@@ -95,8 +95,11 @@ function SideBar() {
                   />
                 </Accordion.Header>
                 <Accordion.Body>
-                  {Object.entries(courses_items).map(([key, icon]) => (
-                    <p className="sidebarContainer__options__navs_courses">
+                  {Object.entries(courses_items).map(([key, icon], index) => (
+                    <p
+                      key={index}
+                      className="sidebarContainer__options__navs_courses"
+                    >
                       <FontAwesomeIcon className="pe-3" icon={icon} /> {key}
                     </p>
                   ))}

@@ -9,21 +9,6 @@ import Dropdown from "react-bootstrap/Dropdown";
 import defaultpfp from "../../assets/defaultPfp.jpg";
 import Image from "react-bootstrap/Image";
 const NavDashboard = () => {
-  const profileMenuItems = [
-    {
-      title: "Account",
-      link: "/account",
-    },
-    {
-      title: "Billing",
-      link: "/billing",
-    },
-    {
-      title: "Logout",
-      link: "/logout",
-    },
-  ];
-
   return (
     <>
       <div className="navdashContainer">
@@ -40,34 +25,27 @@ const NavDashboard = () => {
                 <FontAwesomeIcon className="m-2 fa-xl" icon={faBell} />
               </Nav.Link>
 
-              <Nav.Link className=" m-1">
-                <Dropdown className=" m-1">
-                  <Dropdown.Toggle
-                    as={Nav.Link}
-                    className="navdashContainer__profile"
-                  >
-                    <Image
-                      alt=""
-                      src={defaultpfp}
-                      roundedCircle
-                      height={25}
-                      width={25}
-                      className="mr-2"
-                      style={{ marginRight: "3px" }}
-                    />
-                    Options
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className="dropdown-menu-left">
-                    {profileMenuItems.map((item, index) => {
-                      return (
-                        <Dropdown.Item key={index} href={item.link}>
-                          {item.title}
-                        </Dropdown.Item>
-                      );
-                    })}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Nav.Link>
+              <Dropdown className=" m-1">
+                <Dropdown.Toggle
+                  as={Nav.Link}
+                  className="navdashContainer__profile"
+                >
+                  <Image
+                    alt=""
+                    src={defaultpfp}
+                    roundedCircle
+                    height={25}
+                    width={25}
+                    className="mr-2"
+                    style={{ marginRight: "3px" }}
+                  />
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="dropdown-menu-left">
+                  <Dropdown.Item>Account</Dropdown.Item>
+                  <Dropdown.Item>Settings</Dropdown.Item>
+                  <Dropdown.Item>Log Out</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Navbar.Collapse>
           </Container>
         </Navbar>

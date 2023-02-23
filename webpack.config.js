@@ -8,6 +8,7 @@
     // changed from extensions: [".js", ".jsx"]
     extensions: [".ts", ".tsx", ".js", ".jsx"],
   },
+  type: "text/jsx",
   module: {
     rules: [
       // changed from { test: /\.jsx?$/, use: { loader: 'babel-loader' }, exclude: /node_modules/ },
