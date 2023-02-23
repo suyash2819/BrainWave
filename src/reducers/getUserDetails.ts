@@ -28,7 +28,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(userLogIn.pending, (state, action) => {
+      .addCase(userLogIn.pending, (state) => {
         state.status = "loading";
       })
       .addCase(userLogIn.fulfilled, (state, action: PayloadAction<any>) => {
