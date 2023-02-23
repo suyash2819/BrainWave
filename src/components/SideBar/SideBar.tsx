@@ -14,12 +14,25 @@ import {
   faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 function SideBar() {
   const courses_items = {
     "Browse Courses": faUser,
     "My Courses": faUser,
     Assignments: faUser,
+  };
+
+  const UserSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("logged out");
+      })
+      .catch((err) => {
+        // An error happened.
+        console.log(err.message);
+      });
   };
 
   const [rotateCourse, setRotateCourse] = useState<boolean>(false);
@@ -96,7 +109,12 @@ function SideBar() {
             <p className="sidebarContainer__options__navs">
               <FontAwesomeIcon className="pe-3" icon={faMessage} /> Messages
             </p>
-            <p className="sidebarContainer__options__navs">
+            <p
+              className="sidebarContainer__options__navs"
+              onClick={() => {
+                UserSignOut();
+              }}
+            >
               <FontAwesomeIcon className="pe-3" icon={faRightFromBracket} />{" "}
               LogOut
             </p>

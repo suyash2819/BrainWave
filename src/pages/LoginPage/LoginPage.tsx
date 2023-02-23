@@ -6,6 +6,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import GoogleButton from "react-google-button";
@@ -13,6 +15,7 @@ import logo from "../../assets/logo.jpeg";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { getUserSpecificDetails } from "../../services/userService";
 
 const LoginPage = () => {
   (function () {
@@ -83,6 +86,35 @@ const LoginPage = () => {
       });
   };
 
+  const userGoogleSignIn = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        console.log(credential);
+        // const token = credential.accessToken;
+        // The signed-in user info.
+        console.log(result.user);
+        navigate("/Dashboard");
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+      })
+      .catch((error) => {
+        // The AuthCredential type that was used.
+        // const credential = GoogleAuthProvider.credentialFromError(error);
+        setShowAlert({
+          success: false,
+          message: error.message,
+          show: true,
+          type: "",
+        });
+        console.log(error);
+
+        // ...
+      });
+  };
+
   const userSignIn = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, loginVals.email, loginVals.password)
@@ -90,7 +122,14 @@ const LoginPage = () => {
         // Signed in
         const user = userCredential.user;
         if (user.emailVerified) {
-          console.log("user signed in");
+          console.log("user signed in", user);
+          const userData = getUserSpecificDetails(loginVals.email);
+          userData?.then((data) => {
+            data?.forEach((doc) => {
+              //store doc.data in redux store
+              console.log(doc.data());
+            });
+          });
           user?.getIdToken().then(function (token) {
             localStorage.setItem("bwUser", token);
           });
@@ -242,7 +281,9 @@ const LoginPage = () => {
           </form>
           <GoogleButton
             className="regContainer__google_signin_button mt-3"
-            onClick={() => {}}
+            onClick={() => {
+              userGoogleSignIn();
+            }}
           />
           <div className="d-flex flex-row justify-content-center  mt-3">
             <small id="emailHelp" className="form-text text-muted me-2">

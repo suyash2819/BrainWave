@@ -47,7 +47,7 @@ const RegPage = () => {
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
-  const createUser = (e: React.FormEvent<HTMLFormElement>) => {
+  const createUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
       .then((userCredential) => {
@@ -288,8 +288,8 @@ const RegPage = () => {
           <GoogleButton
             style={{ marginLeft: "25%" }}
             className="regContainer__google_signin_button mt-3 mb-4"
-            onClick={() => {
-              console.log("Google button clicked");
+            onClick={(e) => {
+              createUser(e);
             }}
           />
         </div>
