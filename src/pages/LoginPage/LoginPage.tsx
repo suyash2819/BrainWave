@@ -6,6 +6,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import GoogleButton from "react-google-button";
@@ -80,6 +82,34 @@ const LoginPage = () => {
           show: true,
           type: "",
         });
+      });
+  };
+
+  const userGoogleSignIn = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        console.log(credential);
+        // const token = credential.accessToken;
+        // The signed-in user info.
+        console.log(result.user);
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+      })
+      .catch((error) => {
+        // The AuthCredential type that was used.
+        // const credential = GoogleAuthProvider.credentialFromError(error);
+        setShowAlert({
+          success: false,
+          message: error.message,
+          show: true,
+          type: "",
+        });
+        console.log(error);
+
+        // ...
       });
   };
 
@@ -242,7 +272,13 @@ const LoginPage = () => {
           </form>
           <GoogleButton
             className="regContainer__google_signin_button mt-3"
+<<<<<<< Updated upstream
             onClick={() => {}}
+=======
+            onClick={() => {
+              userGoogleSignIn();
+            }}
+>>>>>>> Stashed changes
           />
           <div className="d-flex flex-row justify-content-center  mt-3">
             <small id="emailHelp" className="form-text text-muted me-2">

@@ -9,10 +9,14 @@ export async function storeUserDetails(userDetails: {
   username: string;
   role: string;
   email: string;
+  password?: string;
   uid: number;
   isVerifiedByAdmin: boolean;
 }) {
   try {
+    if (userDetails.password) {
+      delete userDetails.password;
+    }
     const docRef = await addDoc(collection(db, "users"), userDetails);
     signOut(auth)
       .then(() => {
