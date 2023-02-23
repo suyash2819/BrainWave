@@ -95,6 +95,7 @@ const LoginPage = () => {
         // const token = credential.accessToken;
         // The signed-in user info.
         console.log(result.user);
+        navigate("/Dashboard");
         // IdP data available using getAdditionalUserInfo(result)
         // ...
       })
