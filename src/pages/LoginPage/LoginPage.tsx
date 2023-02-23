@@ -272,13 +272,9 @@ const LoginPage = () => {
           </form>
           <GoogleButton
             className="regContainer__google_signin_button mt-3"
-<<<<<<< Updated upstream
-            onClick={() => {}}
-=======
             onClick={() => {
               userGoogleSignIn();
             }}
->>>>>>> Stashed changes
           />
           <div className="d-flex flex-row justify-content-center  mt-3">
             <small id="emailHelp" className="form-text text-muted me-2">
