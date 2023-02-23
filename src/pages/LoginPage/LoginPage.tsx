@@ -10,7 +10,9 @@ import {
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import GoogleButton from "react-google-button";
 import logo from "../../assets/logo.jpeg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const LoginPage = () => {
   (function () {
@@ -29,6 +31,7 @@ const LoginPage = () => {
       );
     });
   })();
+  const navigate = useNavigate();
   const [forgotpswd, setForgotpwd] = useState<boolean>(false);
   const [loginVals, setLoginVals] = useState({
     email: "",
@@ -88,7 +91,10 @@ const LoginPage = () => {
         const user = userCredential.user;
         if (user.emailVerified) {
           console.log("user signed in");
-          //
+          user?.getIdToken().then(function (token) {
+            localStorage.setItem("bwUser", token);
+          });
+          navigate("/Dashboard");
         } else {
           signOut(auth)
             .then(() => {
@@ -139,8 +145,8 @@ const LoginPage = () => {
               <img
                 alt=""
                 src={logo}
-                width="50"
-                height="50"
+                width="60"
+                height="60"
                 className="d-inline-block p-1 m-3"
               />
               BrainWave
@@ -159,6 +165,16 @@ const LoginPage = () => {
         </div>
 
         <div className="logIn__Container">
+          {forgotpswd ? (
+            <FontAwesomeIcon
+              onClick={() => setForgotpwd(false)}
+              className="h3 text-wheat"
+              icon={faArrowLeft}
+              style={{ cursor: "pointer" }}
+            />
+          ) : (
+            <></>
+          )}
           <h3 className="logIn__Heading mb-5">
             {forgotpswd ? "Password Reset" : "Welcome, Please Login!"}
           </h3>
@@ -226,9 +242,7 @@ const LoginPage = () => {
           </form>
           <GoogleButton
             className="regContainer__google_signin_button mt-3"
-            onClick={() => {
-              console.log(`1`);
-            }}
+            onClick={() => {}}
           />
           <div className="d-flex flex-row justify-content-center  mt-3">
             <small id="emailHelp" className="form-text text-muted me-2">
