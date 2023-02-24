@@ -8,7 +8,11 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
-import { storeUserDetails, getUserCount } from "../../services/userService";
+import {
+  storeUserDetails,
+  getUserCount,
+  checkUniqueUsername,
+} from "../../services/userService";
 import logo from "../../assets/logo.jpeg";
 import Form from "react-bootstrap/Form";
 
@@ -44,79 +48,106 @@ const RegPage = () => {
     show: false,
     type: "",
   });
+
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
+
   const createUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, formVals.email, formVals.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const euser = auth.currentUser;
-        console.log("user created", user);
-        if (euser === null) {
-          console.log("null user");
+
+    const checkUser = checkUniqueUsername(formVals.username);
+    checkUser
+      .then((count) => {
+        console.log("user count", count);
+        if (count === undefined) {
+          console.log("count is undefined");
+        } else if (count > 0) {
+          setShowAlert({
+            success: false,
+            message: "username already in use",
+            show: true,
+            type: "",
+          });
         } else {
-          sendEmailVerification(euser)
-            .then(() => {
-              // Email verification sent!
-              setShowAlert({
-                success: true,
-                message: "Email Verification sent! Please check your Email",
-                show: true,
-                type: "",
-              });
-              getUserCount().then((totalUsers) => {
-                storeUserDetails({
-                  ...formVals,
-                  isVerifiedByAdmin: false,
-                  uid: 200001 + totalUsers,
-                });
+          createUserWithEmailAndPassword(
+            auth,
+            formVals.email,
+            formVals.password
+          )
+            .then((userCredential) => {
+              const user = userCredential.user;
+              const euser = auth.currentUser;
+              console.log("user created", user);
+              if (euser === null) {
+                console.log("null user");
+              } else {
+                sendEmailVerification(euser)
+                  .then(() => {
+                    // Email verification sent!
+                    setShowAlert({
+                      success: true,
+                      message:
+                        "Email Verification sent! Please check your Email",
+                      show: true,
+                      type: "",
+                    });
+                    getUserCount().then((totalUsers) => {
+                      storeUserDetails({
+                        ...formVals,
+                        isVerifiedByAdmin: false,
+                        uid: 200001 + totalUsers,
+                      });
+                    });
+                  })
+                  .catch((err) => {
+                    // An error happened.
+                    setShowAlert({
+                      success: false,
+                      message: err.message,
+                      show: true,
+                      type: "",
+                    });
+                    console.log(err);
+                  });
+              }
+
+              setFormVals({
+                firstname: "",
+                lastname: "",
+                username: "",
+                role: "",
+                email: "",
+                password: "",
               });
             })
             .catch((err) => {
-              // An error happened.
+              console.log(err);
               setShowAlert({
                 success: false,
-                message: err.message,
+                message:
+                  err.message === "Firebase: Error (auth/invalid-email)."
+                    ? "Please enter correct E-mail on which link can be sent!"
+                    : err.message ===
+                      "Firebase: Error (auth/email-already-in-use)."
+                    ? "Email is already in use!"
+                    : err.message,
                 show: true,
                 type: "",
               });
-              console.log(err);
+              setFormVals({
+                firstname: "",
+                lastname: "",
+                username: "",
+                role: "",
+                email: "",
+                password: "",
+              });
             });
         }
-
-        setFormVals({
-          firstname: "",
-          lastname: "",
-          username: "",
-          role: "",
-          email: "",
-          password: "",
-        });
       })
       .catch((err) => {
         console.log(err);
-        setShowAlert({
-          success: false,
-          message:
-            err.message === "Firebase: Error (auth/invalid-email)."
-              ? "Please enter correct E-mail on which link can be sent!"
-              : err.message === "Firebase: Error (auth/email-already-in-use)."
-              ? "Email is already in use!"
-              : err.message,
-          show: true,
-          type: "",
-        });
-        setFormVals({
-          firstname: "",
-          lastname: "",
-          username: "",
-          role: "",
-          email: "",
-          password: "",
-          // isVerifiedByAdmin: false,
-        });
       });
   };
   return (
