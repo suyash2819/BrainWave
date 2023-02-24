@@ -1,30 +1,51 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { auth } from "../config/firebase";
+import { IUserProps } from "./IUserProps";
 
-const initialState = {
+const initialState: IUserProps = {
+  email: "",
   loginToken: "",
   status: "",
-  error: "",
+  messageLog: "",
+  firstname: "",
+  lastname: "",
+  username: "",
+  role: "",
 };
 
 export const userLogIn = createAsyncThunk(
-  "user/LogIn",
-  async (loginVals: string) => {
-    const response = await axios.post(
-      "https://api-nodejs-todolist.herokuapp.com/user/login",
-      loginVals,
-      { headers: { "Content-Type": "application/json" } }
+  "user/login",
+  async (loginVals: { email: string; password: string }) => {
+    const response = signInWithEmailAndPassword(
+      auth,
+      loginVals.email,
+      loginVals.password
     );
     return response;
   }
 );
 
 const userSlice = createSlice({
-  name: "userLogin",
+  name: "useUserLogin",
   initialState,
   reducers: {
-    // omit reducer cases
+    modifyEmail: (state, action) => {
+      state.email = action.payload;
+    },
+    modifyFirstname: (state, action) => {
+      state.firstname = action.payload;
+    },
+    modifyLastname: (state, action) => {
+      state.lastname = action.payload;
+    },
+    modifyUsername: (state, action) => {
+      state.username = action.payload;
+    },
+    modifyRole: (state, action) => {
+      state.role = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -32,15 +53,38 @@ const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(userLogIn.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loginToken = action.payload.data.token;
+        const user = action.payload.user;
+        if (user.emailVerified) {
+          user?.getIdToken().then(function (token: string) {
+            localStorage.setItem("bwUser", token);
+          });
+        } else {
+          signOut(auth);
+          state.messageLog =
+            "Please verify your email address from the link sent in mail by Brainwave!";
+        }
         state.status = "success";
-        localStorage.setItem("sessionkey", state.loginToken);
       })
-      .addCase(userLogIn.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(userLogIn.rejected, (state, action) => {
+        console.log(action.error.message);
         state.status = "Error";
-        console.log(action);
+        state.messageLog =
+          action.error.message === "Firebase: Error (auth/user-not-found)."
+            ? "User is not Found, Please Register!"
+            : action.error.message === "Firebase: Error (auth/internal-error)."
+            ? "Something went wrong!"
+            : action.error.message === "Firebase: Error (auth/wrong-password)."
+            ? "Incorrect Password! Please check."
+            : action.error.message;
       });
   },
 });
 
+export const {
+  modifyEmail,
+  modifyFirstname,
+  modifyLastname,
+  modifyUsername,
+  modifyRole,
+} = userSlice.actions;
 export default userSlice.reducer;

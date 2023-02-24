@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./LoginPage.scss";
 import "../RegPage/RegPage.scss";
 import { auth } from "../../config/firebase";
 import {
-  signInWithEmailAndPassword,
-  signOut,
   sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
@@ -15,6 +13,14 @@ import logo from "../../assets/logo.jpeg";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { userLogIn } from "../../reducers/getUserDetails";
+import {
+  modifyEmail,
+  modifyFirstname,
+  modifyLastname,
+} from "../../reducers/getUserDetails";
+import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
 import { getUserSpecificDetails } from "../../services/userService";
 
 const LoginPage = () => {
@@ -34,23 +40,23 @@ const LoginPage = () => {
       );
     });
   })();
+  const dispatchLoginDetails = useAppDispatch();
   const navigate = useNavigate();
   const [forgotpswd, setForgotpwd] = useState<boolean>(false);
   const [loginVals, setLoginVals] = useState({
     email: "",
     password: "",
   });
-
-  const [showAlert, setShowAlert] = useState({
+  const userLoginlog = useAppSelector((state) => state.userLoginAPI);
+  const alertMessageDisplay = () => {
+    setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
+  const [showAlert, setShowAlert] = useState<IAlertProps>({
     success: null || true || false,
     message: "",
     show: false,
     type: "",
   });
-
-  const alertMessageDisplay = () => {
-    setShowAlert({ success: false, show: false, message: "", type: "" });
-  };
 
   const passwordReset = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -115,64 +121,31 @@ const LoginPage = () => {
       });
   };
 
-  const userSignIn = (e: { preventDefault: () => void }) => {
+  useEffect(() => {
+    setShowAlert({
+      success: false,
+      message: userLoginlog.messageLog,
+      show: userLoginlog.messageLog?.length ? true : false,
+      type: userLoginlog.status === "Error" ? "danger" : "",
+    });
+    if (userLoginlog.status === "success" && userLoginlog.lastname.length) {
+      navigate("/dashboard");
+    }
+  }, [userLoginlog, navigate]);
+
+  const useSignIn = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, loginVals.email, loginVals.password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        if (user.emailVerified) {
-          console.log("user signed in", user);
-          const userData = getUserSpecificDetails(loginVals.email);
-          userData?.then((data) => {
-            data?.forEach((doc) => {
-              //store doc.data in redux store
-              console.log(doc.data());
-            });
-          });
-          user?.getIdToken().then(function (token) {
-            localStorage.setItem("bwUser", token);
-          });
-          navigate("/Dashboard");
-        } else {
-          signOut(auth)
-            .then(() => {
-              setShowAlert({
-                success: false,
-                message:
-                  "Please verify your email address from the link sent in mail by Brainwave!",
-                show: true,
-                type: "",
-              });
-            })
-            .catch((err) => {
-              // An error happened.
-              setShowAlert({
-                success: false,
-                message: err.message,
-                show: true,
-                type: "",
-              });
-            });
-        }
-        // ...
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setShowAlert({
-          success: false,
-          message:
-            err.message === "Firebase: Error (auth/user-not-found)."
-              ? "User is not Found, Please Register!"
-              : err.message === "Firebase: Error (auth/internal-error)."
-              ? "Something went wrong!"
-              : err.message === "Firebase: Error (auth/wrong-password)."
-              ? "Incorrect Password! Please check."
-              : err.message,
-          show: true,
-          type: "danger",
-        });
+    dispatchLoginDetails(modifyEmail(loginVals.email));
+    dispatchLoginDetails(userLogIn(loginVals));
+    const userData = getUserSpecificDetails(loginVals.email);
+    userData?.then((data) => {
+      data?.forEach((doc) => {
+        //store doc.data in redux store
+        const userdetails = doc.data();
+        dispatchLoginDetails(modifyFirstname(userdetails["firstname"]));
+        dispatchLoginDetails(modifyLastname(userdetails["firstname"]));
       });
+    });
   };
 
   return (
@@ -219,7 +192,7 @@ const LoginPage = () => {
           </h3>
           <form
             className="needs-validation"
-            onSubmit={forgotpswd ? passwordReset : userSignIn}
+            onSubmit={forgotpswd ? passwordReset : useSignIn}
             noValidate
           >
             <div className="col mx-5">

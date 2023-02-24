@@ -1,6 +1,7 @@
 export interface IAlertProps {
-  success: Boolean;
-  message: String;
-  alertDisplay: Function;
+  success: boolean | null;
+  message: String | undefined;
+  alertDisplay?: any;
+  show?: boolean;
   type: String;
 }

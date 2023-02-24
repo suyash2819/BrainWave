@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import "./Sidebar.scss";
 import logo from "../../assets/logo.jpeg";
 import defaultpfp from "../../assets/defaultPfp.jpg";
-// import Navbar from "react-bootstrap/Navbar";
-// import Nav from "react-bootstrap/Nav";
+import { useAppSelector } from "../../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
@@ -16,18 +15,21 @@ import {
 import { Accordion } from "react-bootstrap";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
+import { useNavigate } from "react-router-dom";
 
 function SideBar() {
   const courses_items = {
-    "Browse Courses": faUser,
-    "My Courses": faUser,
-    Assignments: faUser,
+    "Course 1": faUser,
+    "Course 2": faUser,
   };
-
+  const userLoginlog = useAppSelector((state) => state.userLoginAPI);
+  console.log(userLoginlog);
+  const navigate = useNavigate();
   const UserSignOut = () => {
     signOut(auth)
       .then(() => {
-        console.log("logged out");
+        localStorage.removeItem("bwUser");
+        navigate("/login");
       })
       .catch((err) => {
         // An error happened.
@@ -61,7 +63,7 @@ function SideBar() {
             />
             <p className="sidebarContainer__options__profile__name">
               {" "}
-              First Name Second Name
+              {userLoginlog.firstname + " " + userLoginlog.lastname}
             </p>
           </div>
           <hr />
@@ -73,6 +75,9 @@ function SideBar() {
             <p className="sidebarContainer__options__navs">
               <FontAwesomeIcon className="pe-3" icon={faChartBar} />
               DashBoard
+            </p>
+            <p className="sidebarContainer__options__navs">
+              <FontAwesomeIcon className="pe-3" icon={faUser} /> Account
             </p>
 
             <Accordion flush className="my-accordion">
@@ -106,11 +111,12 @@ function SideBar() {
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
-            <p className="sidebarContainer__options__navs">
-              <FontAwesomeIcon className="pe-3" icon={faUser} /> Account
-            </p>
+
             <p className="sidebarContainer__options__navs">
               <FontAwesomeIcon className="pe-3" icon={faMessage} /> Messages
+            </p>
+            <p className="sidebarContainer__options__navs">
+              <FontAwesomeIcon className="pe-3" icon={faUser} /> Help
             </p>
             <p
               className="sidebarContainer__options__navs"

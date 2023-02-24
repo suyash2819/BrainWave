@@ -19,37 +19,37 @@ function App() {
           <CSSTransition key={location.key} classNames="fade" timeout={300}>
             <Routes>
               <Route
-                path="/Registration"
+                path="/registration"
                 element={
                   isAuthenticated ? (
-                    <Navigate replace to="/Dashboard" />
+                    <Navigate replace to="/dashboard" />
                   ) : (
                     <RegPage />
                   )
                 }
               />
               <Route
-                path="/Login"
+                path="/login"
                 element={
                   isAuthenticated ? (
-                    <Navigate replace to="/Dashboard" />
+                    <Navigate replace to="/dashboard" />
                   ) : (
                     <LoginPage />
                   )
                 }
               />
               <Route
-                path="/Dashboard"
+                path="/dashboard"
                 element={
                   isAuthenticated ? (
                     <DashBoard />
                   ) : (
-                    <Navigate replace to="/LogIn" />
+                    <Navigate replace to="/Login" />
                   )
                 }
               />
-              <Route path="/Home" element={<HomePage />} />
-              <Route path="/aboutUs" element={<AboutUs />} />
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/aboutus" element={<AboutUs />} />
             </Routes>
           </CSSTransition>
         </TransitionGroup>
