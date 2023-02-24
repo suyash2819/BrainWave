@@ -15,13 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { userLogIn } from "../../reducers/getUserDetails";
-import {
-  modifyEmail,
-  modifyFirstname,
-  modifyLastname,
-} from "../../reducers/getUserDetails";
+import { modifyEmail } from "../../reducers/getUserDetails";
 import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
-import { getUserSpecificDetails } from "../../services/userService";
 
 const LoginPage = () => {
   (function () {
@@ -128,7 +123,7 @@ const LoginPage = () => {
       show: userLoginlog.messageLog?.length ? true : false,
       type: userLoginlog.status === "Error" ? "danger" : "",
     });
-    if (userLoginlog.status === "success" && userLoginlog.lastname.length) {
+    if (userLoginlog.status === "success") {
       navigate("/dashboard");
     }
   }, [userLoginlog, navigate]);
@@ -137,15 +132,6 @@ const LoginPage = () => {
     e.preventDefault();
     dispatchLoginDetails(modifyEmail(loginVals.email));
     dispatchLoginDetails(userLogIn(loginVals));
-    const userData = getUserSpecificDetails(loginVals.email);
-    userData?.then((data) => {
-      data?.forEach((doc) => {
-        //store doc.data in redux store
-        const userdetails = doc.data();
-        dispatchLoginDetails(modifyFirstname(userdetails["firstname"]));
-        dispatchLoginDetails(modifyLastname(userdetails["firstname"]));
-      });
-    });
   };
 
   return (
