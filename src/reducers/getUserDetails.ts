@@ -62,6 +62,7 @@ const userSlice = createSlice({
           user?.getIdToken().then(function (token: string) {
             localStorage.setItem("bwUser", token);
           });
+          localStorage.setItem("uuid", state.email);
         } else {
           signOut(auth);
           state.messageLog =

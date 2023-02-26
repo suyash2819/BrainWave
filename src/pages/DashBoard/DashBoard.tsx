@@ -14,15 +14,14 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import Calendar from "../../components/calendar/Calendar";
 
 const DashBoard = () => {
-  const userLoginlog = useAppSelector((state) => state.userLoginAPI);
-  const userData = getUserSpecificDetails(userLoginlog.email);
-
+  const userUserData = useAppSelector((state) => state.userLoginAPI);
+  const userEmail = localStorage.getItem("uuid");
   const dispatchLoginDetails = useAppDispatch();
-
+  const userData = getUserSpecificDetails(
+    userEmail ? userEmail : userUserData.email
+  );
   userData?.then((data) => {
     data?.forEach((doc) => {
-      //store doc.data in redux store
-      //userDetails = doc.data();
       const x = doc.data();
       dispatchLoginDetails(modifyFirstname(x["firstname"]));
       dispatchLoginDetails(modifyLastname(x["lastname"]));
