@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
+import { getCourseDetails } from "./courseService";
 
 export async function storeUserDetails(userDetails: {
   firstname: string;
@@ -86,8 +87,14 @@ export async function getUserCourses(email: string) {
   const docSnap = await getDoc(courseDoc);
   if (docSnap.exists()) {
     console.log("Document data:", docSnap.data());
+    docSnap.data()["courses"].map((course: string) => {
+      // courses.push(getCourseDetails(course));
+      //To Do to take all the courses into array and return
+      getCourseDetails(course).then((data) => {
+        console.log(data);
+      });
+    });
   } else {
-    // doc.data() will be undefined in this case
     console.log("No such document!");
   }
 }
