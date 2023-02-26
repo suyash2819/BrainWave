@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Sidebar.scss";
 import logo from "../../assets/logo.jpeg";
 import defaultpfp from "../../assets/defaultPfp.jpg";
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppSelector } from "../../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
@@ -16,27 +16,14 @@ import { Accordion } from "react-bootstrap";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
-import { modifyFirstname, modifyLastname } from "../../reducers/getUserDetails";
-import { getUserSpecificDetails } from "../../services/userService";
 
 function SideBar() {
   const courses_items = {
     "Course 1": faUser,
     "Course 2": faUser,
   };
-  const dispatchLoginDetails = useAppDispatch();
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
-  const userData = getUserSpecificDetails(userLoginlog.email);
 
-  userData?.then((data) => {
-    data?.forEach((doc) => {
-      //store doc.data in redux store
-      const userdetails = doc.data();
-      console.log(userdetails, userLoginlog);
-      dispatchLoginDetails(modifyFirstname(userdetails["firstname"]));
-      dispatchLoginDetails(modifyLastname(userdetails["firstname"]));
-    });
-  });
   const navigate = useNavigate();
   const UserSignOut = () => {
     signOut(auth)

@@ -13,6 +13,7 @@ const initialState: IUserProps = {
   lastname: "",
   username: "",
   role: "",
+  uid: 0,
 };
 
 export const userLogIn = createAsyncThunk(
@@ -45,6 +46,9 @@ const userSlice = createSlice({
     },
     modifyRole: (state, action) => {
       state.role = action.payload;
+    },
+    modifyUID: (state, action) => {
+      state.uid = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -86,5 +90,6 @@ export const {
   modifyLastname,
   modifyUsername,
   modifyRole,
+  modifyUID,
 } = userSlice.actions;
 export default userSlice.reducer;
