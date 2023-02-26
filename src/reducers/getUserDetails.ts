@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { auth } from "../config/firebase";
 import { IUserProps } from "./IUserProps";
+import { getUserCourses } from "../services/userService";
 
 const initialState: IUserProps = {
   email: "",
@@ -62,6 +63,7 @@ const userSlice = createSlice({
           user?.getIdToken().then(function (token: string) {
             localStorage.setItem("bwUser", token);
           });
+          getUserCourses(user.email);
         } else {
           signOut(auth);
           state.messageLog =

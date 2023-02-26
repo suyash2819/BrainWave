@@ -6,6 +6,8 @@ import {
   query,
   where,
   getDocs,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
@@ -76,4 +78,16 @@ export async function checkUniqueUsername(username: string) {
     const snapshot = await getCountFromServer(q);
     return snapshot.data().count;
   } catch {}
+}
+
+export async function getUserCourses(email: string) {
+  // const coll = collection(db,"user_courses")
+  const courseDoc = doc(db, "user_courses", email);
+  const docSnap = await getDoc(courseDoc);
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
 }
