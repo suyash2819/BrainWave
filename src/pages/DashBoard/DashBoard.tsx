@@ -11,6 +11,7 @@ import {
   modifyUID,
 } from "../../reducers/getUserDetails";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import Calendar from "../../components/calendar/Calendar";
 
 const DashBoard = () => {
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
@@ -36,7 +37,7 @@ const DashBoard = () => {
       <SideBar />
       <div className="DashBoardContainer__main d-flex flex-column">
         <NavDashboard />
-        <div>This is main</div>
+        <Calendar />
       </div>
     </div>
   );
