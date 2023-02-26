@@ -68,3 +68,12 @@ export async function getUserSpecificDetails(email: string) {
     console.log(e);
   }
 }
+
+export async function checkUniqueUsername(username: string) {
+  try {
+    const coll = collection(db, "users");
+    const q = query(coll, where("username", "==", username));
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
+  } catch {}
+}
