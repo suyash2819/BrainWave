@@ -12,14 +12,17 @@ import {
 } from "../../reducers/getUserDetails";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import Calendar from "../../components/calendar/Calendar";
+import { getUserCourses } from "../../services/userService";
 
 const DashBoard = () => {
   const userUserData = useAppSelector((state) => state.userLoginAPI);
-  const userEmail = localStorage.getItem("uuid");
+  const userEmail = localStorage.getItem("uuid") || "";
   const dispatchLoginDetails = useAppDispatch();
   const userData = getUserSpecificDetails(
     userEmail ? userEmail : userUserData.email
   );
+
+  getUserCourses(userEmail);
   userData?.then((data) => {
     data?.forEach((doc) => {
       const x = doc.data();
