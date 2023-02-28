@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Sidebar.scss";
 import logo from "../../assets/logo.jpeg";
 import defaultpfp from "../../assets/defaultPfp.jpg";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
@@ -16,6 +16,7 @@ import { Accordion } from "react-bootstrap";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
+import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
 
 function SideBar() {
   const courses_items = {
@@ -36,7 +37,7 @@ function SideBar() {
         console.log(err.message);
       });
   };
-
+  const dispatchNavbarVals = useAppDispatch();
   const [rotateCourse, setRotateCourse] = useState<boolean>(false);
 
   return (
@@ -72,7 +73,13 @@ function SideBar() {
             className="d-flex flex-column"
             style={{ height: "400px", overflow: "scroll" }}
           >
-            <p className="sidebarContainer__options__navs">
+            <p
+              className="sidebarContainer__options__navs"
+              onClick={() => {
+                dispatchNavbarVals(componentToggle("dashboard"));
+                dispatchNavbarVals(modifyHeading("Dashboard"));
+              }}
+            >
               <FontAwesomeIcon className="pe-3" icon={faChartBar} />
               DashBoard
             </p>

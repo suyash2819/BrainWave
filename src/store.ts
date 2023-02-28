@@ -1,8 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userLoginReducer from "./reducers/getUserDetails";
+import dashboardValsReducer from "./reducers/dasboardVals";
 
 const store = configureStore({
-  reducer: { userLoginAPI: userLoginReducer },
+  reducer: {
+    userLoginAPI: userLoginReducer,
+    dashboardValsReducer: dashboardValsReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

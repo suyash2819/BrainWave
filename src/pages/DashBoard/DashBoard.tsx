@@ -9,10 +9,12 @@ import {
   modifyRole,
   modifyUsername,
   modifyUID,
+  modifyEmail,
 } from "../../reducers/getUserDetails";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import Calendar from "../../components/calendar/Calendar";
 import { getUserCourses } from "../../services/userService";
+import Annoucements from "../Faculty/Annoucements/Annoucements";
 
 const DashBoard = () => {
   const userUserData = useAppSelector((state) => state.userLoginAPI);
@@ -21,11 +23,15 @@ const DashBoard = () => {
   const userData = getUserSpecificDetails(
     userEmail ? userEmail : userUserData.email
   );
+  const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
 
   getUserCourses(userEmail);
   userData?.then((data) => {
     data?.forEach((doc) => {
       const x = doc.data();
+      if (!userUserData.email) {
+        dispatchLoginDetails(modifyEmail(userEmail));
+      }
       dispatchLoginDetails(modifyFirstname(x["firstname"]));
       dispatchLoginDetails(modifyLastname(x["lastname"]));
       dispatchLoginDetails(modifyUsername(x["username"]));
@@ -39,7 +45,12 @@ const DashBoard = () => {
       <SideBar />
       <div className="DashBoardContainer__main d-flex flex-column">
         <NavDashboard />
-        <Calendar />
+        {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
+        {dashboardVals.showComponent === "announcements" ? (
+          <Annoucements />
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
