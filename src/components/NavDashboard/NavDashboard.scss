@@ -1,9 +1,10 @@
 .navdashContainer {
-  color: black;
-  background-color: rgb(233, 179, 249);
+  color: rgb(245, 244, 244);
+  background-color: rgb(21, 1, 20);
   &__headerTitle {
-    font-size: 3rem;
-    font-weight: 300;
+    padding-top: 25px;
+    font-size: 1.3rem;
+    font-weight: 500;
   }
   .dropdown-menu {
     background-color: white;
