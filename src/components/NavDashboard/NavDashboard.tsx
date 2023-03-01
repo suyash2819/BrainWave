@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./NavDashboard.scss";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -11,9 +11,37 @@ import Image from "react-bootstrap/Image";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
 const NavDashboard = () => {
+
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timerID = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(timerID);
+    };
+  }, []);
+
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dispatchNavbarVals = useAppDispatch();
+
+  const options:Intl.DateTimeFormatOptions = {
+    timeZone: "America/New_York", // set the time zone to EST
+    hour12: true, // use 12-hour format
+    hour: "2-digit", // display hours with leading zeros
+    minute: "2-digit", // display minutes with leading zeros
+    second: "2-digit",
+    timeZoneName: "short" // display time zone name
+  };
+
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const formattedDate = formatter.format(time);
+  
+
+  
   return (
     <>
       <div className="navdashContainer">
@@ -24,6 +52,13 @@ const NavDashboard = () => {
                 {dashboardVals.heading}
               </p>
             </Nav.Link>
+
+            
+            <Nav.Link><p className="navdashContainer__clock">
+                {formattedDate}
+              </p></Nav.Link>
+            
+
             <Navbar.Collapse className="justify-content-end">
               <Nav.Link
                 onClick={() => {

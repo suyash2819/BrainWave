@@ -38,9 +38,29 @@
 //   );
 // }
 
-import { Eventcalendar } from '@mobiscroll/react'; /* or import any other component */
+
+
+
+import { Eventcalendar} from '@mobiscroll/react'; /* or import any other component */
 import '@mobiscroll/react/dist/css/mobiscroll.scss';
 import React from "react";
+
+
+// import "@mobiscroll/react/dist/css/mobiscroll.modular.scss"
+
+// setOptions({
+//     eventcalendar: {
+//       theme: 'ios-dark',
+//       display: 'inline',
+//       layout: 'liquid',
+//       view: {
+//         calendar: { labels: true },
+//         eventList: { labels: true }
+//       },
+//       background: $mbsc-calendar-background-light ? '#f6f6f6' : '#ffffff' // Use the variable here
+//     }
+//   });
+
 
 export default function Calendar() {
     return (
@@ -48,6 +68,7 @@ export default function Calendar() {
         <div className="demo-app" style={{ width: '70%', height: '100%' }}>
           <div className="demo-app-main" style={{ width: '109%', height: '184%' }}>
             <Eventcalendar
+              
               data={[
                 {
                   start: new Date(),
@@ -62,7 +83,8 @@ export default function Calendar() {
             />
           </div>
         </div>
-      </>
-    );
-  }
+      
+    </>
+);
+}
   
