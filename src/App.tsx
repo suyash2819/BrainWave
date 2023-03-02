@@ -7,7 +7,13 @@ import RegPage from "./pages/RegPage/RegPage";
 import AboutUs from "./pages/AboutUs/AboutUs";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
+
+const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs"));
+const TeacherAnnouncements = lazy(
+  () => import("./pages/TeacherAnnouncements/teacherAnnouncements")
+);
 const DashBoard = lazy(() => import("./pages/DashBoard/DashBoard"));
+
 
 function App() {
   const location = useLocation();
@@ -50,6 +56,10 @@ function App() {
               />
               <Route path="/home" element={<HomePage />} />
               <Route path="/aboutus" element={<AboutUs />} />
+              <Route
+                path="/teacherAnnouncements"
+                element={<TeacherAnnouncements />}
+              />
             </Routes>
           </CSSTransition>
         </TransitionGroup>
