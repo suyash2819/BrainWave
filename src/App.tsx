@@ -8,6 +8,9 @@ import DashBoard from "./pages/DashBoard/DashBoard";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs"));
+const TeacherAnnouncements = lazy(
+  () => import("./pages/TeacherAnnouncements/teacherAnnouncements")
+);
 
 function App() {
   const location = useLocation();
@@ -50,6 +53,10 @@ function App() {
               />
               <Route path="/home" element={<HomePage />} />
               <Route path="/aboutus" element={<AboutUs />} />
+              <Route
+                path="/teacherAnnouncements"
+                element={<TeacherAnnouncements />}
+              />
             </Routes>
           </CSSTransition>
         </TransitionGroup>
