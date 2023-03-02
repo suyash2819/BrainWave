@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Sidebar.scss";
 import logo from "../../assets/logo.jpeg";
 import defaultpfp from "../../assets/defaultPfp.jpg";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
@@ -13,9 +13,10 @@ import {
   faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
+import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
+import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
-import { useNavigate } from "react-router-dom";
 
 function SideBar() {
   const courses_items = {
@@ -23,9 +24,10 @@ function SideBar() {
     "Course 2": faUser,
   };
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
-
+  const dispatchNavbarVals = useAppDispatch();
+  const [rotateCourse, setRotateCourse] = useState<boolean>(false);
   const navigate = useNavigate();
-  const UserSignOut = () => {
+  const UserSignOut = async () => {
     signOut(auth)
       .then(() => {
         localStorage.removeItem("bwUser");
@@ -36,8 +38,6 @@ function SideBar() {
         console.log(err.message);
       });
   };
-
-  const [rotateCourse, setRotateCourse] = useState<boolean>(false);
 
   return (
     <>
@@ -72,7 +72,13 @@ function SideBar() {
             className="d-flex flex-column"
             style={{ height: "400px", overflow: "scroll" }}
           >
-            <p className="sidebarContainer__options__navs">
+            <p
+              className="sidebarContainer__options__navs"
+              onClick={() => {
+                dispatchNavbarVals(componentToggle("dashboard"));
+                dispatchNavbarVals(modifyHeading("Dashboard"));
+              }}
+            >
               <FontAwesomeIcon className="pe-3" icon={faChartBar} />
               DashBoard
             </p>

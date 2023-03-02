@@ -6,20 +6,15 @@ import {
   query,
   where,
   getDocs,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
+import { getCourseDetails } from "./courseService";
+import { IUserProps } from "../reducers/IUserProps";
 
-export async function storeUserDetails(userDetails: {
-  firstname: string;
-  lastname: string;
-  username: string;
-  role: string;
-  email: string;
-  password?: string;
-  uid: number;
-  isVerifiedByAdmin: boolean;
-}) {
+export async function storeUserDetails(userDetails: IUserProps) {
   try {
     if (userDetails.password) {
       delete userDetails.password;
@@ -66,5 +61,35 @@ export async function getUserSpecificDetails(email: string) {
     return querySnapshot;
   } catch (e) {
     console.log(e);
+  }
+}
+
+export async function checkUniqueUsername(username: string) {
+  try {
+    const coll = collection(db, "users");
+    const q = query(coll, where("username", "==", username));
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
+  } catch {}
+}
+
+export async function getUserCourses(email: string) {
+  // const coll = collection(db,"user_courses")
+  const courseDoc = doc(db, "user_courses", email);
+  const docSnap = await getDoc(courseDoc);
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+    docSnap.data()["courses"].map((course: string) => {
+      // courses.push(getCourseDetails(course));
+      //To Do to take all the courses into array and return
+      let ok;
+      getCourseDetails(course).then((data) => {
+        console.log(data);
+      });
+      //remove this return later
+      return ok;
+    });
+  } else {
+    console.log("No such document!");
   }
 }

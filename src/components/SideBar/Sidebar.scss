@@ -10,7 +10,7 @@
   }
 
   &__header {
-    background-color: rgb(73, 24, 88);
+    background-color: rgb(29, 29, 29);
     text-align: center;
     height: 70px;
     &__title {
@@ -21,8 +21,8 @@
   }
   &__options {
     height: 100%;
-    background-color: rgb(35, 0, 63);
-    color: rgb(255, 255, 184);
+    background-color: rgb(0, 26, 54);
+    color: rgb(255, 255, 255);
     &__profile {
       align-items: center;
       &__img {
@@ -36,9 +36,9 @@
       font-size: large;
       padding: 10px 0px 10px 50px;
       cursor: pointer;
-      @for $i from 1 through 5 {
+      @for $i from 1 through 6 {
         &:nth-child(#{$i}):hover {
-          background-color: rgb(54, 13, 67);
+          background-color: #63717e;
         }
       }
     }
@@ -48,8 +48,8 @@
 
       .accordion-button {
         font-size: large;
-        color: rgb(255, 255, 184);
-        background-color: rgb(35, 0, 63);
+        color: rgb(255, 255, 255);
+        background-color: rgb(0, 26, 54);
         padding: 0px 0px 0px 0px;
         border: none;
         border-radius: 0;
@@ -58,18 +58,18 @@
         cursor: pointer;
 
         &:hover {
-          background-color: rgb(54, 13, 67);
+          background-color: #63717e;
         }
       }
 
       .accordion-collapse {
-        background-color: rgb(54, 13, 67);
+        background-color: rgb(0, 26, 54);
 
         .sidebarContainer__options__navs {
-          color: rgb(255, 255, 184);
+          color: rgb(255, 255, 255);
         }
         .sidebarContainer__options__navs_courses {
-          color: rgb(255, 255, 184);
+          color: rgb(255, 255, 255);
         }
       }
       .accordion-button::after {
