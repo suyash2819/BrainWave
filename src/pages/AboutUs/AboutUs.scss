@@ -1,3 +1,31 @@
-.aboutUsContainer {
+.aboutus_Container {
   color: black;
+
+  .card {
+    border: 1px solid #ccc !important;
+    border-radius: 10px !important;
+
+    &.card-header {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 1px;
+    }
+  }
+  .aboutus_img_top {
+    border-radius: 10px !important;
+    border-bottom-left-radius: 0px !important;
+  }
+  .aboutus_card {
+    text-align: "center";
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+    border-radius: 10px;
+  }
+
+  .btn-primary {
+    &:hover {
+      background-color: #0062cc;
+      border-color: #005cbf;
+    }
+  }
 }
