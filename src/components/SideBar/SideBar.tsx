@@ -14,7 +14,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
 import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
-import { UserSignOut } from "../../services/userService";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 function SideBar() {
   const courses_items = {
@@ -24,6 +26,18 @@ function SideBar() {
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
   const dispatchNavbarVals = useAppDispatch();
   const [rotateCourse, setRotateCourse] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const UserSignOut = async () => {
+    signOut(auth)
+      .then(() => {
+        localStorage.removeItem("bwUser");
+        navigate("/login");
+      })
+      .catch((err) => {
+        // An error happened.
+        console.log(err.message);
+      });
+  };
 
   return (
     <>

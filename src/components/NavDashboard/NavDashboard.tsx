@@ -14,12 +14,25 @@ import defaultpfp from "../../assets/defaultPfp.jpg";
 import Image from "react-bootstrap/Image";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
-import { UserSignOut } from "../../services/userService";
-
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
 const NavDashboard = () => {
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dispatchNavbarVals = useAppDispatch();
+  const navigate = useNavigate();
+  const UserSignOut = async () => {
+    signOut(auth)
+      .then(() => {
+        localStorage.removeItem("bwUser");
+        navigate("/login");
+      })
+      .catch((err) => {
+        // An error happened.
+        console.log(err.message);
+      });
+  };
 
   return (
     <>

@@ -30,11 +30,11 @@ export default function ApproveUsers() {
           </thead>
           <tbody>
             {getPendingUsers.userDetails.map((element, index: number) => (
-              <tr>
-                <td key={index}>{index + 1}</td>
-                <td key={index}>{element.email}</td>
-                <td key={index}>{element.name}</td>
-                <td key={index}>{element.role ? element.role : "N/A"}</td>
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{element.email}</td>
+                <td>{element.name}</td>
+                <td>{element.role ? element.role : "N/A"}</td>
                 <td className="text-center">
                   {" "}
                   <Button

@@ -13,7 +13,6 @@ import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { getCourseDetails } from "./courseService";
 import { IUserProps } from "../reducers/IUserProps";
-import { useNavigate } from "react-router-dom";
 
 export async function storeUserDetails(userDetails: IUserProps) {
   try {
@@ -85,7 +84,7 @@ export async function getUserCourses(email: string) {
       //To Do to take all the courses into array and return
       let ok;
       getCourseDetails(course).then((data) => {
-        ok = data;
+        console.log(data);
       });
       //remove this return later
       return ok;
@@ -94,16 +93,3 @@ export async function getUserCourses(email: string) {
     console.log("No such document!");
   }
 }
-
-export const UserSignOut = async () => {
-  const navigate = useNavigate();
-  signOut(auth)
-    .then(() => {
-      localStorage.removeItem("bwUser");
-      navigate("/login");
-    })
-    .catch((err) => {
-      // An error happened.
-      console.log(err.message);
-    });
-};
