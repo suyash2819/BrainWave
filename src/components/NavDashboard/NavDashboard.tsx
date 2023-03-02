@@ -4,16 +4,23 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullhorn, faCalendarWeek } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBullhorn,
+  faCalendarWeek,
+  faListCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import Dropdown from "react-bootstrap/Dropdown";
 import defaultpfp from "../../assets/defaultPfp.jpg";
 import Image from "react-bootstrap/Image";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
+import { UserSignOut } from "../../services/userService";
+
 const NavDashboard = () => {
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dispatchNavbarVals = useAppDispatch();
+
   return (
     <>
       <div className="navdashContainer">
@@ -26,6 +33,17 @@ const NavDashboard = () => {
             </Nav.Link>
             <Navbar.Collapse className="justify-content-end">
               <Nav.Link
+                title="Review new users"
+                onClick={() => {
+                  dispatchNavbarVals(componentToggle("reviewUsers"));
+                  dispatchNavbarVals(modifyHeading("Review Users"));
+                }}
+                className="m-1"
+              >
+                <FontAwesomeIcon className="m-2 fa-xl" icon={faListCheck} />
+              </Nav.Link>
+              <Nav.Link
+                title="Calendar"
                 onClick={() => {
                   dispatchNavbarVals(componentToggle("calendar"));
                   dispatchNavbarVals(modifyHeading("Calendar"));
@@ -34,7 +52,9 @@ const NavDashboard = () => {
               >
                 <FontAwesomeIcon className="m-2 fa-xl" icon={faCalendarWeek} />
               </Nav.Link>
+
               <Nav.Link
+                title="Announcements"
                 onClick={() => {
                   dispatchNavbarVals(componentToggle("announcements"));
                   dispatchNavbarVals(modifyHeading("Announcements"));
@@ -63,7 +83,9 @@ const NavDashboard = () => {
                   <Dropdown.Item>{userDetails.username}</Dropdown.Item>
                   <hr />
                   <Dropdown.Item>Settings</Dropdown.Item>
-                  <Dropdown.Item>Log Out</Dropdown.Item>
+                  <Dropdown.Item onClick={() => UserSignOut()}>
+                    Log Out
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </Navbar.Collapse>

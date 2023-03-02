@@ -13,10 +13,8 @@ import {
   faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
-import { signOut } from "firebase/auth";
-import { auth } from "../../config/firebase";
-import { useNavigate } from "react-router-dom";
 import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
+import { UserSignOut } from "../../services/userService";
 
 function SideBar() {
   const courses_items = {
@@ -24,19 +22,6 @@ function SideBar() {
     "Course 2": faUser,
   };
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
-
-  const navigate = useNavigate();
-  const UserSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        localStorage.removeItem("bwUser");
-        navigate("/login");
-      })
-      .catch((err) => {
-        // An error happened.
-        console.log(err.message);
-      });
-  };
   const dispatchNavbarVals = useAppDispatch();
   const [rotateCourse, setRotateCourse] = useState<boolean>(false);
 

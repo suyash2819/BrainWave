@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import Calendar from "../../components/calendar/Calendar";
 import { getUserCourses } from "../../services/userService";
 import Annoucements from "../Faculty/Annoucements/Annoucements";
+import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
 
 const DashBoard = () => {
   const userUserData = useAppSelector((state) => state.userLoginAPI);
@@ -48,6 +49,12 @@ const DashBoard = () => {
         {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
         {dashboardVals.showComponent === "announcements" ? (
           <Annoucements />
+        ) : (
+          <></>
+        )}
+        {userUserData.role === "Administrator" &&
+        dashboardVals.showComponent === "reviewUsers" ? (
+          <ApproveUsers />
         ) : (
           <></>
         )}
