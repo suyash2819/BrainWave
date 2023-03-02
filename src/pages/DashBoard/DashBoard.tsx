@@ -14,8 +14,9 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import Calendar from "../../components/calendar/Calendar";
 import { getUserCourses } from "../../services/userService";
-import Annoucements from "../Faculty/Annoucements/Annoucements";
+import Announcements from "../Announcements/Announcements";
 import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
+import CoursesView from "../../components/CoursesView/CoursesView";
 
 const DashBoard = () => {
   const userUserData = useAppSelector((state) => state.userLoginAPI);
@@ -47,8 +48,10 @@ const DashBoard = () => {
       <div className="DashBoardContainer__main d-flex flex-column">
         <NavDashboard />
         {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
-        {dashboardVals.showComponent === "announcements" ? (
-          <Annoucements />
+        {dashboardVals.showComponent === "announcements" &&
+        (userUserData.role === "Faculty" ||
+          userUserData.role === "Administrator") ? (
+          <Announcements />
         ) : (
           <></>
         )}
@@ -58,6 +61,7 @@ const DashBoard = () => {
         ) : (
           <></>
         )}
+        {dashboardVals.showComponent === "dashboard" ? <CoursesView /> : <></>}
       </div>
     </div>
   );

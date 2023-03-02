@@ -4,16 +4,13 @@ import HomePage from "./pages/HomePage/HomePage";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RegPage from "./pages/RegPage/RegPage";
-import AboutUs from "./pages/AboutUs/AboutUs";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-
 
 const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs"));
 const TeacherAnnouncements = lazy(
-  () => import("./pages/TeacherAnnouncements/teacherAnnouncements")
+  () => import("./pages/Announcements/Announcements")
 );
 const DashBoard = lazy(() => import("./pages/DashBoard/DashBoard"));
-
 
 function App() {
   const location = useLocation();
