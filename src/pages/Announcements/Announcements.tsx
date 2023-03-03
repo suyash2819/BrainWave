@@ -2,14 +2,9 @@ import React, { useState } from "react";
 // import DatePicker from "@types/react-datepicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePen, faTrash } from "@fortawesome/free-solid-svg-icons";
-
-interface Announcement {
-  announcement_heading: string;
-  announcement_name: string;
-  announcement_subject: string;
-  announcement_description: string;
-  annoucement_date: string;
-}
+import { storeCourseAnnoncements } from "../../services/courseService";
+import { Announcement } from "../../reducers/IAnnouncementProps";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
 
 const Announcements = () => {
   const [announcement, setAnnouncement] = useState<Announcement>({
@@ -19,6 +14,14 @@ const Announcements = () => {
     announcement_description: "",
     annoucement_date: "",
   });
+
+  const [showAlert, setShowAlert] = useState({
+    success: null || true || false,
+    message: "",
+    show: false,
+    type: "",
+  });
+
   const [formErrors, setFormErrors] = useState<Partial<Announcement>>({});
 
   const handleInputChange = (
@@ -28,8 +31,11 @@ const Announcements = () => {
   ) => {
     const { name, value } = event.target;
     setAnnouncement({ ...announcement, [name]: value });
-    validatForm();
   };
+  const alertMessageDisplay = () => {
+    setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
+
   const validatForm = () => {
     const errors: Partial<Announcement> = {};
 
@@ -60,6 +66,30 @@ const Announcements = () => {
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (validatForm()) {
+      storeCourseAnnoncements(announcement).then((result) => {
+        if (result) {
+          setShowAlert({
+            success: true,
+            message: "Announcement Posted Successfully",
+            show: true,
+            type: "",
+          });
+          setAnnouncement({
+            announcement_heading: "",
+            announcement_name: "",
+            announcement_subject: "",
+            announcement_description: "",
+            annoucement_date: "",
+          });
+        } else {
+          setShowAlert({
+            success: false,
+            message: "Some error has occured while posting",
+            show: true,
+            type: "",
+          });
+        }
+      });
     }
   };
   // const [startDate, setStartDate] = useState(new Date());
@@ -67,6 +97,16 @@ const Announcements = () => {
   return (
     <div className="mx-5 p-3">
       <div className="teacherAnnouncements_Container d-flex flex-row">
+        <div className="regPageAlert">
+          {showAlert.show ? (
+            <AlertMessage
+              success={showAlert.success}
+              message={showAlert.message}
+              alertDisplay={alertMessageDisplay}
+              type=""
+            />
+          ) : null}
+        </div>
         <div className="teacherAnnouncements_form col-11 card m-3 row">
           <div className="card-header ">
             <h5>Create Announcements</h5>
@@ -137,7 +177,7 @@ const Announcements = () => {
                       onChange={handleInputChange}
                     >
                       <option selected>Choose...</option>
-                      <option value="1">One</option>
+                      <option value="AA">AA</option>
                       <option value="2">Two</option>
                       <option value="3">Three</option>
                     </select>
@@ -221,3 +261,10 @@ const Announcements = () => {
 };
 
 export default Announcements;
+
+// <div>
+// {announcements.map((announcement) => (
+//   <div key={announcement.id}>
+//     <h3>{announcement.title}</h3>
+//     <p>{announcement.content}</p>
+//   </div>
