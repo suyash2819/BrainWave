@@ -18,7 +18,7 @@ const initialState: fetchReviewUser = {
 export const reviewUser = createAsyncThunk("user/reviewUser", async () => {
   const userVerification = query(
     collection(db, "users"),
-    where("isVerifiedByAdmin", "==", false)
+    where("isVerifiedByAdmin", "==", "pending")
   );
   const querySnapshot = await getDocs(userVerification);
   console.log(querySnapshot);

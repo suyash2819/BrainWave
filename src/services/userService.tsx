@@ -8,6 +8,7 @@ import {
   getDocs,
   doc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
@@ -92,4 +93,24 @@ export async function getUserCourses(email: string) {
   } else {
     console.log("No such document!");
   }
+}
+
+export async function approveUser(email: string, decision: string) {
+  getUserSpecificDetails(email).then((data) => {
+    data?.forEach((docd) => {
+      const id = docd.id;
+      const userDoc = doc(db, "users", id);
+      decision === "approve"
+        ? updateDoc(userDoc, {
+            isVerifiedByAdmin: "approved",
+          }).then((data) => {
+            console.log("updated", data);
+          })
+        : updateDoc(userDoc, {
+            isVerifiedByAdmin: "rejected",
+          }).then((data) => {
+            console.log("updated", data);
+          });
+    });
+  });
 }

@@ -9,5 +9,5 @@ export interface IUserProps {
   username: string;
   role: string;
   uid: number;
-  isVerifiedByAdmin?: boolean;
+  isVerifiedByAdmin?: string;
 }
