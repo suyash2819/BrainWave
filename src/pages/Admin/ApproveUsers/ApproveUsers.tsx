@@ -4,6 +4,7 @@ import Table from "react-bootstrap/esm/Table";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { reviewUser } from "../../../reducers/reviewUsers";
 import "./ApproveUsers.scss";
+import { approveUser } from "../../../services/userService";
 
 export default function ApproveUsers() {
   const dispatchFetchUsers = useAppDispatch();
@@ -13,7 +14,7 @@ export default function ApproveUsers() {
   }, [dispatchFetchUsers]);
 
   const handleReviewButton = (email: string, decision: string) => {
-    console.log(email, decision);
+    approveUser(email, decision);
   };
   return (
     <>

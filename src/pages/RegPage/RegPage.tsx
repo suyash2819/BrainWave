@@ -95,7 +95,7 @@ const RegPage = () => {
                     getUserCount().then((totalUsers) => {
                       storeUserDetails({
                         ...formVals,
-                        isVerifiedByAdmin: false,
+                        isVerifiedByAdmin: "pending",
                         uid: 200001 + totalUsers,
                       });
                     });
