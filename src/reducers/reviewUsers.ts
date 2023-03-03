@@ -21,7 +21,6 @@ export const reviewUser = createAsyncThunk("user/reviewUser", async () => {
     where("isVerifiedByAdmin", "==", false)
   );
   const querySnapshot = await getDocs(userVerification);
-  console.log(querySnapshot);
   return querySnapshot;
 });
 const reviewUserSlice = createSlice({
@@ -36,7 +35,7 @@ const reviewUserSlice = createSlice({
       .addCase(reviewUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.status = "success";
         state.userDetails.length = 0;
-
+        state.email.length = 0;
         action.payload.docs.forEach(
           (doc: {
             data: () => {
