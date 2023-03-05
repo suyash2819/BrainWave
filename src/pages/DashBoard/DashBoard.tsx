@@ -13,7 +13,6 @@ import {
 } from "../../reducers/getUserDetails";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import Calendar from "../../components/calendar/Calendar";
-import { getUserCourses } from "../../services/userService";
 import Announcements from "../Announcements/Announcements";
 import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
 import CoursesView from "../../components/CoursesView/CoursesView";
@@ -27,7 +26,6 @@ const DashBoard = () => {
   );
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
 
-  getUserCourses(userEmail);
   userData?.then((data) => {
     data?.forEach((doc) => {
       const x = doc.data();

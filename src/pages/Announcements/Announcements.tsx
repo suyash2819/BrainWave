@@ -5,8 +5,10 @@ import { faFilePen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { storeCourseAnnoncements } from "../../services/courseService";
 import { Announcement } from "../../reducers/IAnnouncementProps";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
+import { useAppSelector } from "../../hooks";
 
 const Announcements = () => {
+  const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const [announcement, setAnnouncement] = useState<Announcement>({
     announcement_heading: "",
     announcement_name: "",
@@ -177,9 +179,11 @@ const Announcements = () => {
                       onChange={handleInputChange}
                     >
                       <option selected>Choose...</option>
-                      <option value="AA">AA</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      {fetchCourses.coursesAbbrv.map((e, index) => (
+                        <option value={e} key={index}>
+                          {e}
+                        </option>
+                      ))}
                     </select>
                     {formErrors.announcement_subject && (
                       <div className="error alert alert-dark">
