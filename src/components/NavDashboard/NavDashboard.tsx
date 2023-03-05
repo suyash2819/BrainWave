@@ -22,6 +22,7 @@ const NavDashboard = () => {
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dispatchNavbarVals = useAppDispatch();
   const navigate = useNavigate();
+
   const UserSignOut = async () => {
     signOut(auth)
       .then(() => {

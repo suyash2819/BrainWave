@@ -17,6 +17,8 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { userLogIn } from "../../reducers/getUserDetails";
 import { modifyEmail } from "../../reducers/getUserDetails";
 import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
+import { getUserSpecificDetails } from "../../services/userService";
+import { signOut } from "firebase/auth";
 
 const LoginPage = () => {
   (function () {
@@ -87,6 +89,16 @@ const LoginPage = () => {
       });
   };
 
+  const UserSignOut = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("bwUser");
+      // navigate("/login");
+    } catch (err) {
+      console.log("err.message");
+    }
+  };
+
   const userGoogleSignIn = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
@@ -124,7 +136,31 @@ const LoginPage = () => {
       type: userLoginlog.status === "Error" ? "danger" : "",
     });
     if (userLoginlog.status === "success") {
-      navigate("/dashboard");
+      getUserSpecificDetails(userLoginlog.email)
+        .then((querySnapshot) => {
+          if (querySnapshot && !querySnapshot.empty) {
+            querySnapshot.forEach((doc) => {
+              const data = doc.data();
+              if (data["isVerifiedByAdmin"]) {
+                navigate("/dashboard");
+              } else {
+                UserSignOut();
+                throw new Error("User is not verified by admin");g
+              }
+            });
+          } else {
+            throw new Error("User not found");
+          }
+        })
+        .catch((e) => {
+          // console.log(e);
+          setShowAlert({
+            success: false,
+            message: e.message,
+            show: true,
+            type: "danger",
+          });
+        });
     }
   }, [userLoginlog, navigate]);
 
