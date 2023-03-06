@@ -51,6 +51,9 @@ const userSlice = createSlice({
     modifyUID: (state, action) => {
       state.uid = action.payload;
     },
+    modifyStatusLogout: (state, action) => {
+      state.status = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -93,5 +96,6 @@ export const {
   modifyUsername,
   modifyRole,
   modifyUID,
+  modifyStatusLogout,
 } = userSlice.actions;
 export default userSlice.reducer;
