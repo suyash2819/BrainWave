@@ -7,6 +7,7 @@ import "./ApproveUsers.scss";
 import { approveUser } from "../../../services/userService";
 import { IAlertProps } from "../../../components/AlertMessage/IAlertProps";
 import AlertMessage from "../../../components/AlertMessage/AlertMessage";
+import { Spinner } from "react-bootstrap";
 
 export default function ApproveUsers() {
   const dispatchFetchUsers = useAppDispatch();
@@ -49,43 +50,62 @@ export default function ApproveUsers() {
         ) : null}
       </div>
       <div className="m-5 ">
-        <Table className="approveUsers__container" striped bordered>
-          <thead>
-            <tr className="text-center">
-              <th>#</th>
-              <th>Email</th>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {getPendingUsers.userDetails.map((element, index: number) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{element.email}</td>
-                <td>{element.name}</td>
-                <td>{element.role ? element.role : "N/A"}</td>
-                <td className="text-center">
-                  {" "}
-                  <Button
-                    onClick={() => handleReviewButton(element.email, "approve")}
-                    className="mx-4"
-                    variant="outline-primary"
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    onClick={() => handleReviewButton(element.email, "reject")}
-                    variant="outline-secondary"
-                  >
-                    Reject
-                  </Button>
-                </td>
+        {getPendingUsers.status === "loading" ? (
+          <Spinner animation="border" />
+        ) : (
+          <></>
+        )}
+        {getPendingUsers.userDetails.length ? (
+          <Table className="approveUsers__container" striped bordered>
+            <thead>
+              <tr className="text-center">
+                <th>#</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {getPendingUsers.userDetails.map((element, index: number) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{element.email}</td>
+                  <td>{element.name}</td>
+                  <td>{element.role ? element.role : "N/A"}</td>
+                  <td className="text-center">
+                    {" "}
+                    <Button
+                      onClick={() =>
+                        handleReviewButton(element.email, "approve")
+                      }
+                      className="mx-4"
+                      variant="outline-primary"
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        handleReviewButton(element.email, "reject")
+                      }
+                      variant="outline-secondary"
+                    >
+                      Reject
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        ) : (
+          <></>
+        )}
+        {getPendingUsers.status !== "loading" &&
+        !getPendingUsers.userDetails.length ? (
+          <h1>There are no pending users!</h1>
+        ) : (
+          <></>
+        )}
       </div>
     </>
   );

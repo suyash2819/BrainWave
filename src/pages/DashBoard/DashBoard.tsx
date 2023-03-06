@@ -17,6 +17,7 @@ import Announcements from "../Announcements/Announcements";
 import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
 import CoursesView from "../../components/CoursesView/CoursesView";
 import { getUserCoursesApi } from "../../reducers/getCourses";
+import UserAccount from "../UserAccount/UserAccount";
 
 const DashBoard = () => {
   const userUserData = useAppSelector((state) => state.userLoginAPI);
@@ -60,6 +61,7 @@ const DashBoard = () => {
         ) : (
           <></>
         )}
+
         {userUserData.role === "Administrator" &&
         dashboardVals.showComponent === "reviewUsers" ? (
           <ApproveUsers />
@@ -67,6 +69,7 @@ const DashBoard = () => {
           <></>
         )}
         {dashboardVals.showComponent === "dashboard" ? <CoursesView /> : <></>}
+        {dashboardVals.showComponent === "account" ? <UserAccount /> : <></>}
       </div>
     </div>
   );

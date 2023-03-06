@@ -80,7 +80,13 @@ function SideBar() {
               <FontAwesomeIcon className="pe-3" icon={faChartBar} />
               DashBoard
             </p>
-            <p className="sidebarContainer__options__navs">
+            <p
+              className="sidebarContainer__options__navs"
+              onClick={() => {
+                dispatchNavbarVals(componentToggle("account"));
+                dispatchNavbarVals(modifyHeading("Account"));
+              }}
+            >
               <FontAwesomeIcon className="pe-3" icon={faUser} /> Account
             </p>
 
