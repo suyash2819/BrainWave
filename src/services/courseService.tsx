@@ -38,8 +38,6 @@ export async function deleteCourseAnnouncements(
   announcement_subject: string,
   ann: Announcement
 ) {
-  console.log("in it", ann);
-
   const courseRef = doc(db, "courses", announcement_subject);
 
   updateDoc(courseRef, {
