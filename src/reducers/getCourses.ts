@@ -4,12 +4,13 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 type IfetchCourses = {
   coursesAbbrv: string[];
-  //courseDetails: IfetchCourses[];
+  courseDetails: string[];
   messageLog: string;
   status: string;
 };
 
 const initialState: IfetchCourses = {
+  courseDetails: [],
   coursesAbbrv: [],
   messageLog: "",
   status: "",
@@ -29,7 +30,11 @@ export const getUserCoursesApi = createAsyncThunk(
 const getUserCoursesSlice = createSlice({
   name: "getUserCoursesApi",
   initialState,
-  reducers: {},
+  reducers: {
+    modifyCourseDetails: (state, action) => {
+      state.courseDetails = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUserCoursesApi.pending, (state) => {
@@ -49,5 +54,5 @@ const getUserCoursesSlice = createSlice({
       });
   },
 });
-
+export const { modifyCourseDetails } = getUserCoursesSlice.actions;
 export default getUserCoursesSlice.reducer;

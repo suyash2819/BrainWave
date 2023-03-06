@@ -11,6 +11,7 @@ import {
   faMessage,
   faRightFromBracket,
   faCaretDown,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
 import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
@@ -19,10 +20,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 
 function SideBar() {
-  const courses_items = {
-    "Course 1": faUser,
-    "Course 2": faUser,
-  };
+  const coursesData = useAppSelector((state) => state.fetchCoursesReducer);
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
   const dispatchNavbarVals = useAppDispatch();
   const [rotateCourse, setRotateCourse] = useState<boolean>(false);
@@ -106,12 +104,13 @@ function SideBar() {
                   />
                 </Accordion.Header>
                 <Accordion.Body>
-                  {Object.entries(courses_items).map(([key, icon], index) => (
+                  {coursesData.courseDetails.map((element, index) => (
                     <p
                       key={index}
                       className="sidebarContainer__options__navs_courses"
                     >
-                      <FontAwesomeIcon className="pe-3" icon={icon} /> {key}
+                      <FontAwesomeIcon className="pe-3" icon={faBook} />{" "}
+                      {element}
                     </p>
                   ))}
                 </Accordion.Body>

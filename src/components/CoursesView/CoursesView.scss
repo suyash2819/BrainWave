@@ -1,0 +1,9 @@
+.cardContainer {
+  height: 300px;
+  text-align: center;
+  border-radius: 20px;
+  &__bg {
+    height: 60px;
+    margin-bottom: 30px;
+  }
+}

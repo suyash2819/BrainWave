@@ -1,6 +1,6 @@
 import "./DashBoard.scss";
 import NavDashboard from "../../components/NavDashboard/NavDashboard";
-import React from "react";
+import React, { useEffect } from "react";
 import SideBar from "../../components/SideBar/SideBar";
 import { getUserSpecificDetails } from "../../services/userService";
 import {
@@ -16,6 +16,7 @@ import Calendar from "../../components/calendar/Calendar";
 import Announcements from "../Announcements/Announcements";
 import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
 import CoursesView from "../../components/CoursesView/CoursesView";
+import { getUserCoursesApi } from "../../reducers/getCourses";
 
 const DashBoard = () => {
   const userUserData = useAppSelector((state) => state.userLoginAPI);
@@ -39,6 +40,12 @@ const DashBoard = () => {
       dispatchLoginDetails(modifyUID(x["uid"]));
     });
   });
+  useEffect(() => {
+    dispatchLoginDetails(
+      getUserCoursesApi(userUserData.email ? userUserData.email : userEmail)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="DashBoardContainer d-flex flex-row">

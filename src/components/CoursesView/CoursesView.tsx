@@ -1,64 +1,72 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { getUserCoursesApi } from "../../reducers/getCourses";
-import { getCourseDetails } from "../../services/courseService";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import "./CoursesView.scss";
+import { useAppSelector, useAppDispatch } from "../../hooks";
+import { getCourseDetails } from "../../services/courseService";
+import { modifyCourseDetails } from "../../reducers/getCourses";
 
 type courseDetails = {
+  randomColor: string;
   announcements: string[];
   assignments: string[];
-  description: string | string[];
+  description: string;
   syllabus: string | string[];
   title: string;
 };
 
 export default function CoursesView() {
-  const dispatchFetchUsers = useAppDispatch();
-  const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-  const userDetails = useAppSelector((state) => state.userLoginAPI);
+  const dispatchStore = useAppDispatch();
   const [courseDetails, setCourseDetials] = useState<courseDetails[]>([]);
-
-  let tempCourseData: courseDetails[] = [];
-  const userEmail: string = localStorage.getItem("uuid") || "";
+  let courseDetailsTemp: courseDetails[] = [];
+  const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   useEffect(() => {
-    dispatchFetchUsers(
-      getUserCoursesApi(userDetails.email ? userDetails.email : userEmail)
-    );
-    console.log(fetchCourses.coursesAbbrv);
-    fetchCourses.coursesAbbrv.map((course) => {
-      console.log(course);
-      getCourseDetails(course).then((data: any) => {
-        console.log(data);
-        tempCourseData.push({
-          announcements: data["announcements"],
-          assignments: data["assignments"],
-          description: data["description"],
-          syllabus: data["syllabus"],
-          title: data["title"],
-        });
+    fetchCourses.coursesAbbrv.forEach(async (e) => {
+      const data = await getCourseDetails(e);
+      courseDetailsTemp.push({
+        randomColor: Math.floor(Math.random() * 16777215).toString(16),
+        //@ts-ignore
+        announcements: data["announcements"],
+        //@ts-ignore
+        assignments: data["assignments"],
+        //@ts-ignore
+        description: data["description"],
+        //@ts-ignore
+        syllabus: data["syllabus"],
+        //@ts-ignore
+        title: data["title"],
       });
+      setCourseDetials(courseDetailsTemp);
     });
-
-    setCourseDetials(tempCourseData);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    dispatchStore(modifyCourseDetails(courseDetails.map((e) => e.title)));
+  }, [courseDetails]);
+  console.log(courseDetails);
 
   return (
     <>
       <Row md={3} className="g-5 my-5 mx-3">
-        {courseDetails.map((element, index) => (
-          <Col key={index}>
-            <Card border="primary">
-              <Card.Body>
-                <Card.Title>{element.title}</Card.Title>
-                <Card.Text>{element.description}</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
+        {fetchCourses.coursesAbbrv &&
+          courseDetails.map((element, index) => (
+            <Col key={index}>
+              <Card className="cardContainer" border="primary">
+                <Card.Body>
+                  <div
+                    style={{ backgroundColor: "#" + element.randomColor }}
+                    className="cardContainer__bg"
+                  ></div>
+                  <Card.Title>{element.title}</Card.Title>
+                  <Card.Text title={element.description} className="">
+                    {element.description.substring(0, 100) + "..."}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
       </Row>
     </>
   );
