@@ -93,10 +93,11 @@ const LoginPage = () => {
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        console.log(credential);
-        // const token = credential.accessToken;
         // The signed-in user info.
-        console.log(result.user);
+        localStorage.setItem(
+          "bwUser",
+          credential?.accessToken === undefined ? "" : credential?.accessToken
+        );
         navigate("/Dashboard");
         // IdP data available using getAdditionalUserInfo(result)
         // ...

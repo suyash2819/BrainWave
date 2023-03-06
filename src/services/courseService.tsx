@@ -1,5 +1,11 @@
 import { db } from "../config/firebase";
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import { Announcement } from "../reducers/IAnnouncementProps";
 
 export async function getCourseDetails(course: string) {
@@ -15,7 +21,6 @@ export async function getCourseDetails(course: string) {
 export async function storeCourseAnnoncements(announcement: Announcement) {
   const announcementRef = doc(db, "courses", announcement.announcement_subject);
 
-  // Atomically add a new region to the "regions" array field.
   return updateDoc(announcementRef, {
     announcements: arrayUnion(announcement),
   })
@@ -26,5 +31,24 @@ export async function storeCourseAnnoncements(announcement: Announcement) {
     .catch((err) => {
       console.log(err);
       return false;
+    });
+}
+
+export async function deleteCourseAnnouncements(
+  announcement_subject: string,
+  ann: Announcement
+) {
+  console.log("in it", ann);
+
+  const courseRef = doc(db, "courses", announcement_subject);
+
+  updateDoc(courseRef, {
+    announcements: arrayRemove(ann),
+  })
+    .then(() => {
+      console.log("deleted");
+    })
+    .catch((err) => {
+      console.log(err);
     });
 }
