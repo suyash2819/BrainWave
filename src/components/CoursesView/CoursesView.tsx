@@ -44,6 +44,7 @@ export default function CoursesView() {
 
   useEffect(() => {
     dispatchStore(modifyCourseDetails(courseDetails.map((e) => e.title)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDetails]);
   console.log(courseDetails);
 

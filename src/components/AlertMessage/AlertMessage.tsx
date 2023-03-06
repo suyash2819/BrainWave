@@ -12,7 +12,15 @@ const AlertMessage = ({
   return (
     <Alert
       className="AlertMessage"
-      variant={success ? "success" : type === "primary" ? "primary" : "danger"}
+      variant={
+        success
+          ? "success"
+          : type === "primary"
+          ? "primary"
+          : type === "success"
+          ? "success"
+          : "danger"
+      }
       onClose={() => alertDisplay()}
       dismissible
     >
