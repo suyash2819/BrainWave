@@ -26,7 +26,7 @@ export const getUserCoursesApi = createAsyncThunk(
     if (docSnap.exists()) {
       return docSnap.data()["courses"];
     } else {
-      return "no_courses";
+      return [];
     }
   }
 );

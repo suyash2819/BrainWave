@@ -21,7 +21,11 @@ import {
 } from "../../reducers/getUserDetails";
 import { modifyEmail } from "../../reducers/getUserDetails";
 import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
-import { getUserSpecificDetails } from "../../services/userService";
+import {
+  getUserCount,
+  getUserSpecificDetails,
+  storeUserDetails,
+} from "../../services/userService";
 
 const LoginPage = () => {
   (function () {
@@ -116,6 +120,19 @@ const LoginPage = () => {
           credential?.accessToken === undefined ? "" : credential?.accessToken
         );
         navigate("/Dashboard");
+        localStorage.setItem("uuid", result.user.email || "");
+        getUserCount().then((totalUsers) => {
+          storeUserDetails({
+            firstname: firstName,
+            lastname: lastname,
+            username: "",
+            role: "student",
+            email: result.user.email || "",
+            password: "",
+            isVerifiedByAdmin: "pending",
+            uid: 200001 + totalUsers,
+          });
+        });
       })
       .catch((error) => {
         setShowAlert({

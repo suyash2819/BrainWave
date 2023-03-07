@@ -41,6 +41,11 @@ export default function CoursesView({ courseDetailsarr }: courseDetailsArr) {
               </Card>
             </Col>
           ))}
+        {!fetchCourses.coursesAbbrv.length ? (
+          <h2>You're are not enrolled in any courses!</h2>
+        ) : (
+          <></>
+        )}
       </Row>
     </>
   );
