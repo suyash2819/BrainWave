@@ -17,15 +17,18 @@ import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
+import { modifyStatusLogout } from "../../reducers/getUserDetails";
 const NavDashboard = () => {
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
-  const dispatchNavbarVals = useAppDispatch();
+  const dispatchStore = useAppDispatch();
   const navigate = useNavigate();
+
   const UserSignOut = async () => {
     signOut(auth)
       .then(() => {
         localStorage.removeItem("bwUser");
+        dispatchStore(modifyStatusLogout(""));
         navigate("/login");
       })
       .catch((err) => {
@@ -49,8 +52,8 @@ const NavDashboard = () => {
                 <Nav.Link
                   title="Review new users"
                   onClick={() => {
-                    dispatchNavbarVals(componentToggle("reviewUsers"));
-                    dispatchNavbarVals(modifyHeading("Review Users"));
+                    dispatchStore(componentToggle("reviewUsers"));
+                    dispatchStore(modifyHeading("Review Users"));
                   }}
                   className="m-1"
                 >
@@ -62,8 +65,8 @@ const NavDashboard = () => {
               <Nav.Link
                 title="Calendar"
                 onClick={() => {
-                  dispatchNavbarVals(componentToggle("calendar"));
-                  dispatchNavbarVals(modifyHeading("Calendar"));
+                  dispatchStore(componentToggle("calendar"));
+                  dispatchStore(modifyHeading("Calendar"));
                 }}
                 className="m-1"
               >
@@ -73,8 +76,8 @@ const NavDashboard = () => {
               <Nav.Link
                 title="Announcements"
                 onClick={() => {
-                  dispatchNavbarVals(componentToggle("announcements"));
-                  dispatchNavbarVals(modifyHeading("Announcements"));
+                  dispatchStore(componentToggle("announcements"));
+                  dispatchStore(modifyHeading("Announcements"));
                 }}
                 className="m-1"
               >

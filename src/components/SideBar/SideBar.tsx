@@ -18,17 +18,19 @@ import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
+import { modifyStatusLogout } from "../../reducers/getUserDetails";
 
 function SideBar() {
   const coursesData = useAppSelector((state) => state.fetchCoursesReducer);
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
-  const dispatchNavbarVals = useAppDispatch();
+  const dispatchStore = useAppDispatch();
   const [rotateCourse, setRotateCourse] = useState<boolean>(false);
   const navigate = useNavigate();
   const UserSignOut = async () => {
     signOut(auth)
       .then(() => {
         localStorage.removeItem("bwUser");
+        dispatchStore(modifyStatusLogout(""));
         navigate("/login");
       })
       .catch((err) => {
@@ -73,8 +75,8 @@ function SideBar() {
             <p
               className="sidebarContainer__options__navs"
               onClick={() => {
-                dispatchNavbarVals(componentToggle("dashboard"));
-                dispatchNavbarVals(modifyHeading("Dashboard"));
+                dispatchStore(componentToggle("dashboard"));
+                dispatchStore(modifyHeading("Dashboard"));
               }}
             >
               <FontAwesomeIcon className="pe-3" icon={faChartBar} />
@@ -83,8 +85,8 @@ function SideBar() {
             <p
               className="sidebarContainer__options__navs"
               onClick={() => {
-                dispatchNavbarVals(componentToggle("account"));
-                dispatchNavbarVals(modifyHeading("Account"));
+                dispatchStore(componentToggle("account"));
+                dispatchStore(modifyHeading("Account"));
               }}
             >
               <FontAwesomeIcon className="pe-3" icon={faUser} /> Account

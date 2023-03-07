@@ -16,10 +16,11 @@ const initialState: IUserProps = {
   uid: 0,
 };
 
+
 export const userLogIn = createAsyncThunk(
   "user/login",
   async (loginVals: { email: string; password: string }) => {
-    const response = signInWithEmailAndPassword(
+    const response = await signInWithEmailAndPassword(
       auth,
       loginVals.email,
       loginVals.password
@@ -49,6 +50,9 @@ const userSlice = createSlice({
     },
     modifyUID: (state, action) => {
       state.uid = action.payload;
+    },
+    modifyStatusLogout: (state, action) => {
+      state.status = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -92,5 +96,6 @@ export const {
   modifyUsername,
   modifyRole,
   modifyUID,
+  modifyStatusLogout,
 } = userSlice.actions;
 export default userSlice.reducer;

@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { userLogIn } from "../../reducers/getUserDetails";
 import { modifyEmail } from "../../reducers/getUserDetails";
 import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
+import { getUserSpecificDetails } from "../../services/userService";
 
 const LoginPage = () => {
   (function () {
@@ -91,7 +92,6 @@ const LoginPage = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         // The signed-in user info.
         localStorage.setItem(
@@ -99,12 +99,8 @@ const LoginPage = () => {
           credential?.accessToken === undefined ? "" : credential?.accessToken
         );
         navigate("/Dashboard");
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
       })
       .catch((error) => {
-        // The AuthCredential type that was used.
-        // const credential = GoogleAuthProvider.credentialFromError(error);
         setShowAlert({
           success: false,
           message: error.message,
@@ -112,8 +108,6 @@ const LoginPage = () => {
           type: "",
         });
         console.log(error);
-
-        // ...
       });
   };
 
@@ -129,10 +123,41 @@ const LoginPage = () => {
     }
   }, [userLoginlog, navigate]);
 
-  const useSignIn = (e: { preventDefault: () => void }) => {
+  const checkUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    dispatchLoginDetails(modifyEmail(loginVals.email));
-    dispatchLoginDetails(userLogIn(loginVals));
+    getUserSpecificDetails(loginVals.email)
+      .then((querySnapshot) => {
+        if (querySnapshot && !querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          const data = doc.data();
+          if (data["isVerifiedByAdmin"] === "approved") {
+            dispatchLoginDetails(modifyEmail(loginVals.email));
+            dispatchLoginDetails(userLogIn(loginVals));
+          } else if (data["isVerifiedByAdmin"] === "pending") {
+            throw new Error(
+              "You're not yet verified by admin, please contact the admin to escalate the process"
+            );
+          } else if (data["isVerifiedByAdmin"] === "rejected") {
+            throw new Error(
+              "Your account registration has been rejected by admin,please contact the admin for further info"
+            );
+          } else {
+            throw new Error(
+              "You're not yet verified by admin, please contact the admin to escalate the process"
+            );
+          }
+        } else {
+          throw new Error("User not found");
+        }
+      })
+      .catch((e) => {
+        setShowAlert({
+          success: false,
+          message: e.message,
+          show: true,
+          type: "danger",
+        });
+      });
   };
 
   return (
@@ -179,7 +204,7 @@ const LoginPage = () => {
           </h3>
           <form
             className="needs-validation"
-            onSubmit={forgotpswd ? passwordReset : useSignIn}
+            onSubmit={forgotpswd ? passwordReset : checkUser}
             noValidate
           >
             <div className="col mx-5">
