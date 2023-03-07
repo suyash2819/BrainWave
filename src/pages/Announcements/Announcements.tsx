@@ -1,25 +1,19 @@
 import React, { useState } from "react";
-// import DatePicker from "@types/react-datepicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   deleteCourseAnnouncements,
   storeCourseAnnoncements,
-  // getCourseDetails,
 } from "../../services/courseService";
 import { Announcement } from "../../reducers/IAnnouncementProps";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import {
-  getUserCoursesApi,
-  modifyAnnouncements,
-} from "../../reducers/getCourses";
+import { modifyAnnouncements } from "../../reducers/getCourses";
+import "./Announcements.scss";
 
 const Announcements = () => {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const dispatchStore = useAppDispatch();
-  const userUserData = useAppSelector((state) => state.userLoginAPI);
-  const userEmail = localStorage.getItem("uuid") || "";
 
   const [announcement, setAnnouncement] = useState<Announcement>({
     announcement_heading: "",
@@ -45,6 +39,7 @@ const Announcements = () => {
   ) => {
     const { name, value } = event.target;
     setAnnouncement({ ...announcement, [name]: value });
+    setFormErrors({});
   };
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
@@ -64,29 +59,22 @@ const Announcements = () => {
 
   const validatForm = () => {
     const errors: Partial<Announcement> = {};
-
     if (!announcement.announcement_heading.trim()) {
       errors.announcement_heading = "Title is required";
     }
-
     if (!announcement.announcement_name.trim()) {
       errors.announcement_name = "Name is required";
     }
-
     if (!announcement.announcement_subject.trim()) {
       errors.announcement_subject = "Subject is required";
     }
-
     if (!announcement.announcement_description.trim()) {
       errors.announcement_description = "Description is required";
     }
-
     if (!announcement.annoucement_date.trim()) {
       errors.annoucement_date = "Date is required";
     }
-
     setFormErrors(errors);
-
     return Object.keys(errors).length === 0;
   };
   const handleSubmit = (e: { preventDefault: () => void }) => {
@@ -96,14 +84,15 @@ const Announcements = () => {
         if (result) {
           setShowAlert({
             success: true,
-            message: "Announcement Posted Successfully",
+            message: "Announcement Posted Successfully!",
             show: true,
             type: "",
           });
           dispatchStore(
-            getUserCoursesApi(
-              userUserData.email ? userUserData.email : userEmail
-            )
+            modifyAnnouncements([
+              ...fetchCourses.allAnnouncements,
+              announcement,
+            ])
           );
 
           setAnnouncement({
@@ -128,7 +117,7 @@ const Announcements = () => {
   return (
     <div className="mx-5 p-3">
       <div className="teacherAnnouncements_Container d-flex flex-row">
-        <div className="regPageAlert">
+        <div className="approvePageAlert">
           {showAlert.show ? (
             <AlertMessage
               success={showAlert.success}
@@ -158,7 +147,7 @@ const Announcements = () => {
                       onChange={handleInputChange}
                     ></input>
                     {formErrors.announcement_name && (
-                      <div className=" alert alert-dark error">
+                      <div className="annoucementValidation">
                         {formErrors.announcement_name}
                       </div>
                     )}
@@ -175,7 +164,7 @@ const Announcements = () => {
                       onChange={handleInputChange}
                     ></input>
                     {formErrors.announcement_heading && (
-                      <div className="error alert alert-dark">
+                      <div className="annoucementValidation">
                         {formErrors.announcement_heading}
                       </div>
                     )}
@@ -193,7 +182,7 @@ const Announcements = () => {
                       onChange={handleInputChange}
                     />
                     {formErrors.annoucement_date && (
-                      <div className="error alert alert-dark">
+                      <div className="annoucementValidation">
                         {formErrors.annoucement_date}
                       </div>
                     )}
@@ -208,14 +197,17 @@ const Announcements = () => {
                       onChange={handleInputChange}
                     >
                       <option selected>Choose...</option>
-                      {fetchCourses.coursesAbbrv.map((e, index) => (
-                        <option value={e} key={index}>
+                      {fetchCourses.courseDetails.map((e, index) => (
+                        <option
+                          value={fetchCourses.coursesAbbrv[index]}
+                          key={index}
+                        >
                           {e}
                         </option>
                       ))}
                     </select>
                     {formErrors.announcement_subject && (
-                      <div className="error alert alert-dark">
+                      <div className="annoucementValidation">
                         {formErrors.announcement_subject}
                       </div>
                     )}
@@ -233,7 +225,7 @@ const Announcements = () => {
                       aria-label="Type the description of the announcement here"
                     ></textarea>
                     {formErrors.announcement_description && (
-                      <div className="error alert alert-dark">
+                      <div className="annoucementValidation">
                         {formErrors.announcement_description}
                       </div>
                     )}
@@ -254,48 +246,56 @@ const Announcements = () => {
           <h5>Announcements</h5>
         </div>
         <div className="card-body">
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col"> Title</th>
-                <th scope="col"> Subject</th>
-                <th scope="col">Description</th>
-                <th scope="col">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* {courses.map((course, i) => ( */}
-              {fetchCourses.allAnnouncements.map((ann: Announcement, index) => (
-                <tr key={index}>
-                  <th scope="row">{index + 1}</th>
-
-                  <>
-                    <td>{ann.announcement_name}</td>
-                    <td>{ann.announcement_heading}</td>
-                    <td>{ann.announcement_subject}</td>
-                    <td>{ann.announcement_description}</td>
-                  </>
-
-                  <td>
-                    <button
-                      className="btn btn-danger form-control"
-                      onClick={() => {
-                        deleteAnnouncements(
-                          index,
-                          ann.announcement_subject,
-                          ann
-                        );
-                      }}
-                    >
-                      <FontAwesomeIcon className="m-1 fa-s" icon={faTrash} />
-                    </button>
-                  </td>
+          {fetchCourses.allAnnouncements.length ? (
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Title</th>
+                  <th scope="col"> Subject</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Delete</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {fetchCourses.allAnnouncements.map(
+                  (ann: Announcement, index) => (
+                    <tr key={index}>
+                      <th scope="row">{index + 1}</th>
+
+                      <>
+                        <td>{ann.announcement_name}</td>
+                        <td>{ann.announcement_heading}</td>
+                        <td>{fetchCourses.courseDetails[index]}</td>
+                        <td>{ann.announcement_description}</td>
+                      </>
+
+                      <td>
+                        <button
+                          className="btn btn-danger form-control"
+                          onClick={() => {
+                            deleteAnnouncements(
+                              index,
+                              ann.announcement_subject,
+                              ann
+                            );
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            className="m-1 fa-s"
+                            icon={faTrash}
+                          />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <h3>No Annoucements!</h3>
+          )}
         </div>
       </div>
     </div>
