@@ -93,8 +93,11 @@ const LoginPage = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        console.log(credential);
-        console.log(result.user);
+        // The signed-in user info.
+        localStorage.setItem(
+          "bwUser",
+          credential?.accessToken === undefined ? "" : credential?.accessToken
+        );
         navigate("/Dashboard");
       })
       .catch((error) => {

@@ -1,15 +1,18 @@
 import { db } from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { Announcement } from "./IAnnouncementProps";
 
 type IfetchCourses = {
   coursesAbbrv: string[];
   courseDetails: string[];
   messageLog: string;
   status: string;
+  allAnnouncements: Announcement[];
 };
 
 const initialState: IfetchCourses = {
+  allAnnouncements: [],
   courseDetails: [],
   coursesAbbrv: [],
   messageLog: "",
@@ -34,6 +37,9 @@ const getUserCoursesSlice = createSlice({
     modifyCourseDetails: (state, action) => {
       state.courseDetails = action.payload;
     },
+    modifyAnnouncements: (state, action) => {
+      state.allAnnouncements = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -54,5 +60,6 @@ const getUserCoursesSlice = createSlice({
       });
   },
 });
-export const { modifyCourseDetails } = getUserCoursesSlice.actions;
+export const { modifyCourseDetails, modifyAnnouncements } =
+  getUserCoursesSlice.actions;
 export default getUserCoursesSlice.reducer;

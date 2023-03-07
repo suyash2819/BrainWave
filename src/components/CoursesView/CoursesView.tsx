@@ -5,7 +5,10 @@ import Row from "react-bootstrap/Row";
 import "./CoursesView.scss";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { getCourseDetails } from "../../services/courseService";
-import { modifyCourseDetails } from "../../reducers/getCourses";
+import {
+  modifyAnnouncements,
+  modifyCourseDetails,
+} from "../../reducers/getCourses";
 
 type courseDetails = {
   randomColor: string;
@@ -44,9 +47,14 @@ export default function CoursesView() {
 
   useEffect(() => {
     dispatchStore(modifyCourseDetails(courseDetails.map((e) => e.title)));
+    let announcements: any = [];
+    courseDetails.forEach((e) => {
+      const ann = e.announcements;
+      announcements = [...announcements, ...ann];
+    });
+    dispatchStore(modifyAnnouncements(announcements.map((e: any) => e)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDetails]);
-  console.log(courseDetails);
 
   return (
     <>

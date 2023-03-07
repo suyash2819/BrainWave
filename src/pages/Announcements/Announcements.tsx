@@ -1,14 +1,26 @@
 import React, { useState } from "react";
 // import DatePicker from "@types/react-datepicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { storeCourseAnnoncements } from "../../services/courseService";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  deleteCourseAnnouncements,
+  storeCourseAnnoncements,
+  // getCourseDetails,
+} from "../../services/courseService";
 import { Announcement } from "../../reducers/IAnnouncementProps";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import {
+  getUserCoursesApi,
+  modifyAnnouncements,
+} from "../../reducers/getCourses";
 
 const Announcements = () => {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
+  const dispatchStore = useAppDispatch();
+  const userUserData = useAppSelector((state) => state.userLoginAPI);
+  const userEmail = localStorage.getItem("uuid") || "";
+
   const [announcement, setAnnouncement] = useState<Announcement>({
     announcement_heading: "",
     announcement_name: "",
@@ -36,6 +48,18 @@ const Announcements = () => {
   };
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
+
+  const deleteAnnouncements = (
+    index: number,
+    announcement_subject: string,
+    ann: Announcement
+  ) => {
+    const delAnnouncement = fetchCourses.allAnnouncements.filter(
+      (ann) => ann !== fetchCourses.allAnnouncements[index]
+    );
+    dispatchStore(modifyAnnouncements(delAnnouncement));
+    deleteCourseAnnouncements(announcement_subject, ann);
   };
 
   const validatForm = () => {
@@ -76,6 +100,12 @@ const Announcements = () => {
             show: true,
             type: "",
           });
+          dispatchStore(
+            getUserCoursesApi(
+              userUserData.email ? userUserData.email : userEmail
+            )
+          );
+
           setAnnouncement({
             announcement_heading: "",
             announcement_name: "",
@@ -94,7 +124,6 @@ const Announcements = () => {
       });
     }
   };
-  // const [startDate, setStartDate] = useState(new Date());
 
   return (
     <div className="mx-5 p-3">
@@ -233,42 +262,44 @@ const Announcements = () => {
                 <th scope="col"> Title</th>
                 <th scope="col"> Subject</th>
                 <th scope="col">Description</th>
-                <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Announcement 1</td>
-                <td>Hello All</td>
-                <td>This is the announcement subject</td>
-                <td>This is the announcement description</td>
-                <td>
-                  <button className="btn btn-dark form-control">
-                    <FontAwesomeIcon className="m-1 fa-s" icon={faFilePen} />
-                  </button>
-                </td>
-                <td>
-                  <button className="btn btn-danger form-control">
-                    <FontAwesomeIcon className="m-1 fa-s" icon={faTrash} />
-                  </button>
-                </td>
-              </tr>
+              {/* {courses.map((course, i) => ( */}
+              {fetchCourses.allAnnouncements.map((ann: Announcement, index) => (
+                <tr key={index}>
+                  <th scope="row">{index + 1}</th>
+
+                  <>
+                    <td>{ann.announcement_name}</td>
+                    <td>{ann.announcement_heading}</td>
+                    <td>{ann.announcement_subject}</td>
+                    <td>{ann.announcement_description}</td>
+                  </>
+
+                  <td>
+                    <button
+                      className="btn btn-danger form-control"
+                      onClick={() => {
+                        deleteAnnouncements(
+                          index,
+                          ann.announcement_subject,
+                          ann
+                        );
+                      }}
+                    >
+                      <FontAwesomeIcon className="m-1 fa-s" icon={faTrash} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
-      {/* table */}
     </div>
   );
 };
 
 export default Announcements;
-
-// <div>
-// {announcements.map((announcement) => (
-//   <div key={announcement.id}>
-//     <h3>{announcement.title}</h3>
-//     <p>{announcement.content}</p>
-//   </div>
