@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+const initialState = {
+  showComponent: "dashboard",
+  heading: "Dashboard",
+};
 export const dashboardVals = createSlice({
   name: "dashboardVals",
-  initialState: {
-    showComponent: "dashboard",
-    heading: "Dashboard",
-  },
+  initialState,
   reducers: {
     componentToggle: (state, action) => {
       state.showComponent = action.payload;
@@ -12,9 +13,11 @@ export const dashboardVals = createSlice({
     modifyHeading: (state, action) => {
       state.heading = action.payload;
     },
+    resetDashboardVals: () => initialState,
   },
 });
 
-export const { componentToggle, modifyHeading } = dashboardVals.actions;
+export const { componentToggle, modifyHeading, resetDashboardVals } =
+  dashboardVals.actions;
 
 export default dashboardVals.reducer;

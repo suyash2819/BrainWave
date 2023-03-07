@@ -40,6 +40,13 @@ const getUserCoursesSlice = createSlice({
     modifyAnnouncements: (state, action) => {
       state.allAnnouncements = action.payload;
     },
+    resetCourseData: (state) => {
+      state.allAnnouncements = [];
+      state.courseDetails = [];
+      state.coursesAbbrv = [];
+      state.status = "";
+      state.messageLog = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -60,6 +67,6 @@ const getUserCoursesSlice = createSlice({
       });
   },
 });
-export const { modifyCourseDetails, modifyAnnouncements } =
+export const { modifyCourseDetails, modifyAnnouncements, resetCourseData } =
   getUserCoursesSlice.actions;
 export default getUserCoursesSlice.reducer;

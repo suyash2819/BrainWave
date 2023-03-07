@@ -16,7 +16,6 @@ const initialState: IUserProps = {
   uid: 0,
 };
 
-
 export const userLogIn = createAsyncThunk(
   "user/login",
   async (loginVals: { email: string; password: string }) => {
@@ -54,6 +53,7 @@ const userSlice = createSlice({
     modifyStatusLogout: (state, action) => {
       state.status = action.payload;
     },
+    resetAllUserDetails: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -97,5 +97,6 @@ export const {
   modifyRole,
   modifyUID,
   modifyStatusLogout,
+  resetAllUserDetails,
 } = userSlice.actions;
 export default userSlice.reducer;
