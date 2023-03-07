@@ -119,7 +119,7 @@ const LoginPage = () => {
           "bwUser",
           credential?.accessToken === undefined ? "" : credential?.accessToken
         );
-        navigate("/Dashboard");
+
         localStorage.setItem("uuid", result.user.email || "");
         getUserCount().then((totalUsers) => {
           storeUserDetails({
@@ -133,6 +133,8 @@ const LoginPage = () => {
             uid: 200001 + totalUsers,
           });
         });
+        navigate("/dashboard");
+        navigate(0);
       })
       .catch((error) => {
         setShowAlert({
@@ -154,8 +156,10 @@ const LoginPage = () => {
     });
     if (userLoginlog.status === "success") {
       navigate("/dashboard");
+      navigate(0);
     }
-  }, [userLoginlog, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLoginlog.status, navigate]);
 
   const checkUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();

@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import "./CoursesView.scss";
 import { useAppSelector } from "../../hooks";
+import Spinner from "react-bootstrap/esm/Spinner";
 
 interface courseDetailsArr {
   courseDetailsarr: courseDetails[];
@@ -41,12 +42,20 @@ export default function CoursesView({ courseDetailsarr }: courseDetailsArr) {
               </Card>
             </Col>
           ))}
-        {!fetchCourses.coursesAbbrv.length ? (
+        {!fetchCourses.coursesAbbrv.length &&
+        fetchCourses.status !== "loading" ? (
           <h2>You're are not enrolled in any courses!</h2>
         ) : (
           <></>
         )}
       </Row>
+      <div style={{ marginLeft: "50%" }}>
+        {fetchCourses.status === "loading" ? (
+          <Spinner animation="border" />
+        ) : (
+          <></>
+        )}
+      </div>
     </>
   );
 }

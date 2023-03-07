@@ -96,6 +96,7 @@ const Announcements = () => {
             ])
           );
 
+          setFormErrors({});
           setAnnouncement({
             announcement_heading: "",
             announcement_name: "",
