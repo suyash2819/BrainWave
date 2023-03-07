@@ -14,7 +14,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { userLogIn } from "../../reducers/getUserDetails";
+import {
+  modifyFirstname,
+  modifyLastname,
+  userLogIn,
+} from "../../reducers/getUserDetails";
 import { modifyEmail } from "../../reducers/getUserDetails";
 import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
 import { getUserSpecificDetails } from "../../services/userService";
@@ -37,6 +41,7 @@ const LoginPage = () => {
     });
   })();
   const dispatchLoginDetails = useAppDispatch();
+  // const userUserData = useAppSelector((state) => state.userLoginAPI);
   const navigate = useNavigate();
   const [forgotpswd, setForgotpwd] = useState<boolean>(false);
   const [loginVals, setLoginVals] = useState({
@@ -94,6 +99,18 @@ const LoginPage = () => {
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         // The signed-in user info.
+        console.log(result.user.displayName);
+
+        const firstName =
+          result.user.displayName === null
+            ? ""
+            : result.user.displayName.split(" ")[0];
+        const lastname =
+          result.user.displayName === null
+            ? ""
+            : result.user.displayName.split(" ")[1];
+        dispatchLoginDetails(modifyFirstname(firstName));
+        dispatchLoginDetails(modifyLastname(lastname));
         localStorage.setItem(
           "bwUser",
           credential?.accessToken === undefined ? "" : credential?.accessToken
