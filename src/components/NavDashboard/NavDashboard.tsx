@@ -17,7 +17,6 @@ import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
-import { modifyStatusLogout } from "../../reducers/getUserDetails";
 const NavDashboard = () => {
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
@@ -28,7 +27,8 @@ const NavDashboard = () => {
     signOut(auth)
       .then(() => {
         localStorage.removeItem("bwUser");
-        dispatchStore(modifyStatusLogout(""));
+        localStorage.removeItem("uuid");
+        navigate(0);
         navigate("/login");
       })
       .catch((err) => {

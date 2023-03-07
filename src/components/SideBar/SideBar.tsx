@@ -18,7 +18,6 @@ import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
-import { modifyStatusLogout } from "../../reducers/getUserDetails";
 
 function SideBar() {
   const coursesData = useAppSelector((state) => state.fetchCoursesReducer);
@@ -30,7 +29,8 @@ function SideBar() {
     signOut(auth)
       .then(() => {
         localStorage.removeItem("bwUser");
-        dispatchStore(modifyStatusLogout(""));
+        localStorage.removeItem("uuid");
+        navigate(0);
         navigate("/login");
       })
       .catch((err) => {
