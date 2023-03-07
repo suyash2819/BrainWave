@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import "./CoursesView.scss";
-import { useAppSelector, useAppDispatch } from "../../hooks";
-import { getCourseDetails } from "../../services/courseService";
-import {
-  modifyAnnouncements,
-  modifyCourseDetails,
-} from "../../reducers/getCourses";
+import { useAppSelector } from "../../hooks";
+
+interface courseDetailsArr {
+  courseDetailsarr: courseDetails[];
+}
 
 type courseDetails = {
   randomColor: string;
@@ -19,48 +18,14 @@ type courseDetails = {
   title: string;
 };
 
-export default function CoursesView() {
-  const dispatchStore = useAppDispatch();
-  const [courseDetails, setCourseDetials] = useState<courseDetails[]>([]);
-  let courseDetailsTemp: courseDetails[] = [];
+export default function CoursesView({ courseDetailsarr }: courseDetailsArr) {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-  useEffect(() => {
-    fetchCourses.coursesAbbrv.forEach(async (e) => {
-      const data = await getCourseDetails(e);
-      courseDetailsTemp.push({
-        randomColor: Math.floor(Math.random() * 16777215).toString(16),
-        //@ts-ignore
-        announcements: data["announcements"],
-        //@ts-ignore
-        assignments: data["assignments"],
-        //@ts-ignore
-        description: data["description"],
-        //@ts-ignore
-        syllabus: data["syllabus"],
-        //@ts-ignore
-        title: data["title"],
-      });
-      setCourseDetials(courseDetailsTemp);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    dispatchStore(modifyCourseDetails(courseDetails.map((e) => e.title)));
-    let announcements: any = [];
-    courseDetails.forEach((e) => {
-      const ann = e.announcements;
-      announcements = [...announcements, ...ann];
-    });
-    dispatchStore(modifyAnnouncements(announcements.map((e: any) => e)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseDetails]);
 
   return (
     <>
       <Row md={3} className="g-5 my-5 mx-3">
         {fetchCourses.coursesAbbrv &&
-          courseDetails.map((element, index) => (
+          courseDetailsarr.map((element, index: number) => (
             <Col key={index}>
               <Card className="cardContainer" border="primary">
                 <Card.Body>

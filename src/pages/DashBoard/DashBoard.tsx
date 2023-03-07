@@ -1,6 +1,6 @@
 import "./DashBoard.scss";
 import NavDashboard from "../../components/NavDashboard/NavDashboard";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../../components/SideBar/SideBar";
 import { getUserSpecificDetails } from "../../services/userService";
 import {
@@ -16,37 +16,84 @@ import Calendar from "../../components/calendar/Calendar";
 import Announcements from "../Announcements/Announcements";
 import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
 import CoursesView from "../../components/CoursesView/CoursesView";
-import { getUserCoursesApi } from "../../reducers/getCourses";
+import {
+  getUserCoursesApi,
+  modifyAnnouncements,
+  modifyCourseDetails,
+} from "../../reducers/getCourses";
 import UserAccount from "../UserAccount/UserAccount";
+import { getCourseDetails } from "../../services/courseService";
+
+type courseDetails = {
+  randomColor: string;
+  announcements: string[];
+  assignments: string[];
+  description: string;
+  syllabus: string | string[];
+  title: string;
+};
 
 const DashBoard = () => {
-  const userUserData = useAppSelector((state) => state.userLoginAPI);
+  const userDataStore = useAppSelector((state) => state.userLoginAPI);
   const userEmail = localStorage.getItem("uuid") || "";
-  const dispatchLoginDetails = useAppDispatch();
+  const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
+  const dispatchStore = useAppDispatch();
   const userData = getUserSpecificDetails(
-    userEmail ? userEmail : userUserData.email
+    userEmail ? userEmail : userDataStore.email
   );
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
-
+  const [courseDetails, setCourseDetials] = useState<courseDetails[]>([]);
+  let courseDetailsTemp: courseDetails[] = [];
   userData?.then((data) => {
     data?.forEach((doc) => {
       const x = doc.data();
-      if (!userUserData.email) {
-        dispatchLoginDetails(modifyEmail(userEmail));
+      if (!userDataStore.email) {
+        dispatchStore(modifyEmail(userEmail));
       }
-      dispatchLoginDetails(modifyFirstname(x["firstname"]));
-      dispatchLoginDetails(modifyLastname(x["lastname"]));
-      dispatchLoginDetails(modifyUsername(x["username"]));
-      dispatchLoginDetails(modifyRole(x["role"]));
-      dispatchLoginDetails(modifyUID(x["uid"]));
+      dispatchStore(modifyFirstname(x["firstname"]));
+      dispatchStore(modifyLastname(x["lastname"]));
+      dispatchStore(modifyUsername(x["username"]));
+      dispatchStore(modifyRole(x["role"]));
+      dispatchStore(modifyUID(x["uid"]));
     });
   });
   useEffect(() => {
-    dispatchLoginDetails(
-      getUserCoursesApi(userUserData.email ? userUserData.email : userEmail)
+    dispatchStore(
+      getUserCoursesApi(userDataStore.email ? userDataStore.email : userEmail)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    fetchCourses.coursesAbbrv.forEach(async (e) => {
+      const data = await getCourseDetails(e);
+      courseDetailsTemp.push({
+        randomColor: Math.floor(Math.random() * 16777215).toString(16),
+        //@ts-ignore
+        announcements: data["announcements"],
+        //@ts-ignore
+        assignments: data["assignments"],
+        //@ts-ignore
+        description: data["description"],
+        //@ts-ignore
+        syllabus: data["syllabus"],
+        //@ts-ignore
+        title: data["title"],
+      });
+      setCourseDetials(courseDetailsTemp);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchCourses.coursesAbbrv]);
+  useEffect(() => {
+    dispatchStore(modifyCourseDetails(courseDetails.map((e: any) => e.title)));
+    let announcements: any = [];
+    courseDetails.forEach((e) => {
+      const ann = e.announcements;
+      announcements = [...announcements, ...ann];
+    });
+    dispatchStore(modifyAnnouncements(announcements.map((e: any) => e)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseDetails]);
 
   return (
     <div className="DashBoardContainer d-flex flex-row">
@@ -55,20 +102,27 @@ const DashBoard = () => {
         <NavDashboard />
         {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
         {dashboardVals.showComponent === "announcements" &&
-        (userUserData.role === "Faculty" ||
-          userUserData.role === "Administrator") ? (
+        (userDataStore.role === "Faculty" ||
+          userDataStore.role === "Administrator") ? (
           <Announcements />
         ) : (
           <></>
         )}
 
-        {userUserData.role === "Administrator" &&
+        {userDataStore.role === "Administrator" &&
         dashboardVals.showComponent === "reviewUsers" ? (
           <ApproveUsers />
         ) : (
           <></>
         )}
-        {dashboardVals.showComponent === "dashboard" ? <CoursesView /> : <></>}
+        {dashboardVals.showComponent === "dashboard" ? (
+          <>
+            {" "}
+            <CoursesView courseDetailsarr={courseDetails} />
+          </>
+        ) : (
+          <></>
+        )}
         {dashboardVals.showComponent === "account" ? <UserAccount /> : <></>}
       </div>
     </div>
