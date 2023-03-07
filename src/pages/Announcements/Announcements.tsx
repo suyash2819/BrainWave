@@ -278,7 +278,15 @@ const Announcements = () => {
                       <>
                         <td>{ann.announcement_name}</td>
                         <td>{ann.announcement_heading}</td>
-                        <td>{fetchCourses.courseDetails[index]}</td>
+                        <td>
+                          {
+                            fetchCourses.courseDetails[
+                              fetchCourses.coursesAbbrv.indexOf(
+                                ann.announcement_subject
+                              )
+                            ]
+                          }
+                        </td>
                         <td>{ann.announcement_description}</td>
                       </>
                       {userDetails.role === "Administrator" ||
