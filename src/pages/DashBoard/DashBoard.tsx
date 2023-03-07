@@ -101,9 +101,7 @@ const DashBoard = () => {
       <div className="DashBoardContainer__main d-flex flex-column">
         <NavDashboard />
         {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
-        {dashboardVals.showComponent === "announcements" &&
-        (userDataStore.role === "Faculty" ||
-          userDataStore.role === "Administrator") ? (
+        {dashboardVals.showComponent === "announcements" ? (
           <Announcements />
         ) : (
           <></>
