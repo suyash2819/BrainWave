@@ -1,6 +1,7 @@
 {
   "name": "brainwave",
-  "version": "0.1.0",
+  "version": "0.8.0",
+  "homepage": "https://brainwaveiu.github.io/",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",
@@ -32,6 +33,8 @@
     "typescript": "^4.9.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -58,6 +61,7 @@
   "devDependencies": {
     "@types/node": "^16.18.12",
     "@types/node-sass": "^4.11.3",
+    "gh-pages": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",
     "node-sass": "^7.0.3"
   }
