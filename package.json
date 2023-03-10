@@ -1,7 +1,7 @@
 {
   "name": "brainwave",
   "version": "0.8.0",
-  "homepage": "https://pages.github.iu.edu/ashlnu/SP23_P565_Team10_frontend/",
+  "homepage": "https://brainwaveiu.github.io/",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",
@@ -34,7 +34,7 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-     "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
