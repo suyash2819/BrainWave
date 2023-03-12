@@ -52,6 +52,7 @@ function App() {
                 }
               />
               <Route path="/home" element={<HomePage />} />
+              <Route path="/" element={<HomePage />} />
               <Route path="/aboutus" element={<AboutUs />} />
               <Route
                 path="/teacherAnnouncements"
