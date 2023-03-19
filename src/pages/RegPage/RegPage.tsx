@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import GoogleButton from "react-google-button";
 import "./RegPage.scss";
 import { Link } from "react-router-dom";
 import { auth } from "../../config/firebase";
@@ -315,14 +314,7 @@ const RegPage = () => {
               </div>
             </div>
           </form>
-
-          <GoogleButton
-            style={{ marginLeft: "25%" }}
-            className="regContainer__google_signin_button mt-3 mb-4"
-            onClick={(e) => {
-              createUser(e);
-            }}
-          />
+          <div className="m-3"></div>
         </div>
       </div>
     </>
