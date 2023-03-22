@@ -7,6 +7,9 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Modal from "react-bootstrap/Modal";
 import { useAppSelector } from "../../hooks";
+import Spinner from "react-bootstrap/esm/Spinner";
+import "./BrowseCourses.scss";
+
 let tempCourseDetail: courseDetail[] = [];
 export default function BrowseCousrses() {
   const [AllCourses, setAllCourses] = useState<courseDetail[]>([]);
@@ -46,14 +49,12 @@ export default function BrowseCousrses() {
     if (tempCourseDetail.length) {
       setAllCourses(tempCourseDetail);
     }
-    console.log(tempCourseDetail.length, tempCourseDetail);
     if (searchCourse.length > 0) {
       const filteredCourses: courseDetail[] = tempCourseDetail.filter(
         (e) =>
           e.title?.toLowerCase().includes(searchCourse.toLowerCase()) ||
           e.professor?.toLowerCase().includes(searchCourse.toLowerCase())
       );
-      console.log(filteredCourses);
       setAllCourses(filteredCourses);
     }
 
@@ -61,41 +62,58 @@ export default function BrowseCousrses() {
   }, [searchCourse]);
   return (
     <>
-      <div className="mb-5">
-        <div className="m-5">
-          <Form className="d-flex ps-5 col-11">
-            <Form.Control
-              type="search"
-              placeholder="Search..."
-              className="me-2"
-              aria-label="Search"
-              onChange={(e) => {
-                setSeachCourse(e.target.value);
-              }}
-            />
-          </Form>
-        </div>
-        <div className="ms-5 col-10">
-          <Card className="ms-5">
-            <ListGroup variant="flush">
-              {AllCourses.map((element, index) => (
-                <ListGroup.Item
-                  className="my-1 d-flex justify-content-between"
-                  key={index}
-                >
-                  <p className="h5">{element.title}</p>
-                  <Button
-                    onClick={() => handleShow(element)}
-                    variant="outline-primary"
+      {AllCourses.length || searchCourse.length ? (
+        <div className="mb-5">
+          <div className="m-5">
+            <Form className="d-flex ps-5 col-11">
+              <Form.Control
+                type="search"
+                placeholder="Search..."
+                className="me-2"
+                aria-label="Search"
+                onChange={(e) => {
+                  setSeachCourse(e.target.value);
+                }}
+              />
+            </Form>
+          </div>
+          <div className="ms-5 col-10">
+            <Card className="ms-5">
+              <ListGroup variant="flush">
+                {AllCourses.map((element, index) => (
+                  <ListGroup.Item
+                    className="my-1 d-flex justify-content-between"
+                    key={index}
                   >
-                    View Details
-                  </Button>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Card>
+                    <p className="h5">{element.title}</p>
+                    <Button
+                      onClick={() => handleShow(element)}
+                      variant="outline-primary"
+                    >
+                      View Details
+                    </Button>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Card>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div
+          style={{
+            marginLeft: "50%",
+            marginTop: "20%",
+          }}
+        >
+          <Spinner animation="border" />
+        </div>
+      )}
+      {AllCourses.length === 0 && searchCourse.length ? (
+        <h3 className="noCoursesTag">No courses found!</h3>
+      ) : (
+        <></>
+      )}
+
       {show ? (
         <Modal
           className="mt-5 ms-5"
