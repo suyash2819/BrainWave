@@ -1,0 +1,38 @@
+.account-table {
+    display: inline-block;
+    table {
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 1.325rem;
+      line-height: 2;
+      width: 100%;
+      max-width: 100%;
+      background-color: transparent;
+      border-spacing: 0;
+      border: 1px solid #dee2e6;
+      td {
+        border: 1px solid #dee2e6;
+        padding: 0.75rem;
+        text-align: left;
+        vertical-align: top;
+        &:first-child {
+          width: 30%;
+          font-weight: bold;
+          padding-left: 3rem;
+        }
+      }
+      th {
+        border: 1px solid #dee2e6;
+        padding: 0.75rem;
+        text-align: left;
+        vertical-align: top;
+        background-color: #f7f7f7;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  h1 {
+    padding-top: 2%;
+    margin-left: 35px;
+  }
