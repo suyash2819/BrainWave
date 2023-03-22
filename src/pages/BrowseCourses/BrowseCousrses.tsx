@@ -22,6 +22,7 @@ export default function BrowseCousrses() {
   const [show, setShow] = useState<boolean>(false);
   const [searchCourse, setSeachCourse] = useState<string>("");
   const coursesData = useAppSelector((state) => state.fetchCoursesReducer);
+  const userDataStore = useAppSelector((state) => state.userLoginAPI);
   const handleClose = () => setShow(false);
   const handleShow = (element: courseDetail) => {
     setDisplayOnModal(element);
@@ -39,6 +40,11 @@ export default function BrowseCousrses() {
         sem: dataDoc.Semester,
       });
     });
+    if (userDataStore.role === "Professor") {
+      tempCourseDetail = tempCourseDetail.filter(
+        (e) => e.professor?.length === 0
+      );
+    }
     setAllCourses(tempCourseDetail);
   };
   useEffect(() => {
@@ -98,7 +104,7 @@ export default function BrowseCousrses() {
             </Card>
           </div>
         </div>
-      ) : (
+      ) : userDataStore.role !== "Professor" ? (
         <div
           style={{
             marginLeft: "50%",
@@ -107,9 +113,16 @@ export default function BrowseCousrses() {
         >
           <Spinner animation="border" />
         </div>
+      ) : (
+        <></>
       )}
       {AllCourses.length === 0 && searchCourse.length ? (
         <h3 className="noCoursesTag">No courses found!</h3>
+      ) : (
+        <></>
+      )}
+      {userDataStore.role === "Professor" && searchCourse.length === 0 ? (
+        <h3 className="noCoursesTag">All Courses are taken up!</h3>
       ) : (
         <></>
       )}
@@ -139,7 +152,11 @@ export default function BrowseCousrses() {
                 You are Already Enrolled!
               </Button>
             ) : (
-              <Button variant="primary">Enroll</Button>
+              <Button variant="primary">
+                {userDataStore.role === "Professor"
+                  ? "Request for taking course"
+                  : "Enroll"}
+              </Button>
             )}
           </Modal.Footer>
         </Modal>
