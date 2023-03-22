@@ -20,6 +20,9 @@ function SubCourseView() {
             ]
           }
         </h3>
+        <div className="assignmentUploadContainer">
+          You can add the assignment creation section here
+        </div>
       </div>
     </>
   );
