@@ -36,6 +36,7 @@
       font-size: large;
       padding: 10px 0px 10px 50px;
       cursor: pointer;
+
       @for $i from 1 through 6 {
         &:nth-child(#{$i}):hover {
           background-color: #63717e;
@@ -69,7 +70,13 @@
           color: rgb(255, 255, 255);
         }
         .sidebarContainer__options__navs_courses {
+          cursor: pointer;
           color: rgb(255, 255, 255);
+          @for $i from 1 through 6 {
+            &:nth-child(#{$i}):hover {
+              background-color: #63717e;
+            }
+          }
         }
       }
       .accordion-button::after {

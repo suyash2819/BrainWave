@@ -5,8 +5,10 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  getDocs,
 } from "firebase/firestore";
 import { Announcement } from "../reducers/IAnnouncementProps";
+import { collection } from "firebase/firestore";
 
 export async function getCourseDetails(course: string) {
   const docRef = doc(db, "courses", course);
@@ -16,6 +18,10 @@ export async function getCourseDetails(course: string) {
   } else {
     console.log("No such document!");
   }
+}
+export async function getAllCourses() {
+  const docSnap = await getDocs(collection(db, "courses"));
+  return docSnap;
 }
 
 export async function storeCourseAnnoncements(announcement: Announcement) {

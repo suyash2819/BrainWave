@@ -23,6 +23,7 @@ import {
 } from "../../reducers/getCourses";
 import UserAccount from "../UserAccount/UserAccount";
 import { getCourseDetails } from "../../services/courseService";
+import BrowseCousrses from "../BrowseCourses/BrowseCousrses";
 
 type courseDetails = {
   randomColor: string;
@@ -117,6 +118,14 @@ const DashBoard = () => {
           <>
             {" "}
             <CoursesView courseDetailsarr={courseDetails} />
+          </>
+        ) : (
+          <></>
+        )}
+        {dashboardVals.showComponent === "browsecourses" ? (
+          <>
+            {" "}
+            <BrowseCousrses />
           </>
         ) : (
           <></>

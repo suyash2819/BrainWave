@@ -3,6 +3,7 @@ import userLoginReducer from "./reducers/getUserDetails";
 import dashboardValsReducer from "./reducers/dasboardVals";
 import reviewUserReducer from "./reducers/reviewUsers";
 import fetchUserReducer from "./reducers/getCourses";
+import getAllCoursesReducer from "./reducers/getAllCourses";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     dashboardValsReducer: dashboardValsReducer,
     reviewUserReducer: reviewUserReducer,
     fetchCoursesReducer: fetchUserReducer,
+    getAllCoursesReducer: getAllCoursesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
