@@ -12,6 +12,7 @@ import {
   faRightFromBracket,
   faCaretDown,
   faBook,
+  faBookAtlas,
 } from "@fortawesome/free-solid-svg-icons";
 import { Accordion } from "react-bootstrap";
 import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
@@ -112,6 +113,17 @@ function SideBar() {
                   />
                 </Accordion.Header>
                 <Accordion.Body>
+                  <p
+                    key={-1}
+                    className="sidebarContainer__options__navs_courses"
+                    onClick={() => {
+                      dispatchStore(componentToggle("browsecourses"));
+                      dispatchStore(modifyHeading("All Courses"));
+                    }}
+                  >
+                    <FontAwesomeIcon className="pe-3" icon={faBookAtlas} /> All
+                    Courses
+                  </p>
                   {coursesData.courseDetails.map((element, index) => (
                     <p
                       key={index}
