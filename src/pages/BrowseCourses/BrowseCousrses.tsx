@@ -145,20 +145,24 @@ export default function BrowseCousrses() {
             <p>Instuctor : {displayOnModal.professor}</p>
             <p>Semester : {displayOnModal.sem}</p>
           </Modal.Body>
-          <Modal.Footer>
-            {coursesData.courseDetails.indexOf(displayOnModal.title || "") >
-            -1 ? (
-              <Button disabled variant="primary">
-                You are Already Enrolled!
-              </Button>
-            ) : (
-              <Button variant="primary">
-                {userDataStore.role === "Professor"
-                  ? "Request for taking course"
-                  : "Enroll"}
-              </Button>
-            )}
-          </Modal.Footer>
+          {userDataStore.role !== "Administrator" ? (
+            <Modal.Footer>
+              {coursesData.courseDetails.indexOf(displayOnModal.title || "") >
+              -1 ? (
+                <Button disabled variant="primary">
+                  You are Already Enrolled!
+                </Button>
+              ) : (
+                <Button variant="primary">
+                  {userDataStore.role === "Professor"
+                    ? "Request for taking course"
+                    : "Enroll"}
+                </Button>
+              )}
+            </Modal.Footer>
+          ) : (
+            <></>
+          )}
         </Modal>
       ) : (
         <></>
