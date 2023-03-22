@@ -7,8 +7,7 @@ export default function UserAccount() {
   const coursesData = useAppSelector((state) => state.fetchCoursesReducer);
 
   return (
-    <div className="account-table">
-      <h1>User Information</h1>
+    <div className="account-table mx-5 px-5">
       <table>
         <tbody>
           <tr>
@@ -30,6 +29,10 @@ export default function UserAccount() {
           <tr>
             <td>Role:</td>
             <td>{userDetails.role}</td>
+          </tr>
+          <tr>
+            <td>University ID:</td>
+            <td>{userDetails.uid}</td>
           </tr>
           <tr>
             <td>Courses Enrolled:</td>
