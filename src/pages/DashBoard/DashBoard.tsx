@@ -24,6 +24,7 @@ import {
 import UserAccount from "../UserAccount/UserAccount";
 import { getCourseDetails } from "../../services/courseService";
 import BrowseCousrses from "../BrowseCourses/BrowseCousrses";
+import SubCourseView from "../SubCourseView/SubCourseView";
 
 type courseDetails = {
   randomColor: string;
@@ -126,6 +127,14 @@ const DashBoard = () => {
           <>
             {" "}
             <BrowseCousrses />
+          </>
+        ) : (
+          <></>
+        )}
+        {dashboardVals.showComponent.includes("subcourseview") ? (
+          <>
+            {" "}
+            <SubCourseView />
           </>
         ) : (
           <></>
