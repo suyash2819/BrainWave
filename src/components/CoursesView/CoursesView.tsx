@@ -14,7 +14,7 @@ type courseDetails = {
   randomColor: string;
   announcements: string[];
   assignments: string[];
-  description: string;
+  description: string;  
   syllabus: string | string[];
   title: string;
 };
