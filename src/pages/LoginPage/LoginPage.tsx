@@ -6,6 +6,7 @@ import {
   sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
+  deleteUser,
 } from "firebase/auth";
 import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import GoogleButton from "react-google-button";
@@ -17,15 +18,14 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   modifyFirstname,
   modifyLastname,
+  modifyRole,
+  modifyUID,
+  modifyUsername,
   userLogIn,
 } from "../../reducers/getUserDetails";
 import { modifyEmail } from "../../reducers/getUserDetails";
 import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
-import {
-  getUserCount,
-  getUserSpecificDetails,
-  storeUserDetails,
-} from "../../services/userService";
+import { getUserSpecificDetails } from "../../services/userService";
 
 const LoginPage = () => {
   (function () {
@@ -103,38 +103,74 @@ const LoginPage = () => {
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         // The signed-in user info.
-        console.log(result.user.displayName);
+        const user = auth.currentUser;
+        getUserSpecificDetails(result.user.email || "")
+          ?.then((data) => {
+            if (data?.size) {
+              data?.forEach((doc) => {
+                const userData = doc.data();
+                if (
+                  user?.emailVerified &&
+                  userData["isVerifiedByAdmin"] === "approved"
+                ) {
+                  dispatchLoginDetails(modifyFirstname(userData["firstname"]));
+                  dispatchLoginDetails(modifyLastname(userData["lastname"]));
+                  dispatchLoginDetails(modifyUsername(userData["username"]));
+                  dispatchLoginDetails(modifyRole(userData["role"]));
+                  dispatchLoginDetails(modifyUID(userData["uid"]));
+                  localStorage.setItem(
+                    "bwUser",
+                    credential?.accessToken === undefined
+                      ? ""
+                      : credential?.accessToken
+                  );
 
-        const firstName =
-          result.user.displayName === null
-            ? ""
-            : result.user.displayName.split(" ")[0];
-        const lastname =
-          result.user.displayName === null
-            ? ""
-            : result.user.displayName.split(" ")[1];
-        dispatchLoginDetails(modifyFirstname(firstName));
-        dispatchLoginDetails(modifyLastname(lastname));
-        localStorage.setItem(
-          "bwUser",
-          credential?.accessToken === undefined ? "" : credential?.accessToken
-        );
-
-        localStorage.setItem("uuid", result.user.email || "");
-        getUserCount().then((totalUsers) => {
-          storeUserDetails({
-            firstname: firstName,
-            lastname: lastname,
-            username: "",
-            role: "student",
-            email: result.user.email || "",
-            password: "",
-            isVerifiedByAdmin: "pending",
-            uid: 200001 + totalUsers,
+                  localStorage.setItem("uuid", result.user.email || "");
+                  navigate("/dashboard");
+                  navigate(0);
+                } else if (!user?.emailVerified) {
+                  throw new Error(
+                    "Please verify your email address from the link sent in mail by Brainwave!"
+                  );
+                } else if (userData["isVerifiedByAdmin"] === "pending") {
+                  throw new Error(
+                    "You're not yet verified by admin, please contact the admin to escalate the process"
+                  );
+                } else if (userData["isVerifiedByAdmin"] === "rejected") {
+                  throw new Error(
+                    "Your account registration has been rejected by admin,please contact the admin for further info"
+                  );
+                }
+              });
+            } else {
+              if (user === null) {
+                return;
+              }
+              deleteUser(user)
+                .then(() => {
+                  // User deleted.
+                  throw new Error("User not found, please register");
+                })
+                .catch((e) => {
+                  // An error ocurred
+                  // ...
+                  setShowAlert({
+                    success: false,
+                    message: e.message,
+                    show: true,
+                    type: "danger",
+                  });
+                });
+            }
+          })
+          .catch((e) => {
+            setShowAlert({
+              success: false,
+              message: e.message,
+              show: true,
+              type: "danger",
+            });
           });
-        });
-        navigate("/dashboard");
-        navigate(0);
       })
       .catch((error) => {
         setShowAlert({
