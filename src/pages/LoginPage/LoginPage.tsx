@@ -15,14 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import {
-  modifyFirstname,
-  modifyLastname,
-  modifyRole,
-  modifyUID,
-  modifyUsername,
-  userLogIn,
-} from "../../reducers/getUserDetails";
+import { userLogIn } from "../../reducers/getUserDetails";
 import { modifyEmail } from "../../reducers/getUserDetails";
 import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
 import { getUserSpecificDetails } from "../../services/userService";
@@ -113,11 +106,6 @@ const LoginPage = () => {
                   user?.emailVerified &&
                   userData["isVerifiedByAdmin"] === "approved"
                 ) {
-                  dispatchLoginDetails(modifyFirstname(userData["firstname"]));
-                  dispatchLoginDetails(modifyLastname(userData["lastname"]));
-                  dispatchLoginDetails(modifyUsername(userData["username"]));
-                  dispatchLoginDetails(modifyRole(userData["role"]));
-                  dispatchLoginDetails(modifyUID(userData["uid"]));
                   localStorage.setItem(
                     "bwUser",
                     credential?.accessToken === undefined
