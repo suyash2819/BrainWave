@@ -217,7 +217,7 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
                           ))}
                         </select>
                       ) : (
-                        <p>{isCourseView[1]}</p>
+                        <p className="mt-2">{isCourseView[1]}</p>
                       )}
                       {formErrors.announcement_subject && (
                         <div className="annoucementValidation">
