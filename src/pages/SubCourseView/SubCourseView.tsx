@@ -6,6 +6,7 @@ import { courseDetail } from "../BrowseCourses/IPropsCourses";
 import "./SubCourseView.scss";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import Announcements from "../Announcements/Announcements";
 
 let tempCourseDetail: courseDetail;
 function SubCourseView() {
@@ -32,6 +33,7 @@ function SubCourseView() {
       const dataDoc: any = doc.data();
       if (dataDoc.title === subCourseFullHeading) {
         tempCourseDetail = {
+          subCode: dataDoc.code,
           title: dataDoc.title,
           description: dataDoc.description,
           professor: dataDoc.Instructor,
@@ -46,7 +48,6 @@ function SubCourseView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subCourseFullHeading]);
 
-  console.log(subCourseDetails);
   return (
     <>
       <div>
@@ -85,7 +86,15 @@ function SubCourseView() {
             />
           </Tab>
           <Tab eventKey="profile" title="Announcements">
-            hello
+            <>
+              <Announcements
+                isCourseView={[
+                  true,
+                  subCourseFullHeading,
+                  subCourseDetails.subCode || "",
+                ]}
+              />
+            </>
           </Tab>
         </Tabs>
       </div>

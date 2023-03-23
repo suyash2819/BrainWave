@@ -104,7 +104,7 @@ const DashBoard = () => {
         <NavDashboard />
         {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
         {dashboardVals.showComponent === "announcements" ? (
-          <Announcements />
+          <Announcements isCourseView={[false, "", ""]} />
         ) : (
           <></>
         )}
