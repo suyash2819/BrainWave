@@ -2,9 +2,23 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { EventClickArg } from "@fullcalendar/core";
 import React from "react";
-import "./Calendar.scss"
+import "./Calendar.scss";
 export default function Calendar() {
+  const events = [
+    {
+      title: "event 1",
+      date: "2023-04-01",
+      description: "this is event info",
+    },
+    {
+      title: "event 2",
+      date: "2023-04-02",
+      description: "this is event info",
+    },
+  ];
+
   return (
     <>
       <div className="demo-app">
@@ -21,6 +35,9 @@ export default function Calendar() {
             selectable={true}
             selectMirror={true}
             dayMaxEvents={true}
+            events={events}
+            eventColor="red"
+            eventClick={handleEventClick}
             //initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
             //select={this.handleDateSelect}
             //eventContent={renderEventContent} // custom render function
@@ -38,53 +55,6 @@ export default function Calendar() {
   );
 }
 
-
-
-
-// import { Eventcalendar} from '@mobiscroll/react'; /* or import any other component */
-// import '@mobiscroll/react/dist/css/mobiscroll.scss';
-// import React from "react";
-
-
-// import "@mobiscroll/react/dist/css/mobiscroll.modular.scss"
-
-// setOptions({
-//     eventcalendar: {
-//       theme: 'ios-dark',
-//       display: 'inline',
-//       layout: 'liquid',
-//       view: {
-//         calendar: { labels: true },
-//         eventList: { labels: true }
-//       },
-//       background: $mbsc-calendar-background-light ? '#f6f6f6' : '#ffffff' // Use the variable here
-//     }
-//   });
-
-
-// export default function Calendar() {
-//     return (
-//       <>
-//         <div >
-//           <div className="demo-app-main" style={{  height: '90vh' }}>
-//             <Eventcalendar
-              
-//               data={[
-//                 {
-//                   start: new Date(),
-//                   title: "Today's event",
-//                 },
-//                 {
-//                   start: new Date(2020, 11, 18, 9, 0),
-//                   end: new Date(2020, 11, 20, 13, 0),
-//                   title: "Multi day event",
-//                 },
-//               ]}
-//             />
-//           </div>
-//         </div>
-      
-//     </>
-// );
-// }
-  
+const handleEventClick = (info: EventClickArg) => {
+  alert(info.event.extendedProps["description"]);
+};
