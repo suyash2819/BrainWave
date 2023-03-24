@@ -1,14 +1,18 @@
-import React, { useState } from "react";
-import { storage } from "../../config/firebase";
+import React, { useState, useEffect } from "react";
+import { storage,  } from "../../config/firebase";
 import { ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { Assignment_creation, courseDetailI } from "./IAssignments";
 import { useAppSelector } from "../../hooks";
 
+
+const ASSIGNMENTS_KEY = "submittedAssignments";
+
 export default function Assignments({
   courseDetailAssign,
   subCourseFullHeading,
 }: courseDetailI) {
+
   const userDataStore = useAppSelector((state) => state.userLoginAPI);
   const [assignment_creation, setAssignment] = useState<Assignment_creation>({
     name: "",
@@ -17,6 +21,8 @@ export default function Assignments({
     deadlineDate: "",
     file: null, // initialize the file property to null
   });
+
+
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -31,28 +37,43 @@ export default function Assignments({
     deadlineDate,
   } = assignment_creation;
 
+
+  //replace the spaces in the file path
+  const replaceSpaces = (str: string) => {
+    return str.replace(/\s+/g, '_');
+  };
+
   const [assignmentFile, setAssignmentFile] = useState<File | null>(null);
 
   const handleFileInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    
     if (event.target.files && event.target.files.length > 0) {
       setAssignmentFile(event.target.files[0]);
     }
-    uploadFile();
-  };
-
-  const uploadFile = () => {
+  
     if (assignmentFile == null) return;
+
+    const courseTitle = replaceSpaces(courseDetailAssign?.title ?? "");
+    const assignmentNameWithoutSpaces = replaceSpaces(assignmentName);
+    const fileNameWithoutSpaces = replaceSpaces(assignmentFile.name);
+    const fileNameWithUuid = fileNameWithoutSpaces + uuidv4();
+    
+    console.log('uploading file with name:', fileNameWithUuid);
+
     const fileRef = ref(
-      storage,
-      `Teacher/${courseDetailAssign?.title}/${assignmentName}/${
-        assignmentFile.name + uuidv4()
-      }`
+      storage, `Teacher/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
     );
-    uploadBytes(fileRef, assignmentFile).then(() => {
-      console.log("uploaded a file");
+    
+    uploadBytes(fileRef, assignmentFile)
+    .then(() => {
+      console.log("uploaded a file:", fileNameWithUuid);
+    })
+    .catch((error) => {
+      console.error("failed to upload file:", error);
     });
+
   };
 
   // Create a state variable to store the submitted assignments
@@ -60,8 +81,23 @@ export default function Assignments({
     Assignment_creation[]
   >([]);
 
+  useEffect(() => {
+    const storedAssignments = localStorage.getItem(ASSIGNMENTS_KEY);
+    if (storedAssignments) {
+      setSubmittedAssignments(JSON.parse(storedAssignments));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(ASSIGNMENTS_KEY, JSON.stringify(submittedAssignments));
+  }, [submittedAssignments]);
+
+  const filteredAssignments = submittedAssignments.filter(assignment => assignment.courseName === subCourseFullHeading);
+
   const handleAssignmentSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+
     // TODO: handle assignment submission logic
     const newAssignment = {
       name: assignment_creation.name,
@@ -70,9 +106,23 @@ export default function Assignments({
       courseName: subCourseFullHeading,
       file: assignmentFile,
     };
+    
     // Add the new assignment to the submittedAssignments array using the spread operator
     setSubmittedAssignments([...submittedAssignments, newAssignment]);
     console.log(assignment_creation);
+  
+  // Reset the assignment_creation and assignmentFile states to their initial values
+  setAssignment({
+    name: "",
+    description: "",
+    courseName: subCourseFullHeading,
+    deadlineDate: "",
+    file: null,
+  });
+  setAssignmentFile(null);
+
+  console.log(assignment_creation);
+
   };
   return (
     <>
@@ -156,17 +206,26 @@ export default function Assignments({
               <th>Name</th>
               <th>Description</th>
               <th>Deadline</th>
+              <th>File</th>
             </tr>
           </thead>
           <tbody>
-            {submittedAssignments.map((assignment, index) => (
+            {filteredAssignments.map((assignment, index) => (
               <tr key={index}>
                 <td>{assignment.name}</td>
                 <td>{assignment.description}</td>
                 <td>{assignment.deadlineDate}</td>
-                {/* <td>
-              <a href={assignment.fileUrl}>Download</a>
-            </td> */}
+                <td>
+                  {assignment.file && (
+                    <a
+                      // href={URL.createObjectURL(assignment.file)}
+                      download={assignment.file}
+                      className="download-btn"
+                    >
+                    Download
+                  </a>
+                  )}
+                </td>
               </tr>
             ))}
             {submittedAssignments.length === 0 && (
