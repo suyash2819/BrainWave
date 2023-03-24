@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { getAllCourses } from "../../services/courseService";
+import {
+  getAllCourses,
+  storeCoursesEnrollent,
+} from "../../services/courseService";
 import { courseDetail } from "./IPropsCourses";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -18,6 +21,7 @@ export default function BrowseCousrses() {
     description: "",
     professor: "",
     sem: "",
+    id: "",
   });
   const [show, setShow] = useState<boolean>(false);
   const [searchCourse, setSeachCourse] = useState<string>("");
@@ -38,6 +42,7 @@ export default function BrowseCousrses() {
         description: dataDoc.description,
         professor: dataDoc.Instructor,
         sem: dataDoc.Semester,
+        id: doc.id || "",
       });
     });
     if (userDataStore.role === "Professor") {
@@ -47,6 +52,7 @@ export default function BrowseCousrses() {
     }
     setAllCourses(tempCourseDetail);
   };
+
   useEffect(() => {
     fetchingCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -153,7 +159,15 @@ export default function BrowseCousrses() {
                   You are Already Enrolled!
                 </Button>
               ) : (
-                <Button variant="primary">
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    storeCoursesEnrollent(
+                      userDataStore.email,
+                      displayOnModal.id || ""
+                    )
+                  }
+                >
                   {userDataStore.role === "Professor"
                     ? "Request for taking course"
                     : "Enroll"}
