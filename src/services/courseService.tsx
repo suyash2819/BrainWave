@@ -6,6 +6,7 @@ import {
   arrayUnion,
   arrayRemove,
   getDocs,
+  setDoc,
 } from "firebase/firestore";
 import { Announcement } from "../reducers/IAnnouncementProps";
 import { collection } from "firebase/firestore";
@@ -55,4 +56,45 @@ export async function deleteCourseAnnouncements(
     .catch((err) => {
       console.log(err);
     });
+}
+
+export async function storeCoursesEnrollent(userEmail: string, course: string) {
+  const enrollmentRef = doc(db, "courses_for_enrollment", userEmail);
+
+  const docSnap = await getDoc(enrollmentRef);
+
+  if (docSnap.exists()) {
+    return updateDoc(enrollmentRef, {
+      courses: arrayUnion(course),
+    })
+      .then((data) => {
+        console.log(data);
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+  } else {
+    await setDoc(doc(db, "courses_for_enrollment", userEmail), {
+      courses: [course],
+    });
+  }
+}
+
+export async function getCoursesEnrollent(userEmail: string) {
+  const coursesDoc = doc(db, "courses_for_enrollment", userEmail);
+  const docSnap = await getDoc(coursesDoc);
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+    docSnap.data()["courses"].map((course: string) => {
+      //To Do to take all the courses into array and return
+
+      getCourseDetails(course).then((data) => {
+        console.log(data);
+      });
+    });
+  } else {
+    console.log("No such document!");
+  }
 }

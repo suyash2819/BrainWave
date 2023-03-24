@@ -9,4 +9,5 @@ export type courseDetail = {
   description?: string;
   sem?: string;
   professor?: string;
+  id?: string;
 };
