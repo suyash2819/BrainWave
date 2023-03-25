@@ -1,42 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { storage, db} from "../../config/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes , getDownloadURL} from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
-import { Assignment_creation, courseDetailI } from "./IAssignments";
+import { Assignment, courseDetailI } from "./IAssignments";
 import { useAppSelector } from "../../hooks";
-import { collection, addDoc, query, where, getDocs, setDoc, doc } from "firebase/firestore";
-
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { storeCourseAssignment } from "../../services/assignmentService";
 
 const ASSIGNMENTS_KEY = "submittedAssignments";
 
 export default function Assignments({
+  subCourseCode,
   courseDetailAssign,
   subCourseFullHeading,
 }: courseDetailI) {
   const userDataStore = useAppSelector((state) => state.userLoginAPI);
-  const [assignment_creation, setAssignment] = useState<Assignment_creation>({
+  const [Assignment, setAssignment] = useState<Assignment>({
     name: "",
     description: "",
     courseName: subCourseFullHeading,
     deadlineDate: "",
-    file: null, // initialize the file property to null
+    file: "",// initialize the fil property to null
   });
 
   const {
     name: assignmentName,
     description: assignmentDescription,
     deadlineDate,
-  } = assignment_creation;
+  } = Assignment;
 
-  const [assignmentFile, setAssignmentFile] = useState<File | null>(null);
+  const [assignmentFile, setAssignmentFile] = useState<File | null>();
 
   // Create a state variable to store the submitted assignments
   const [submittedAssignments, setSubmittedAssignments] = useState<
-    Assignment_creation[]
+    Assignment[]
   >([JSON.parse(localStorage.getItem(ASSIGNMENTS_KEY) || "[]")]);
 
   const [retrieved_assignments, setRetrievedAssignments] = useState<
-    Assignment_creation[]
+    Assignment[]
   >([JSON.parse(localStorage.getItem(ASSIGNMENTS_KEY) || "[]")]);
 
   //replace the spaces in the file path
@@ -53,7 +54,7 @@ export default function Assignments({
 
   //fileupload
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
 
   const [selectedFile, setSelectedFile] = useState<File | undefined | null>(
     undefined
@@ -91,7 +92,6 @@ export default function Assignments({
         `Student/Assignments/${userDataStore.uid}/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
       );
 
-      
 
       uploadBytes(fileRef, selectedFile)
         .then(() => {
@@ -105,45 +105,30 @@ export default function Assignments({
   };
 
   
-  const handleInstructorFileInputChange = async (
+  const handleFileSubmission = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files && event.target.files.length > 0) {
-      setAssignmentFile(event.target.files[0]);
+      setAssignmentFile(event.target.files[0] as File);
     }
-
-    if (assignmentFile == null) return;
-
-    const courseTitle = replaceSpaces(courseDetailAssign?.title ?? "");
-    const assignmentNameWithoutSpaces = replaceSpaces(assignmentName);
-    const fileNameWithoutSpaces = replaceSpaces(assignmentFile.name);
-    const fileNameWithUuid = fileNameWithoutSpaces + uuidv4();
-
-    console.log("uploading file with name:", fileNameWithUuid);
-
-    const fileRef = ref(
-      storage,
-      `Teacher/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
-    );
-
-    // Get the download URL for the uploaded file
-    const downloadURL = await getDownloadURL(fileRef);
-
-    // Create a new Firestore document to store the file metadata
-    const fileDocRef = doc(db, 'files', uuidv4());
-    await setDoc(fileDocRef, {
-      name: assignmentFile.name,
-      size: assignmentFile.size,
-      downloadURL: downloadURL
-    });
-
-    uploadBytes(fileRef, assignmentFile)
-      .then(() => {
-        console.log("uploaded a file:", fileNameWithUuid);
+    //@ts-ignore
+    console.log(event.target.files[0])
+    const storage = getStorage();
+    const storageRef = ref(storage, courseDetailAssign.title+ "/"+assignmentFile?.name);
+    //@ts-ignore
+    uploadBytes(storageRef, assignmentFile).then((snapshot) => {
+      console.log(snapshot);
+      getDownloadURL(ref(storage, courseDetailAssign.title+ "/"+ assignmentFile?.name)).then((url)=>{
+        setSubmittedAssignments([...submittedAssignments, {
+          name: Assignment.name,
+          description: Assignment.description,
+          deadlineDate: Assignment.deadlineDate,
+          courseName: subCourseCode,
+          file: url
+        }])
+        storeCourseAssignment(submittedAssignments[-1])
       })
-      .catch((error) => {
-        console.error("failed to upload file:", error);
-      });
+    });
   };
 
   useEffect(() => {
@@ -160,7 +145,7 @@ export default function Assignments({
       );
       const querySnapshot = await getDocs(q);
 
-      // Get the assignments data from Firestore and convert them to Assignment_creation objects
+      // Get the assignments data from Firestore and convert them to Assignment objects
       const retrievedAssignments = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
@@ -181,10 +166,6 @@ export default function Assignments({
     (assignment) => assignment.courseName === subCourseFullHeading
   );
 
-  useEffect(() => {
-    localStorage.setItem(ASSIGNMENTS_KEY, JSON.stringify(submittedAssignments));
-  }, [submittedAssignments]);
-
   const filteredAssignments = submittedAssignments.filter(
     (assignment) => assignment.courseName === subCourseFullHeading
   );
@@ -198,9 +179,9 @@ export default function Assignments({
 
     // TODO: handle assignment submission logic
     const newAssignment = {
-      name: assignment_creation.name,
-      description: assignment_creation.description,
-      deadlineDate: assignment_creation.deadlineDate,
+      name: Assignment.name,
+      description: Assignment.description,
+      deadlineDate: Assignment.deadlineDate,
       courseName: subCourseFullHeading,
       file: assignmentFile,
       assignments: docRef,
@@ -215,22 +196,20 @@ export default function Assignments({
     }
 
     // Add the new assignment to the submittedAssignments array using the spread operator
-    setSubmittedAssignments([...submittedAssignments, newAssignment]);
-    console.log(assignment_creation);
+    //setSubmittedAssignments([...submittedAssignments, newAssignment]);
+    console.log(Assignment);
 
-    // Reset the assignment_creation and assignmentFile states to their initial values
+    // Reset the Assignment and assignmentFile states to their initial values
     setAssignment({
       name: "",
       description: "",
       courseName: subCourseFullHeading,
       deadlineDate: "",
-      file: null,
+      file: "",
     });
     setAssignmentFile(null);
 
-    console.log(assignment_creation);
-
-
+    console.log(Assignment);
 
   };
   return (
@@ -287,7 +266,7 @@ export default function Assignments({
                       type="file"
                       id="file-upload"
                       name="file"
-                      onChange={handleInstructorFileInputChange}
+                      onChange={handleFileSubmission}
                     />
                   </td>
                 </tr>
@@ -329,8 +308,8 @@ export default function Assignments({
                   {assignment.file && (
                     <a
 
-                      // href={URL.createObjectURL(assignment.file)}
-                      download={assignment.file}
+                      href={assignment.file}
+  
                       className="download-btn"
                     >
                       Download
@@ -368,7 +347,7 @@ export default function Assignments({
                   <td>{assignment.description}</td>
                   <td>{assignment.deadlineDate}</td>
                   <td>
-                    {assignment.file && (
+                    {/* {assignment.file && (
                       <a
                         href={URL.createObjectURL(assignment.file)}
                         target="_blank"
@@ -376,7 +355,7 @@ export default function Assignments({
                       >
                         {assignment.file.name}
                       </a>
-                    )}
+                    )} */}
                   </td>
                 </tr>
               ))}

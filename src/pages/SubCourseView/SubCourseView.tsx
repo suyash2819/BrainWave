@@ -81,6 +81,7 @@ function SubCourseView() {
         >
           <Tab eventKey="home" title="Assignments">
             <Assignments
+            subCourseCode = {subCourseDetails.subCode!}
               courseDetailAssign={subCourseDetails}
               subCourseFullHeading={subCourseFullHeading}
             />
