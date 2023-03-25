@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { storage, db } from "../../config/firebase";
-import { ref, uploadBytes } from "firebase/storage";
+import { storage, db} from "../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { Assignment_creation, courseDetailI } from "./IAssignments";
 import { useAppSelector } from "../../hooks";
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, setDoc, doc } from "firebase/firestore";
+
 
 const ASSIGNMENTS_KEY = "submittedAssignments";
 
@@ -90,6 +91,8 @@ export default function Assignments({
         `Student/Assignments/${userDataStore.uid}/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
       );
 
+      
+
       uploadBytes(fileRef, selectedFile)
         .then(() => {
           console.log("uploaded a file:", fileNameWithUuid);
@@ -102,7 +105,7 @@ export default function Assignments({
   };
 
   
-  const handleInstructorFileInputChange = (
+  const handleInstructorFileInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -122,6 +125,17 @@ export default function Assignments({
       storage,
       `Teacher/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
     );
+
+    // Get the download URL for the uploaded file
+    const downloadURL = await getDownloadURL(fileRef);
+
+    // Create a new Firestore document to store the file metadata
+    const fileDocRef = doc(db, 'files', uuidv4());
+    await setDoc(fileDocRef, {
+      name: assignmentFile.name,
+      size: assignmentFile.size,
+      downloadURL: downloadURL
+    });
 
     uploadBytes(fileRef, assignmentFile)
       .then(() => {
