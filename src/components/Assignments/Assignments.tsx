@@ -12,7 +12,6 @@ export default function Assignments({
   courseDetailAssign,
   subCourseFullHeading,
 }: courseDetailI) {
-
   const userDataStore = useAppSelector((state) => state.userLoginAPI);
   const [assignment_creation, setAssignment] = useState<Assignment_creation>({
     name: "",
@@ -21,7 +20,6 @@ export default function Assignments({
     deadlineDate: "",
     file: null, // initialize the file property to null
   });
-
 
   const {
     name: assignmentName,
@@ -51,12 +49,62 @@ export default function Assignments({
     const { name, value } = event.target;
     setAssignment((prevState) => ({ ...prevState, [name]: value }));
   };
+
+  //fileupload
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
 
-  const handleFileInputChange = (
+  const [selectedFile, setSelectedFile] = useState<File | undefined | null>(
+    undefined
+  );
+
+  const handleUserFileChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFile(event.target.files[0]);
+      setIsModalOpen(true);
+    } 
+  };
+  const handleModalClose = () => {
+    setSelectedFile(null);
+    setIsModalOpen(false);
+  };
 
+  const handleUpload = () => {
+    // Your upload logic here
+    // Access the selected file with `selectedFile` variable
+    //user file upload to firestore
+
+    if (selectedFile) {
+      // Your upload logic here
+      const courseTitle = replaceSpaces(courseDetailAssign?.title ?? "");
+      const assignmentNameWithoutSpaces = replaceSpaces(assignmentName);
+      const fileNameWithoutSpaces = replaceSpaces(selectedFile.name);
+      const fileNameWithUuid = fileNameWithoutSpaces + uuidv4();
+
+      console.log("uploading file with name:", fileNameWithUuid);
+
+      const fileRef = ref(
+        storage,
+        `Student/Assignments/${userDataStore.uid}/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
+      );
+
+      uploadBytes(fileRef, selectedFile)
+        .then(() => {
+          console.log("uploaded a file:", fileNameWithUuid);
+        })
+        .catch((error) => {
+          console.error("failed to upload file:", error);
+        });
+    }
+    handleModalClose();
+  };
+
+  
+  const handleInstructorFileInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files && event.target.files.length > 0) {
       setAssignmentFile(event.target.files[0]);
     }
@@ -82,16 +130,12 @@ export default function Assignments({
       .catch((error) => {
         console.error("failed to upload file:", error);
       });
-  
-    };
-
-
+  };
 
   useEffect(() => {
     const storedAssignments = localStorage.getItem(ASSIGNMENTS_KEY);
     if (storedAssignments) {
       setSubmittedAssignments(JSON.parse(storedAssignments));
-
     }
 
     const fetchAssignments = async () => {
@@ -136,7 +180,7 @@ export default function Assignments({
   ) => {
     event.preventDefault();
 
-    const docRef = '' // define the value of docRef here
+    const docRef = ""; // define the value of docRef here
 
     // TODO: handle assignment submission logic
     const newAssignment = {
@@ -171,6 +215,8 @@ export default function Assignments({
     setAssignmentFile(null);
 
     console.log(assignment_creation);
+
+
 
   };
   return (
@@ -227,7 +273,7 @@ export default function Assignments({
                       type="file"
                       id="file-upload"
                       name="file"
-                      onChange={handleFileInputChange}
+                      onChange={handleInstructorFileInputChange}
                     />
                   </td>
                 </tr>
@@ -256,6 +302,7 @@ export default function Assignments({
               <th>Description</th>
               <th>Deadline</th>
               <th>File</th>
+              <th>Upload</th>
             </tr>
           </thead>
           <tbody>
@@ -267,6 +314,7 @@ export default function Assignments({
                 <td>
                   {assignment.file && (
                     <a
+
                       // href={URL.createObjectURL(assignment.file)}
                       download={assignment.file}
                       className="download-btn"
@@ -274,6 +322,9 @@ export default function Assignments({
                       Download
                     </a>
                   )}
+                </td>
+                <td>
+                  <button onClick={() => setIsModalOpen(true)}>Upload</button>
                 </td>
               </tr>
             ))}
@@ -319,6 +370,16 @@ export default function Assignments({
           </table>
         ) : (
           <form onSubmit={handleAssignmentSubmit}></form>
+        )}
+        {isModalOpen && (
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Upload Assignment</h2>
+              <input type="file" onChange={handleUserFileChange} />
+              <button onClick={handleUpload}>Upload</button>
+              <button onClick={handleModalClose}>Cancel</button>
+            </div>
+          </div>
         )}
       </div>
     </>
