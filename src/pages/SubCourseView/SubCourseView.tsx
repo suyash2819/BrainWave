@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 import Assignments from "../../components/Assignments/Assignments";
 import { useAppSelector } from "../../hooks";
 import { getAllCourses } from "../../services/courseService";
@@ -27,6 +27,15 @@ function SubCourseView() {
     sem: "",
   });
 
+  const scrollRefToTop = useRef() as MutableRefObject<HTMLDivElement>;
+
+  useEffect(() => {
+    scrollRefToTop.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [subCourseDetails]);
+
   const fetchingCourses = async () => {
     const tempAllCourses = getAllCourses();
     (await tempAllCourses).forEach((doc) => {
@@ -50,7 +59,7 @@ function SubCourseView() {
 
   return (
     <>
-      <div>
+      <div ref={scrollRefToTop}>
         <h2 style={{ paddingTop: "3%", marginLeft: "40px" }}>
           {subCourseDetails?.title}
         </h2>
@@ -81,7 +90,7 @@ function SubCourseView() {
         >
           <Tab eventKey="home" title="Assignments">
             <Assignments
-            subCourseCode = {subCourseDetails.subCode!}
+              subCourseCode={subCourseDetails.subCode!}
               courseDetailAssign={subCourseDetails}
               subCourseFullHeading={subCourseFullHeading}
             />

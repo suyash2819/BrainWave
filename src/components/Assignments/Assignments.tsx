@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { storage } from "../../config/firebase";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
+//import { v4 as uuidv4 } from "uuid";
 import { Assignment, courseDetailI } from "./IAssignments";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { storeCourseAssignment } from "../../services/assignmentService";
+import Card from "react-bootstrap/esm/Card";
+import { Button, ListGroup } from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
+import { modifyAssignments } from "../../reducers/getCourses";
 
 export default function Assignments({
   subCourseCode,
@@ -19,7 +22,7 @@ export default function Assignments({
     courseFullName: subCourseFullHeading,
     deadlineDate: "",
     file: "",
-    datePosted: new Date(),
+    datePosted: new Date().toISOString(),
   });
 
   const {
@@ -29,64 +32,25 @@ export default function Assignments({
   } = Assignment;
 
   const [assignmentFile, setAssignmentFile] = useState<File>();
+  const [displayOnModal, setDisplayOnModal] = useState<Assignment>();
+  const dispatchStore = useAppDispatch();
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const [submittedAssignments, setSubmittedAssignments] =
     useState<Assignment>();
-
-  const replaceSpaces = (str: string) => {
-    return str.replace(/\s+/g, "_");
-  };
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
-    setAssignment((prevState) => ({ ...prevState, [name]: value }));
+    setAssignment((prevState) => ({
+      ...prevState,
+      [name]: value,
+      courseName: subCourseCode,
+    }));
+    console.log(Assignment);
   };
 
-  //fileupload
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [selectedFile, setSelectedFile] = useState<File | undefined | null>(
-    undefined
-  );
-
-  const handleUserFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
-      setIsModalOpen(true);
-    }
-  };
-  const handleModalClose = () => {
-    setSelectedFile(null);
-    setIsModalOpen(false);
-  };
-
-  const handleUpload = () => {
-    if (selectedFile) {
-      // Your upload logic here
-      const courseTitle = replaceSpaces(courseDetailAssign?.title ?? "");
-      const assignmentNameWithoutSpaces = replaceSpaces(assignmentName);
-      const fileNameWithoutSpaces = replaceSpaces(selectedFile.name);
-      const fileNameWithUuid = fileNameWithoutSpaces + uuidv4();
-
-      console.log("uploading file with name:", fileNameWithUuid);
-
-      const fileRef = ref(
-        storage,
-        `Student/Assignments/${userDataStore.uid}/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
-      );
-
-      uploadBytes(fileRef, selectedFile)
-        .then(() => {
-          console.log("uploaded a file:", fileNameWithUuid);
-        })
-        .catch((error) => {
-          console.error("failed to upload file:", error);
-        });
-    }
-    handleModalClose();
-  };
 
   const handleFileSubmission = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -100,10 +64,13 @@ export default function Assignments({
       storage,
       courseDetailAssign.title + "/" + assignmentFile?.name
     );
-    uploadBytes(storageRef, assignmentFile!).then(() => {
+    const file = event.target.files!;
+    uploadBytes(storageRef, file[0]).then(() => {
+      console.log(file);
       getDownloadURL(
         ref(storage, courseDetailAssign.title + "/" + assignmentFile?.name)
       ).then((url) => {
+        console.log(url);
         setSubmittedAssignments({
           name: Assignment.name,
           description: Assignment.description,
@@ -111,7 +78,6 @@ export default function Assignments({
           courseName: subCourseCode,
           courseFullName: subCourseFullHeading,
           file: url,
-          datePosted: new Date(),
         });
       });
     });
@@ -132,12 +98,19 @@ export default function Assignments({
           deadlineDate: "",
           courseFullName: subCourseFullHeading,
           file: "",
-          datePosted: new Date(),
         });
+        dispatchStore(
+          modifyAssignments([...fetchCourses.assignment, Assignment])
+        );
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const displayModel = (element: Assignment) => {
+    setIsModalOpen(true);
+    setDisplayOnModal(element!);
   };
 
   return (
@@ -155,6 +128,7 @@ export default function Assignments({
                       required
                       name="name"
                       placeholder="Enter assignment name"
+                      onPaste={() => handleInputChange}
                       value={assignmentName}
                       onChange={handleInputChange}
                     />
@@ -168,6 +142,7 @@ export default function Assignments({
                       required
                       placeholder="Enter assignment description"
                       value={assignmentDescription}
+                      onPaste={() => handleInputChange}
                       onChange={handleInputChange}
                       style={{ height: "50px" }} // set the height to 200 pixels
                     />
@@ -194,8 +169,6 @@ export default function Assignments({
                       type="file"
                       id="file-upload"
                       name="file"
-                      className="file"
-                      value={Assignment.file}
                       onChange={handleFileSubmission}
                     />
                   </td>
@@ -218,50 +191,67 @@ export default function Assignments({
         <h2 className="mt-4 text-center">Assignments</h2>
         {fetchCourses.assignment.filter((e) => e.courseName === subCourseCode)
           .length ? (
-          <table className="assignment-display-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Deadline</th>
-                <th>File</th>
-                <th>Upload</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fetchCourses.assignment.map((assignment, index) => (
-                <tr key={index}>
-                  <td>{assignment.name}</td>
-                  <td>{assignment.description}</td>
-                  <td>{assignment.deadlineDate}</td>
-                  <td>
-                    {assignment.file && (
-                      <a href={assignment.file} className="download-btn">
-                        Download
-                      </a>
-                    )}
-                  </td>
-                  <td>
-                    <button onClick={() => setIsModalOpen(true)}>Upload</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="ms-5 col-10">
+            <Card className="ms-5">
+              <ListGroup variant="flush">
+                {fetchCourses.assignment
+                  .filter((e) => e.courseName === subCourseCode)
+                  .map((element, index) => (
+                    <ListGroup.Item
+                      className="my-1 d-flex justify-content-between"
+                      key={index}
+                    >
+                      <p className="h5">{element.name}</p>
+                      <Button
+                        onClick={() => displayModel(element)}
+                        variant="outline-primary"
+                      >
+                        View Details
+                      </Button>
+                    </ListGroup.Item>
+                  ))}
+              </ListGroup>
+            </Card>
+          </div>
         ) : (
           <h5 className="text-center">No assignments has been posted yet!</h5>
         )}
       </div>
       <div>
-        {isModalOpen && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Upload Assignment</h2>
-              <input type="file" onChange={handleUserFileChange} />
-              <button onClick={handleUpload}>Upload</button>
-              <button onClick={handleModalClose}>Cancel</button>
-            </div>
-          </div>
+        {isModalOpen ? (
+          <Modal
+            className="mt-5 ms-5"
+            size="lg"
+            show={isModalOpen}
+            backdrop="static"
+            keyboard={false}
+          >
+            <Modal.Header onClick={() => setIsModalOpen(false)} closeButton>
+              <Modal.Title>{displayOnModal?.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <>
+                <p className="text-justify font-weight-light">
+                  {displayOnModal?.description}
+                </p>
+
+                <a href={displayOnModal?.file} className="download-btn">
+                  Download
+                </a>
+                <p>DeadLine : {displayOnModal?.deadlineDate}</p>
+                <p>Date Posted : {displayOnModal?.datePosted}</p>
+              </>
+            </Modal.Body>
+            <Modal.Footer>
+              {userDataStore.role !== "Student" ? (
+                <Button>Delete</Button>
+              ) : (
+                <></>
+              )}
+            </Modal.Footer>
+          </Modal>
+        ) : (
+          <></>
         )}
       </div>
     </>
