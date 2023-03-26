@@ -5,7 +5,9 @@ export interface Assignment {
   description: string;
   courseName: string;
   deadlineDate: string;
+  courseFullName: string;
   file: string; // add a new property for the file
+  datePosted: Date;
 }
 
 export interface courseDetailI {

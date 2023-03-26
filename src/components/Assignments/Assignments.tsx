@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { storage, db} from "../../config/firebase";
-import { getStorage, ref, uploadBytes , getDownloadURL} from "firebase/storage";
+import React, { useState } from "react";
+import { storage } from "../../config/firebase";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { Assignment, courseDetailI } from "./IAssignments";
 import { useAppSelector } from "../../hooks";
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { storeCourseAssignment } from "../../services/assignmentService";
-
-const ASSIGNMENTS_KEY = "submittedAssignments";
 
 export default function Assignments({
   subCourseCode,
@@ -18,9 +15,11 @@ export default function Assignments({
   const [Assignment, setAssignment] = useState<Assignment>({
     name: "",
     description: "",
-    courseName: subCourseFullHeading,
+    courseName: subCourseCode,
+    courseFullName: subCourseFullHeading,
     deadlineDate: "",
-    file: "",// initialize the fil property to null
+    file: "",
+    datePosted: new Date(),
   });
 
   const {
@@ -29,18 +28,11 @@ export default function Assignments({
     deadlineDate,
   } = Assignment;
 
-  const [assignmentFile, setAssignmentFile] = useState<File | null>();
+  const [assignmentFile, setAssignmentFile] = useState<File>();
+  const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
+  const [submittedAssignments, setSubmittedAssignments] =
+    useState<Assignment>();
 
-  // Create a state variable to store the submitted assignments
-  const [submittedAssignments, setSubmittedAssignments] = useState<
-    Assignment[]
-  >([JSON.parse(localStorage.getItem(ASSIGNMENTS_KEY) || "[]")]);
-
-  const [retrieved_assignments, setRetrievedAssignments] = useState<
-    Assignment[]
-  >([JSON.parse(localStorage.getItem(ASSIGNMENTS_KEY) || "[]")]);
-
-  //replace the spaces in the file path
   const replaceSpaces = (str: string) => {
     return str.replace(/\s+/g, "_");
   };
@@ -55,18 +47,15 @@ export default function Assignments({
   //fileupload
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   const [selectedFile, setSelectedFile] = useState<File | undefined | null>(
     undefined
   );
 
-  const handleUserFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleUserFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setSelectedFile(event.target.files[0]);
       setIsModalOpen(true);
-    } 
+    }
   };
   const handleModalClose = () => {
     setSelectedFile(null);
@@ -74,10 +63,6 @@ export default function Assignments({
   };
 
   const handleUpload = () => {
-    // Your upload logic here
-    // Access the selected file with `selectedFile` variable
-    //user file upload to firestore
-
     if (selectedFile) {
       // Your upload logic here
       const courseTitle = replaceSpaces(courseDetailAssign?.title ?? "");
@@ -92,7 +77,6 @@ export default function Assignments({
         `Student/Assignments/${userDataStore.uid}/${courseTitle}/${assignmentNameWithoutSpaces}/${fileNameWithUuid}`
       );
 
-
       uploadBytes(fileRef, selectedFile)
         .then(() => {
           console.log("uploaded a file:", fileNameWithUuid);
@@ -104,114 +88,58 @@ export default function Assignments({
     handleModalClose();
   };
 
-  
   const handleFileSubmission = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    event.preventDefault();
     if (event.target.files && event.target.files.length > 0) {
       setAssignmentFile(event.target.files[0] as File);
     }
-    //@ts-ignore
-    console.log(event.target.files[0])
     const storage = getStorage();
-    const storageRef = ref(storage, courseDetailAssign.title+ "/"+assignmentFile?.name);
-    //@ts-ignore
-    uploadBytes(storageRef, assignmentFile).then((snapshot) => {
-      console.log(snapshot);
-      getDownloadURL(ref(storage, courseDetailAssign.title+ "/"+ assignmentFile?.name)).then((url)=>{
-        setSubmittedAssignments([...submittedAssignments, {
+    const storageRef = ref(
+      storage,
+      courseDetailAssign.title + "/" + assignmentFile?.name
+    );
+    uploadBytes(storageRef, assignmentFile!).then(() => {
+      getDownloadURL(
+        ref(storage, courseDetailAssign.title + "/" + assignmentFile?.name)
+      ).then((url) => {
+        setSubmittedAssignments({
           name: Assignment.name,
           description: Assignment.description,
           deadlineDate: Assignment.deadlineDate,
           courseName: subCourseCode,
-          file: url
-        }])
-        storeCourseAssignment(submittedAssignments[-1])
-      })
+          courseFullName: subCourseFullHeading,
+          file: url,
+          datePosted: new Date(),
+        });
+      });
     });
   };
-
-  useEffect(() => {
-    const storedAssignments = localStorage.getItem(ASSIGNMENTS_KEY);
-    if (storedAssignments) {
-      setSubmittedAssignments(JSON.parse(storedAssignments));
-    }
-
-    const fetchAssignments = async () => {
-      const q = query(
-        collection(db, "assignments"),
-        where("courseName", "==", subCourseFullHeading),
-        where("studentID", "==", userDataStore.uid)
-      );
-      const querySnapshot = await getDocs(q);
-
-      // Get the assignments data from Firestore and convert them to Assignment objects
-      const retrievedAssignments = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          name: data["name"],
-          description: data["description"],
-          courseName: data["courseName"],
-          deadlineDate: data["deadlineDate"],
-          file: data["file"],
-        };
-      });
-
-      setRetrievedAssignments(retrievedAssignments);
-    };
-    fetchAssignments();
-  }, [subCourseFullHeading, userDataStore.uid]);
-
-  const retrievedFilteredAssignments = retrieved_assignments.filter(
-    (assignment) => assignment.courseName === subCourseFullHeading
-  );
-
-  const filteredAssignments = submittedAssignments.filter(
-    (assignment) => assignment.courseName === subCourseFullHeading
-  );
 
   const handleAssignmentSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-
-    const docRef = ""; // define the value of docRef here
-
-    // TODO: handle assignment submission logic
-    const newAssignment = {
-      name: Assignment.name,
-      description: Assignment.description,
-      deadlineDate: Assignment.deadlineDate,
-      courseName: subCourseFullHeading,
-      file: assignmentFile,
-      assignments: docRef,
-    };
-
-    // Save the new assignment to Firestore
-    try {
-      const docRef = await addDoc(collection(db, "assignments"), newAssignment);
-      console.log("Document written with ID: ", docRef.id);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
-
-    // Add the new assignment to the submittedAssignments array using the spread operator
-    //setSubmittedAssignments([...submittedAssignments, newAssignment]);
-    console.log(Assignment);
-
-    // Reset the Assignment and assignmentFile states to their initial values
-    setAssignment({
-      name: "",
-      description: "",
-      courseName: subCourseFullHeading,
-      deadlineDate: "",
-      file: "",
-    });
-    setAssignmentFile(null);
-
-    console.log(Assignment);
-
+    storeCourseAssignment(submittedAssignments!)
+      .then((res) => {
+        console.log(res);
+        setAssignment({ ...Assignment, file: "" });
+        setAssignment({
+          name: "",
+          description: "",
+          courseName: subCourseCode,
+          deadlineDate: "",
+          courseFullName: subCourseFullHeading,
+          file: "",
+          datePosted: new Date(),
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
   return (
     <>
       <div>
@@ -224,6 +152,7 @@ export default function Assignments({
                   <td>
                     <input
                       type="text"
+                      required
                       name="name"
                       placeholder="Enter assignment name"
                       value={assignmentName}
@@ -236,6 +165,7 @@ export default function Assignments({
                   <td>
                     <textarea
                       name="description"
+                      required
                       placeholder="Enter assignment description"
                       value={assignmentDescription}
                       onChange={handleInputChange}
@@ -248,7 +178,9 @@ export default function Assignments({
                   <td>
                     <input
                       type="date"
+                      min={new Date().toISOString().split("T")[0]}
                       name="deadlineDate"
+                      required
                       placeholder="Enter deadline date"
                       value={deadlineDate}
                       onChange={handleInputChange}
@@ -258,14 +190,12 @@ export default function Assignments({
                 <tr>
                   <th>File upload</th>
                   <td>
-                    <label
-                      htmlFor="file-upload"
-                      className="custom-file-upload"
-                    ></label>
                     <input
                       type="file"
                       id="file-upload"
                       name="file"
+                      className="file"
+                      value={Assignment.file}
                       onChange={handleFileSubmission}
                     />
                   </td>
@@ -284,86 +214,45 @@ export default function Assignments({
           <></>
         )}
       </div>
-      <div>
-        <h2 style={{ paddingTop: "3%", marginLeft: "40px" }}>
-          Current Assignments
-        </h2>
-        <table className="assignment-display-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Deadline</th>
-              <th>File</th>
-              <th>Upload</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAssignments.map((assignment, index) => (
-              <tr key={index}>
-                <td>{assignment.name}</td>
-                <td>{assignment.description}</td>
-                <td>{assignment.deadlineDate}</td>
-                <td>
-                  {assignment.file && (
-                    <a
-
-                      href={assignment.file}
-  
-                      className="download-btn"
-                    >
-                      Download
-                    </a>
-                  )}
-                </td>
-                <td>
-                  <button onClick={() => setIsModalOpen(true)}>Upload</button>
-                </td>
-              </tr>
-            ))}
-            {submittedAssignments.length === 0 && (
+      <div className="mb-5">
+        <h2 className="mt-4 text-center">Assignments</h2>
+        {fetchCourses.assignment.filter((e) => e.courseName === subCourseCode)
+          .length ? (
+          <table className="assignment-display-table">
+            <thead>
               <tr>
-                <td colSpan={3}>No assignments found.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div>
-        {userDataStore.role === "Student" ? (
-          <table className="assignment-table">
-            {/* <thead>
-              <tr>
-                <th>Assignment Name</th>
+                <th>Name</th>
                 <th>Description</th>
-                <th>Deadline Date</th>
+                <th>Deadline</th>
                 <th>File</th>
+                <th>Upload</th>
               </tr>
-            </thead> */}
+            </thead>
             <tbody>
-              {retrievedFilteredAssignments.map((assignment, index) => (
+              {fetchCourses.assignment.map((assignment, index) => (
                 <tr key={index}>
                   <td>{assignment.name}</td>
                   <td>{assignment.description}</td>
                   <td>{assignment.deadlineDate}</td>
                   <td>
-                    {/* {assignment.file && (
-                      <a
-                        href={URL.createObjectURL(assignment.file)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {assignment.file.name}
+                    {assignment.file && (
+                      <a href={assignment.file} className="download-btn">
+                        Download
                       </a>
-                    )} */}
+                    )}
+                  </td>
+                  <td>
+                    <button onClick={() => setIsModalOpen(true)}>Upload</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <form onSubmit={handleAssignmentSubmit}></form>
+          <h5 className="text-center">No assignments has been posted yet!</h5>
         )}
+      </div>
+      <div>
         {isModalOpen && (
           <div className="modal">
             <div className="modal-content">
