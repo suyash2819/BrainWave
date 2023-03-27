@@ -60,6 +60,7 @@
   "devDependencies": {
     "@types/node": "^16.18.12",
     "@types/node-sass": "^4.11.3",
+    "@types/uuid": "^9.0.1",
     "html-webpack-plugin": "^5.5.0",
     "node-sass": "^7.0.3"
   }

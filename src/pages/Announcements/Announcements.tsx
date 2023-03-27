@@ -11,7 +11,11 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { modifyAnnouncements } from "../../reducers/getCourses";
 import "./Announcements.scss";
 
-const Announcements = () => {
+interface annoucementCourseFlag {
+  isCourseView: [boolean, string, string];
+}
+
+const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dispatchStore = useAppDispatch();
@@ -19,7 +23,7 @@ const Announcements = () => {
   const [announcement, setAnnouncement] = useState<Announcement>({
     announcement_heading: "",
     announcement_name: "",
-    announcement_subject: "",
+    announcement_subject: isCourseView[0] ? isCourseView[2] : "",
     announcement_description: "",
     annoucement_date: "",
   });
@@ -66,7 +70,7 @@ const Announcements = () => {
     if (!announcement.announcement_name.trim()) {
       errors.announcement_name = "Name is required";
     }
-    if (!announcement.announcement_subject.trim()) {
+    if (!announcement.announcement_subject.trim() && !isCourseView[0]) {
       errors.announcement_subject = "Subject is required";
     }
     if (!announcement.announcement_description.trim()) {
@@ -80,6 +84,7 @@ const Announcements = () => {
   };
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    console.log(announcement);
     if (validatForm()) {
       storeCourseAnnoncements(announcement).then((result) => {
         if (result) {
@@ -193,23 +198,27 @@ const Announcements = () => {
                     </div>
                     <div className="mx-3 col-4">
                       <label>Subject</label>
-                      <select
-                        id="announcement_subject"
-                        name="announcement_subject"
-                        className="form-control custom-select"
-                        value={announcement.announcement_subject}
-                        onChange={handleInputChange}
-                      >
-                        <option selected>Choose...</option>
-                        {fetchCourses.courseDetails.map((e, index) => (
-                          <option
-                            value={fetchCourses.coursesAbbrv[index]}
-                            key={index}
-                          >
-                            {e}
-                          </option>
-                        ))}
-                      </select>
+                      {!isCourseView[0] ? (
+                        <select
+                          id="announcement_subject"
+                          name="announcement_subject"
+                          className="form-control custom-select"
+                          value={announcement.announcement_subject}
+                          onChange={handleInputChange}
+                        >
+                          <option>Choose...</option>
+                          {fetchCourses.courseDetails.map((e, index) => (
+                            <option
+                              value={fetchCourses.coursesAbbrv[index]}
+                              key={index}
+                            >
+                              {e}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <p className="mt-2">{isCourseView[1]}</p>
+                      )}
                       {formErrors.announcement_subject && (
                         <div className="annoucementValidation">
                           {formErrors.announcement_subject}
@@ -272,48 +281,50 @@ const Announcements = () => {
               </thead>
               <tbody>
                 {fetchCourses.allAnnouncements.map(
-                  (ann: Announcement, index) => (
-                    <tr key={index}>
-                      <th scope="row">{index + 1}</th>
+                  (ann: Announcement, index) =>
+                    (!isCourseView[0] ||
+                      ann.announcement_subject === isCourseView[2]) && (
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
 
-                      <>
-                        <td>{ann.announcement_name}</td>
-                        <td>{ann.announcement_heading}</td>
-                        <td>
-                          {
-                            fetchCourses.courseDetails[
-                              fetchCourses.coursesAbbrv.indexOf(
-                                ann.announcement_subject
-                              )
-                            ]
-                          }
-                        </td>
-                        <td>{ann.announcement_description}</td>
-                      </>
-                      {userDetails.role === "Administrator" ||
-                      userDetails.role === "Faculty" ? (
-                        <td>
-                          <button
-                            className="btn btn-danger form-control"
-                            onClick={() => {
-                              deleteAnnouncements(
-                                index,
-                                ann.announcement_subject,
-                                ann
-                              );
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              className="m-1 fa-s"
-                              icon={faTrash}
-                            />
-                          </button>
-                        </td>
-                      ) : (
-                        <></>
-                      )}
-                    </tr>
-                  )
+                        <>
+                          <td>{ann.announcement_name}</td>
+                          <td>{ann.announcement_heading}</td>
+                          <td>
+                            {
+                              fetchCourses.courseDetails[
+                                fetchCourses.coursesAbbrv.indexOf(
+                                  ann.announcement_subject
+                                )
+                              ]
+                            }
+                          </td>
+                          <td>{ann.announcement_description}</td>
+                        </>
+                        {userDetails.role === "Administrator" ||
+                        userDetails.role === "Faculty" ? (
+                          <td>
+                            <button
+                              className="btn btn-danger form-control"
+                              onClick={() => {
+                                deleteAnnouncements(
+                                  index,
+                                  ann.announcement_subject,
+                                  ann
+                                );
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                className="m-1 fa-s"
+                                icon={faTrash}
+                              />
+                            </button>
+                          </td>
+                        ) : (
+                          <></>
+                        )}
+                      </tr>
+                    )
                 )}
               </tbody>
             </table>

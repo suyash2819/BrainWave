@@ -19,11 +19,13 @@ import CoursesView from "../../components/CoursesView/CoursesView";
 import {
   getUserCoursesApi,
   modifyAnnouncements,
+  modifyAssignments,
   modifyCourseDetails,
 } from "../../reducers/getCourses";
 import UserAccount from "../UserAccount/UserAccount";
 import { getCourseDetails } from "../../services/courseService";
 import BrowseCousrses from "../BrowseCourses/BrowseCousrses";
+import SubCourseView from "../SubCourseView/SubCourseView";
 
 type courseDetails = {
   randomColor: string;
@@ -93,6 +95,12 @@ const DashBoard = () => {
       announcements = [...announcements, ...ann];
     });
     dispatchStore(modifyAnnouncements(announcements.map((e: any) => e)));
+    let assignments: any = [];
+    courseDetails.forEach((e) => {
+      const ann = e.assignments;
+      assignments = [...assignments, ...ann];
+    });
+    dispatchStore(modifyAssignments(assignments.map((e: any) => e)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseDetails]);
 
@@ -103,7 +111,7 @@ const DashBoard = () => {
         <NavDashboard />
         {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
         {dashboardVals.showComponent === "announcements" ? (
-          <Announcements />
+          <Announcements isCourseView={[false, "", ""]} />
         ) : (
           <></>
         )}
@@ -126,6 +134,14 @@ const DashBoard = () => {
           <>
             {" "}
             <BrowseCousrses />
+          </>
+        ) : (
+          <></>
+        )}
+        {dashboardVals.showComponent.includes("subcourseview") ? (
+          <>
+            {" "}
+            <SubCourseView />
           </>
         ) : (
           <></>
