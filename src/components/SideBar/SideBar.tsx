@@ -135,10 +135,8 @@ function SideBar() {
                       key={-1}
                       className="sidebarContainer__options__navs_courses"
                       onClick={() => {
-                        dispatchStore(
-                          componentToggle("subcourseview " + element)
-                        );
-                        dispatchStore(modifyHeading("Couse Details"));
+                        dispatchStore(componentToggle("browsecourses"));
+                        dispatchStore(modifyHeading("All Courses"));
                       }}
                     >
                       <FontAwesomeIcon className="pe-3" icon={faBookAtlas} />{" "}
