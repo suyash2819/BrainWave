@@ -12,6 +12,7 @@ import Card from "react-bootstrap/esm/Card";
 import { Button, Form, ListGroup } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { modifyAssignments } from "../../reducers/getCourses";
+import AlertMessage from "../AlertMessage/AlertMessage";
 
 export default function Assignments({
   subCourseCode,
@@ -31,6 +32,15 @@ export default function Assignments({
     uuid: uuidv4(),
     submissionsEmail: [],
   });
+  const [showAlert, setShowAlert] = useState({
+    success: null || true || false,
+    message: "",
+    show: false,
+    type: "",
+  });
+  const alertMessageDisplay = () => {
+    setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
 
   const [studentAssignentText, setStudentAssignentText] = useState("");
 
@@ -113,9 +123,21 @@ export default function Assignments({
         dispatchStore(
           modifyAssignments([...fetchCourses.assignment, Assignment])
         );
+        setShowAlert({
+          success: true,
+          message: "Assignment has been posted!",
+          show: true,
+          type: "",
+        });
       })
       .catch((err) => {
         console.log(err);
+        setShowAlert({
+          success: true,
+          message: "Something went wrong try again!",
+          show: true,
+          type: "",
+        });
       });
   };
 
@@ -152,7 +174,13 @@ export default function Assignments({
         // );
       });
     }
-
+    setIsModalOpen(false);
+    setShowAlert({
+      success: true,
+      message: "Submission is done!",
+      show: true,
+      type: "",
+    });
     updateAssignmentUUIDArray(
       subCourseCode,
       displayOnModal?.uuid!,
@@ -162,6 +190,14 @@ export default function Assignments({
 
   return (
     <>
+      {showAlert.show ? (
+        <AlertMessage
+          success={showAlert.success}
+          message={showAlert.message}
+          alertDisplay={alertMessageDisplay}
+          type=""
+        />
+      ) : null}
       <div>
         {userDataStore.role !== "Student" ? (
           <form onSubmit={handleAssignmentSubmit}>
