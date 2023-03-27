@@ -10,4 +10,5 @@ export type courseDetail = {
   sem?: string;
   subCode?: string;
   professor?: string;
+  id?: string;
 };
