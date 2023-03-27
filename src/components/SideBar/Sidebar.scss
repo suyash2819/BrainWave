@@ -1,6 +1,5 @@
 .sidebarContainer {
   width: 300px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   ::-webkit-scrollbar {
@@ -89,7 +88,6 @@
 
 .sidebarCollapsedContainer {
   width: 100px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   ::-webkit-scrollbar {

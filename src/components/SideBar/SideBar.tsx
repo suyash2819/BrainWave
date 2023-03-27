@@ -146,6 +146,12 @@ function SideBar() {
                       <p
                         key={index}
                         className="sidebarContainer__options__navs_courses"
+                        onClick={() => {
+                          dispatchStore(
+                            componentToggle("subcourseview " + element)
+                          );
+                          dispatchStore(modifyHeading("Couse Details"));
+                        }}
                       >
                         <FontAwesomeIcon className="pe-3" icon={faBook} />{" "}
                         {element}
