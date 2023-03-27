@@ -16,3 +16,39 @@ export async function storeCourseAssignment(assignment: Assignment) {
       return false;
     });
 }
+
+export async function updateAssignmentArray(courseCode: string, uuid: string) {
+  const assignmentRef = doc(db, "assigments", courseCode);
+  console.log(assignmentRef);
+  console.log(uuid);
+  return updateDoc(assignmentRef, {
+    [uuid]: [],
+  })
+    .then(() => {
+      return true;
+    })
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
+}
+
+export async function updateAssignmentUUIDArray(
+  courseCode: string,
+  uuid: string,
+  email: string
+) {
+  const assignmentRef = doc(db, "assigments", courseCode);
+  console.log(assignmentRef);
+  console.log(uuid);
+  return updateDoc(assignmentRef, {
+    [uuid]: arrayUnion(email),
+  })
+    .then(() => {
+      return true;
+    })
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
+}

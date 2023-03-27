@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-//import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { Assignment, courseDetailI } from "./IAssignments";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { storeCourseAssignment } from "../../services/assignmentService";
+import {
+  storeCourseAssignment,
+  updateAssignmentArray,
+  updateAssignmentUUIDArray,
+} from "../../services/assignmentService";
 import Card from "react-bootstrap/esm/Card";
-import { Button, ListGroup } from "react-bootstrap";
+import { Button, Form, ListGroup } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { modifyAssignments } from "../../reducers/getCourses";
 
@@ -23,7 +27,12 @@ export default function Assignments({
     deadlineDate: "",
     file: "",
     datePosted: new Date().toISOString(),
+    submissiontType: "text",
+    uuid: uuidv4(),
+    submissionsEmail: [],
   });
+
+  const [studentAssignentText, setStudentAssignentText] = useState("");
 
   const {
     name: assignmentName,
@@ -31,15 +40,14 @@ export default function Assignments({
     deadlineDate,
   } = Assignment;
 
-  const [assignmentFile, setAssignmentFile] = useState<File>();
   const [displayOnModal, setDisplayOnModal] = useState<Assignment>();
   const dispatchStore = useAppDispatch();
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-  const [submittedAssignments, setSubmittedAssignments] =
-    useState<Assignment>();
 
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = event.target;
     setAssignment((prevState) => ({
@@ -47,47 +55,45 @@ export default function Assignments({
       [name]: value,
       courseName: subCourseCode,
     }));
-    console.log(Assignment);
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const storage = getStorage();
   const handleFileSubmission = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     event.preventDefault();
     if (event.target.files && event.target.files.length > 0) {
-      setAssignmentFile(event.target.files[0] as File);
-    }
-    const storage = getStorage();
-    const storageRef = ref(
-      storage,
-      courseDetailAssign.title + "/" + assignmentFile?.name
-    );
-    const file = event.target.files!;
-    uploadBytes(storageRef, file[0]).then(() => {
-      console.log(file);
-      getDownloadURL(
-        ref(storage, courseDetailAssign.title + "/" + assignmentFile?.name)
-      ).then((url) => {
-        console.log(url);
-        setSubmittedAssignments({
-          name: Assignment.name,
-          description: Assignment.description,
-          deadlineDate: Assignment.deadlineDate,
-          courseName: subCourseCode,
-          courseFullName: subCourseFullHeading,
-          file: url,
+      const file = event.target.files!;
+      const storageRef = ref(
+        storage,
+        courseDetailAssign.title + "/" + userDataStore.role + "/" + file[0].name
+      );
+
+      uploadBytes(storageRef, file[0]).then(() => {
+        console.log(file);
+        getDownloadURL(
+          ref(
+            storage,
+            courseDetailAssign.title +
+              "/" +
+              userDataStore.role +
+              "/" +
+              file[0].name
+          )
+        ).then((url) => {
+          console.log(url);
+          setAssignment({ ...Assignment, file: url });
         });
       });
-    });
+    }
   };
 
   const handleAssignmentSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    storeCourseAssignment(submittedAssignments!)
+    storeCourseAssignment(Assignment!)
       .then((res) => {
         console.log(res);
         setAssignment({ ...Assignment, file: "" });
@@ -98,7 +104,12 @@ export default function Assignments({
           deadlineDate: "",
           courseFullName: subCourseFullHeading,
           file: "",
+          datePosted: new Date().toISOString(),
+          submissiontType: Assignment.submissiontType,
+          submissionsEmail: [],
+          uuid: uuidv4(),
         });
+        updateAssignmentArray(subCourseCode, displayOnModal?.uuid!);
         dispatchStore(
           modifyAssignments([...fetchCourses.assignment, Assignment])
         );
@@ -111,6 +122,42 @@ export default function Assignments({
   const displayModel = (element: Assignment) => {
     setIsModalOpen(true);
     setDisplayOnModal(element!);
+  };
+
+  const handleSubmissionStudent = () => {
+    if (displayOnModal?.submissiontType === "text") {
+      let textFile = new Blob([studentAssignentText], { type: "text/plain" });
+      const storageRef = ref(
+        storage,
+        courseDetailAssign.title +
+          "/" +
+          userDataStore.role +
+          "/" +
+          userDataStore.email +
+          "/" +
+          "/textSubmission.txt"
+      );
+      uploadBytes(storageRef, textFile).then(() => {
+        console.log(textFile);
+        // getDownloadURL(
+        //   ref(
+        //     storage,
+        //     courseDetailAssign.title +
+        //       "/" +
+        //       userDataStore.role +
+        //       "/" +
+        //       userDataStore.email +
+        //       "/textSubmission.txt"
+        //   )
+        // );
+      });
+    }
+
+    updateAssignmentUUIDArray(
+      subCourseCode,
+      displayOnModal?.uuid!,
+      userDataStore.email
+    );
   };
 
   return (
@@ -149,7 +196,7 @@ export default function Assignments({
                   </td>
                 </tr>
                 <tr>
-                  <th>Deadline Date</th>
+                  <th>Deadline Date:</th>
                   <td>
                     <input
                       type="date"
@@ -163,11 +210,12 @@ export default function Assignments({
                   </td>
                 </tr>
                 <tr>
-                  <th>File upload</th>
+                  <th>Upload your files (.pdf, .docx, .txt):</th>
                   <td>
                     <input
                       type="file"
-                      id="file-upload"
+                      accept="application/pdf,application/msword, .txt"
+                      multiple
                       name="file"
                       onChange={handleFileSubmission}
                     />
@@ -187,6 +235,7 @@ export default function Assignments({
           <></>
         )}
       </div>
+
       <div className="mb-5">
         <h2 className="mt-4 text-center">Assignments</h2>
         {fetchCourses.assignment.filter((e) => e.courseName === subCourseCode)
@@ -235,16 +284,61 @@ export default function Assignments({
                   {displayOnModal?.description}
                 </p>
 
-                <a href={displayOnModal?.file} className="download-btn">
-                  Download
+                <a
+                  style={{ textDecoration: "none" }}
+                  href={displayOnModal?.file}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="download-btn"
+                >
+                  Assignment Files
                 </a>
-                <p>DeadLine : {displayOnModal?.deadlineDate}</p>
-                <p>Date Posted : {displayOnModal?.datePosted}</p>
+                <p className="mt-3">
+                  DeadLine : {displayOnModal?.deadlineDate}
+                </p>
+                <p>
+                  Date Posted : {displayOnModal?.datePosted?.substring(0, 10)}
+                </p>
+                <Form.Group controlId="formFileSm" className="mb-3">
+                  {displayOnModal?.submissiontType === "text" ? (
+                    <>
+                      <Form.Label>Enter your text:</Form.Label>
+                      <Form.Control
+                        onChange={(e) =>
+                          setStudentAssignentText(e.target.value)
+                        }
+                        as="textarea"
+                        rows={3}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Form.Label>
+                        Upload your files (.pdf, .docx, .txt):
+                      </Form.Label>
+                      <Form.Control
+                        multiple
+                        accept="application/pdf,application/msword, .txt"
+                        type="file"
+                        size="sm"
+                        name="studentFile"
+                        onChange={handleFileSubmission}
+                      />
+                    </>
+                  )}
+                </Form.Group>
               </>
             </Modal.Body>
             <Modal.Footer>
-              {userDataStore.role !== "Student" ? (
+              {userDataStore.role === "Student" ? (
                 <Button>Delete</Button>
+              ) : (
+                <></>
+              )}
+              {userDataStore.role !== "Student" ? (
+                <Button onClick={handleSubmissionStudent}>
+                  Submit Assignment
+                </Button>
               ) : (
                 <></>
               )}
