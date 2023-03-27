@@ -9,7 +9,7 @@ import {
   updateAssignmentUUIDArray,
 } from "../../services/assignmentService";
 import Card from "react-bootstrap/esm/Card";
-import { Button, Form, ListGroup } from "react-bootstrap";
+import { Button, Form, ListGroup, Spinner } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { modifyAssignments } from "../../reducers/getCourses";
 import AlertMessage from "../AlertMessage/AlertMessage";
@@ -67,13 +67,16 @@ export default function Assignments({
     }));
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFileUploading, setIsFileUploading] = useState<boolean>(false);
   const storage = getStorage();
+
   const handleFileSubmission = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     event.preventDefault();
     if (event.target.files && event.target.files.length > 0) {
+      setIsFileUploading(true);
       const file = event.target.files!;
       const storageRef = ref(
         storage,
@@ -93,6 +96,7 @@ export default function Assignments({
           )
         ).then((url) => {
           console.log(url);
+          setIsFileUploading(false);
           setAssignment({ ...Assignment, file: url });
         });
       });
@@ -247,7 +251,7 @@ export default function Assignments({
                 </tr>
                 <tr>
                   <th>Upload your files (.pdf, .docx, .txt):</th>
-                  <td>
+                  <td className="d-flex flex-row">
                     <input
                       type="file"
                       accept="application/pdf,application/msword, .txt"
@@ -255,6 +259,7 @@ export default function Assignments({
                       name="file"
                       onChange={handleFileSubmission}
                     />
+                    {isFileUploading ? <Spinner animation="border" /> : <></>}
                   </td>
                 </tr>
                 <tr>
@@ -348,9 +353,14 @@ export default function Assignments({
                       />
                     </>
                   ) : (
-                    <>
+                    <div>
                       <Form.Label>
                         Upload your files (.pdf, .docx, .txt):
+                        {isFileUploading ? (
+                          <Spinner animation="border" />
+                        ) : (
+                          <></>
+                        )}
                       </Form.Label>
                       <Form.Control
                         multiple
@@ -360,7 +370,7 @@ export default function Assignments({
                         name="studentFile"
                         onChange={handleFileSubmission}
                       />
-                    </>
+                    </div>
                   )}
                 </Form.Group>
               </>
@@ -372,7 +382,10 @@ export default function Assignments({
                 <></>
               )}
               {userDataStore.role !== "Student" ? (
-                <Button onClick={handleSubmissionStudent}>
+                <Button
+                  disabled={isFileUploading}
+                  onClick={handleSubmissionStudent}
+                >
                   Submit Assignment
                 </Button>
               ) : (
