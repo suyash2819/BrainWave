@@ -56,7 +56,9 @@ function App() {
               <Route path="/aboutus" element={<AboutUs />} />
               <Route
                 path="/teacherAnnouncements"
-                element={<TeacherAnnouncements />}
+                element={
+                  <TeacherAnnouncements isCourseView={[false, "", ""]} />
+                }
               />
             </Routes>
           </CSSTransition>
