@@ -161,9 +161,7 @@ function SideBar() {
               <p className="sidebarContainer__options__navs">
                 <FontAwesomeIcon className="pe-3" icon={faMessage} /> Messages
               </p>
-              <p className="sidebarContainer__options__navs">
-                <FontAwesomeIcon className="pe-3" icon={faUser} /> Help
-              </p>
+
               <p
                 className="sidebarContainer__options__navs"
                 onClick={() => {
@@ -273,9 +271,7 @@ function SideBar() {
               <p className="sidebarContainer__options__navs">
                 <FontAwesomeIcon className="pe-3" icon={faMessage} />
               </p>
-              <p className="sidebarContainer__options__navs">
-                <FontAwesomeIcon className="pe-3" icon={faUser} />
-              </p>
+
               <p
                 className="sidebarContainer__options__navs"
                 onClick={() => {
