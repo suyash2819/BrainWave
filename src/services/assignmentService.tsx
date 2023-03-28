@@ -1,10 +1,10 @@
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { Assignment } from "../components/Assignments/IAssignments";
 import { db } from "../config/firebase";
 
 export async function storeCourseAssignment(assignment: Assignment) {
   const assignmentRef = doc(db, "courses", assignment.courseName);
-  console.log(assignmentRef);
+
   return updateDoc(assignmentRef, {
     assignments: arrayUnion(assignment),
   })
@@ -17,13 +17,11 @@ export async function storeCourseAssignment(assignment: Assignment) {
     });
 }
 
-export async function updateAssignmentArray(courseCode: string, uuid: string) {
-  const assignmentRef = doc(db, "assigments", courseCode);
-  console.log(assignmentRef);
-  console.log(uuid);
-  return updateDoc(assignmentRef, {
-    [uuid]: [],
-  })
+export async function updateAssignmentArray(
+  email: string,
+  data: { [x: string]: any }
+) {
+  await setDoc(doc(db, "submissionAssignments", email), data)
     .then(() => {
       return true;
     })
@@ -33,22 +31,12 @@ export async function updateAssignmentArray(courseCode: string, uuid: string) {
     });
 }
 
-export async function updateAssignmentUUIDArray(
-  courseCode: string,
-  uuid: string,
-  email: string
-) {
-  const assignmentRef = doc(db, "assigments", courseCode);
-  console.log(assignmentRef);
-  console.log(uuid);
-  return updateDoc(assignmentRef, {
-    [uuid]: arrayUnion(email),
-  })
-    .then(() => {
-      return true;
-    })
-    .catch((err) => {
-      console.log(err);
-      return false;
-    });
+export async function fetchStudentSubmittedAssignment(email: string) {
+  const documentStudent = doc(db, "submissionAssignments", email);
+  const docSnap = await getDoc(documentStudent);
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    return {};
+  }
 }

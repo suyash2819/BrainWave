@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   getStorage,
   ref,
@@ -11,9 +11,9 @@ import { v4 as uuidv4 } from "uuid";
 import { Assignment, courseDetailI } from "./IAssignments";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+  fetchStudentSubmittedAssignment,
   storeCourseAssignment,
   updateAssignmentArray,
-  updateAssignmentUUIDArray,
 } from "../../services/assignmentService";
 import Card from "react-bootstrap/esm/Card";
 import { Button, Form, ListGroup, Spinner } from "react-bootstrap";
@@ -21,7 +21,7 @@ import Modal from "react-bootstrap/Modal";
 import { modifyAssignments } from "../../reducers/getCourses";
 import AlertMessage from "../AlertMessage/AlertMessage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export default function Assignments({
   subCourseCode,
@@ -50,19 +50,25 @@ export default function Assignments({
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
-
   const [studentAssignentText, setStudentAssignentText] = useState("");
-
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [displayOnModal, setDisplayOnModal] = useState<Assignment>();
+  const dispatchStore = useAppDispatch();
+  const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
+  const [storageRef, setStorageRef] = useState<StorageReference>();
+  const [submittedAssignments, setSubmittedAssignments] = useState<string[]>(
+    []
+  );
+  const storage = getStorage();
+  const [isFileUploading, setIsFileUploading] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
   const {
     name: assignmentName,
     description: assignmentDescription,
     deadlineDate,
   } = Assignment;
-
-  const [displayOnModal, setDisplayOnModal] = useState<Assignment>();
-  const dispatchStore = useAppDispatch();
-  const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-
   const handleInputChange = (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -77,13 +83,13 @@ export default function Assignments({
     console.log(Assignment);
   };
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [storageRef, setStorageRef] = useState<StorageReference>();
-  const [isFileUploading, setIsFileUploading] = useState<[boolean, string]>([
-    false,
-    "",
-  ]);
-  const storage = getStorage();
+  useEffect(() => {
+    fetchStudentSubmittedAssignment(userDataStore.email).then((data) => {
+      setSubmittedAssignments(Object.keys(data));
+    });
+
+    // eslint-disable-next-line
+  }, [isModalOpen, displayOnModal]);
 
   const handleFileSubmission = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -173,7 +179,7 @@ export default function Assignments({
           submissionsEmail: [],
           uuid: uuidv4(),
         });
-        updateAssignmentArray(subCourseCode, displayOnModal?.uuid!);
+
         dispatchStore(
           modifyAssignments([...fetchCourses.assignment, Assignment])
         );
@@ -196,6 +202,12 @@ export default function Assignments({
   };
 
   const displayModel = (element: Assignment) => {
+    setShowAlert({
+      success: true,
+      message: "",
+      show: false,
+      type: "",
+    });
     setIsModalOpen(true);
     setDisplayOnModal(element!);
   };
@@ -217,36 +229,27 @@ export default function Assignments({
       );
       uploadBytes(storageRef, textFile).then(() => {
         console.log(textFile);
-        // getDownloadURL(
-        //   ref(
-        //     storage,
-        //     courseDetailAssign.title +
-        //       "/" +
-        //       userDataStore.role +
-        //       "/" +
-        //       userDataStore.email +
-        //       "/textSubmission.txt"
-        //   )
-        // );
       });
     }
     setIsModalOpen(false);
+    setIsFileUploading([false, ""]);
     setShowAlert({
       success: true,
       message: "Submission is done!",
       show: true,
       type: "",
     });
-    updateAssignmentUUIDArray(
-      subCourseCode,
-      displayOnModal?.uuid!,
-      userDataStore.email
-    );
+    fetchStudentSubmittedAssignment(userDataStore.email).then((data) => {
+      updateAssignmentArray(userDataStore.email, {
+        ...data,
+        [displayOnModal?.uuid!]: 9999,
+      });
+    });
   };
 
   return (
     <>
-      {showAlert.show ? (
+      {showAlert.show && !isModalOpen ? (
         <AlertMessage
           success={showAlert.success}
           message={showAlert.message}
@@ -324,13 +327,14 @@ export default function Assignments({
                       name="file"
                       onChange={handleFileSubmission}
                     />
-                    {isFileUploading[0] ? (
+                    {isFileUploading[0] && !isModalOpen ? (
                       <Spinner animation="border" />
                     ) : (
                       <></>
                     )}
                     {!isFileUploading[0] &&
-                    isFileUploading[1] === "uploaded" ? (
+                    isFileUploading[1] === "uploaded" &&
+                    !isModalOpen ? (
                       <FontAwesomeIcon
                         onClick={() => handleDeleteFileSubmission()}
                         className="p-3"
@@ -379,7 +383,19 @@ export default function Assignments({
                       className="my-1 d-flex justify-content-between"
                       key={index}
                     >
-                      <p className="h5">{element.name}</p>
+                      <p className="h5 col-4">{element.name}</p>
+                      {submittedAssignments.indexOf(element.uuid!) > -1 ? (
+                        <div style={{ color: "green" }}>
+                          Submitted!{" "}
+                          <FontAwesomeIcon
+                            className="mt-2"
+                            icon={faCircleCheck}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+
                       <Button
                         onClick={() => displayModel(element)}
                         variant="outline-primary"
@@ -404,6 +420,14 @@ export default function Assignments({
             backdrop="static"
             keyboard={false}
           >
+            {showAlert.show ? (
+              <AlertMessage
+                success={showAlert.success}
+                message={showAlert.message}
+                alertDisplay={alertMessageDisplay}
+                type=""
+              />
+            ) : null}
             <Modal.Header onClick={() => setIsModalOpen(false)} closeButton>
               <Modal.Title>{displayOnModal?.name}</Modal.Title>
             </Modal.Header>
@@ -429,46 +453,53 @@ export default function Assignments({
                   Date Posted : {displayOnModal?.datePosted?.substring(0, 10)}
                 </p>
                 <Form.Group controlId="formFileSm" className="mb-3">
-                  {displayOnModal?.submissiontType === "text" ? (
-                    <>
-                      <Form.Label>Enter your text:</Form.Label>
-                      <Form.Control
-                        onChange={(e) =>
-                          setStudentAssignentText(e.target.value)
-                        }
-                        as="textarea"
-                        rows={3}
-                      />
-                    </>
-                  ) : (
-                    <div className="d-flex flex-row">
-                      <Form.Label>
-                        Upload your files (.pdf, .docx, .txt):
-                        {isFileUploading[0] ? (
-                          <Spinner animation="border" />
-                        ) : (
-                          <></>
-                        )}
-                      </Form.Label>
-                      <Form.Control
-                        multiple
-                        accept="application/pdf,application/msword, .txt"
-                        type="file"
-                        size="sm"
-                        name="studentFile"
-                        onChange={handleFileSubmission}
-                      />
-                      {!isFileUploading[0] &&
-                      isFileUploading[1] === "uploaded" ? (
-                        <FontAwesomeIcon
-                          onClick={() => handleDeleteFileSubmission()}
-                          className="pe-3"
-                          icon={faTrashCan}
+                  {submittedAssignments.indexOf(displayOnModal?.uuid!) ===
+                  -1 ? (
+                    displayOnModal?.submissiontType === "text" ? (
+                      <>
+                        <Form.Label>Enter your text:</Form.Label>
+                        <Form.Control
+                          onChange={(e) =>
+                            setStudentAssignentText(e.target.value)
+                          }
+                          as="textarea"
+                          rows={3}
                         />
-                      ) : (
-                        <></>
-                      )}
-                    </div>
+                      </>
+                    ) : (
+                      <div>
+                        <Form.Label>
+                          Upload your files (.pdf, .docx, .txt):
+                        </Form.Label>{" "}
+                        <div className="d-flex flex-row">
+                          <Form.Control
+                            multiple
+                            accept="application/pdf,application/msword, .txt"
+                            type="file"
+                            size="sm"
+                            name="studentFile"
+                            onChange={handleFileSubmission}
+                          />
+                          {!isFileUploading[0] &&
+                          isFileUploading[1] === "uploaded" ? (
+                            <FontAwesomeIcon
+                              onClick={() => handleDeleteFileSubmission()}
+                              className="ms-2 pt-2"
+                              icon={faTrashCan}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                          {isFileUploading[0] ? (
+                            <Spinner className="ms-3 pt-2" animation="border" />
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  ) : (
+                    <></>
                   )}
                 </Form.Group>
               </>
@@ -479,15 +510,24 @@ export default function Assignments({
               ) : (
                 <></>
               )}
-              {userDataStore.role !== "Student" &&
+              {userDataStore.role === "Student" &&
               ((displayOnModal?.submissiontType === "file" &&
-                isFileUploading[1] === "student") ||
-                displayOnModal?.submissiontType === "text") ? (
+                isFileUploading[1] === "uploaded") ||
+                displayOnModal?.submissiontType === "text") &&
+              submittedAssignments.indexOf(displayOnModal?.uuid!) === -1 ? (
                 <Button
                   disabled={isFileUploading[0]}
                   onClick={handleSubmissionStudent}
                 >
                   Submit Assignment
+                </Button>
+              ) : (
+                <></>
+              )}
+              {submittedAssignments.indexOf(displayOnModal?.uuid!) > -1 &&
+              userDataStore.role === "Student" ? (
+                <Button disabled variant="success">
+                  Assignment Submitted!
                 </Button>
               ) : (
                 <></>
