@@ -3,8 +3,10 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import "./CoursesView.scss";
-import { useAppSelector } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 import Spinner from "react-bootstrap/esm/Spinner";
+import iulogo from "../../assets/iulogo.png";
+import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
 
 interface courseDetailsArr {
   courseDetailsarr: courseDetails[];
@@ -14,26 +16,41 @@ type courseDetails = {
   randomColor: string;
   announcements: string[];
   assignments: string[];
-  description: string;  
+  description: string;
   syllabus: string | string[];
   title: string;
 };
 
 export default function CoursesView({ courseDetailsarr }: courseDetailsArr) {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-
+  const dispatchStore = useAppDispatch();
   return (
     <>
       <Row md={3} className="g-5 my-5 mx-3">
         {fetchCourses.coursesAbbrv &&
           courseDetailsarr.map((element, index: number) => (
             <Col key={index}>
-              <Card className="cardContainer" border="primary">
+              <Card
+                style={{ width: "18rem" }}
+                className="cardContainer"
+                border="primary"
+                onClick={() => {
+                  dispatchStore(
+                    componentToggle("subcourseview " + element.title)
+                  );
+                  dispatchStore(modifyHeading("Course Details"));
+                }}
+              >
+                <Card.Img
+                  variant="top"
+                  src={iulogo}
+                  style={{
+                    height: "50px",
+                    width: "50px",
+                    alignItems: "center",
+                  }}
+                />
                 <Card.Body>
-                  <div
-                    style={{ backgroundColor: "#" + element.randomColor }}
-                    className="cardContainer__bg"
-                  ></div>
                   <Card.Title>{element.title}</Card.Title>
                   <Card.Text title={element.description} className="">
                     {element.description.substring(0, 100) + "..."}
