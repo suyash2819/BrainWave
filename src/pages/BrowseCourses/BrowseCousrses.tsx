@@ -11,6 +11,8 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Modal from "react-bootstrap/Modal";
 import { useAppSelector } from "../../hooks";
 import Spinner from "react-bootstrap/esm/Spinner";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
+import { IAlertProps } from "../../components/AlertMessage/IAlertProps";
 import "./BrowseCourses.scss";
 
 let tempCourseDetail: courseDetail[] = [];
@@ -32,6 +34,13 @@ export default function BrowseCousrses() {
     setDisplayOnModal(element);
     setShow(true);
   };
+
+  const [showAlert, setShowAlert] = useState<IAlertProps>({
+    success: null || true || false,
+    message: "",
+    show: false,
+    type: "",
+  });
 
   const fetchingCourses = async () => {
     const tempAllCourses = getAllCourses();
@@ -72,8 +81,49 @@ export default function BrowseCousrses() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchCourse]);
+
+  const handleEnrollement = () => {
+    storeCoursesEnrollent(userDataStore.email, displayOnModal.id || "").then(
+      (stored) => {
+        console.log(stored);
+
+        if (stored) {
+          setShow(false);
+          setShowAlert({
+            success: true,
+            message: `Enrollment request sent to admin`,
+            show: true,
+            type: "success",
+          });
+        } else {
+          setShow(false);
+          setShowAlert({
+            success: false,
+            message: `Some error occurred`,
+            show: true,
+            type: "danger",
+          });
+        }
+      }
+    );
+  };
+
+  const alertMessageDisplay = () => {
+    setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
+
   return (
     <>
+      <div className="approvePageAlert">
+        {showAlert.show ? (
+          <AlertMessage
+            success={showAlert.success}
+            message={showAlert.message}
+            alertDisplay={alertMessageDisplay}
+            type={showAlert.type}
+          />
+        ) : null}
+      </div>
       {AllCourses.length || searchCourse.length ? (
         <div className="mb-5">
           <div className="m-5">
@@ -159,15 +209,7 @@ export default function BrowseCousrses() {
                   You are Already Enrolled!
                 </Button>
               ) : (
-                <Button
-                  variant="primary"
-                  onClick={() =>
-                    storeCoursesEnrollent(
-                      userDataStore.email,
-                      displayOnModal.id || ""
-                    )
-                  }
-                >
+                <Button variant="primary" onClick={() => handleEnrollement()}>
                   {userDataStore.role === "Professor"
                     ? "Request for taking course"
                     : "Enroll"}
