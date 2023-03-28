@@ -43,7 +43,13 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
     >
   ) => {
     const { name, value } = event.target;
-    setAnnouncement({ ...announcement, [name]: value });
+    console.log(announcement);
+    setAnnouncement({
+      ...announcement,
+      [name]: value,
+      announcement_subject: isCourseView[0] ? isCourseView[2] : value,
+    });
+    console.log(announcement);
     setFormErrors({});
   };
   const alertMessageDisplay = () => {
@@ -105,7 +111,7 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
           setAnnouncement({
             announcement_heading: "",
             announcement_name: "",
-            announcement_subject: "",
+            announcement_subject: isCourseView[0] ? isCourseView[2] : "",
             announcement_description: "",
             annoucement_date: "",
           });
@@ -186,6 +192,7 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
                         type="date"
                         className="form-control"
                         id="annoucement_date"
+                        min={new Date().toISOString().split("T")[0]}
                         name="annoucement_date"
                         value={announcement.annoucement_date}
                         onChange={handleInputChange}

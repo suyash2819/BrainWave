@@ -8,6 +8,7 @@ import {
   faBullhorn,
   faCalendarWeek,
   faListCheck,
+  faPersonCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Dropdown from "react-bootstrap/Dropdown";
 import defaultpfp from "../../assets/defaultPfp.jpg";
@@ -58,7 +59,10 @@ const NavDashboard = () => {
                     }}
                     className="m-1"
                   >
-                    <FontAwesomeIcon className="m-2 fa-xl" icon={faListCheck} />
+                    <FontAwesomeIcon
+                      className="m-2 fa-xl"
+                      icon={faPersonCircleCheck}
+                    />
                   </Nav.Link>
                   <Nav.Link
                     title="Review new enrollments"
