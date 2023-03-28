@@ -299,7 +299,12 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
                               ]
                             }
                           </td>
-                          <td>{ann.announcement_description}</td>
+                          <td>
+                            {ann.announcement_description.length > 40
+                              ? ann.announcement_description.substring(0, 30) +
+                                "..."
+                              : ann.announcement_description}
+                          </td>
                         </>
                         {userDetails.role === "Administrator" ||
                         userDetails.role === "Faculty" ? (

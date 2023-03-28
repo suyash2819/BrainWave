@@ -82,10 +82,7 @@ function SideBar() {
             </div>
             <hr />
 
-            <div
-              className="d-flex flex-column"
-              style={{ height: "400px", overflow: "scroll" }}
-            >
+            <div className="d-flex flex-column" style={{ overflow: "scroll" }}>
               <p
                 className="sidebarContainer__options__navs"
                 onClick={() => {
@@ -203,10 +200,7 @@ function SideBar() {
             </div>
             <hr />
 
-            <div
-              className="d-flex flex-column"
-              style={{ height: "400px", overflow: "scroll" }}
-            >
+            <div className="d-flex flex-column" style={{ overflow: "scroll" }}>
               <p
                 className="sidebarContainer__options__navs"
                 onClick={() => {

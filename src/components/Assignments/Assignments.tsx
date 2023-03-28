@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+  StorageReference,
+} from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { Assignment, courseDetailI } from "./IAssignments";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -13,6 +20,8 @@ import { Button, Form, ListGroup, Spinner } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { modifyAssignments } from "../../reducers/getCourses";
 import AlertMessage from "../AlertMessage/AlertMessage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export default function Assignments({
   subCourseCode,
@@ -65,10 +74,15 @@ export default function Assignments({
       [name]: value,
       courseName: subCourseCode,
     }));
+    console.log(Assignment);
   };
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isFileUploading, setIsFileUploading] = useState<boolean>(false);
+  const [storageRef, setStorageRef] = useState<StorageReference>();
+  const [isFileUploading, setIsFileUploading] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
   const storage = getStorage();
 
   const handleFileSubmission = async (
@@ -76,19 +90,39 @@ export default function Assignments({
   ) => {
     event.preventDefault();
     if (event.target.files && event.target.files.length > 0) {
-      setIsFileUploading(true);
+      setIsFileUploading([true, ""]);
       const file = event.target.files!;
-      const storageRef = ref(
+      setStorageRef(
+        ref(
+          storage,
+          courseDetailAssign.title +
+            "/" +
+            Assignment.uuid +
+            "/" +
+            userDataStore.role +
+            "/" +
+            file[0].name
+        )
+      );
+      const localStorageRef = ref(
         storage,
-        courseDetailAssign.title + "/" + userDataStore.role + "/" + file[0].name
+        courseDetailAssign.title +
+          "/" +
+          Assignment.uuid +
+          "/" +
+          userDataStore.role +
+          "/" +
+          file[0].name
       );
 
-      uploadBytes(storageRef, file[0]).then(() => {
+      uploadBytes(localStorageRef, file[0]).then(() => {
         console.log(file);
         getDownloadURL(
           ref(
             storage,
             courseDetailAssign.title +
+              "/" +
+              Assignment.uuid +
               "/" +
               userDataStore.role +
               "/" +
@@ -96,11 +130,27 @@ export default function Assignments({
           )
         ).then((url) => {
           console.log(url);
-          setIsFileUploading(false);
+          setIsFileUploading([false, "uploaded"]);
           setAssignment({ ...Assignment, file: url });
         });
       });
     }
+  };
+
+  const handleDeleteFileSubmission = () => {
+    deleteObject(storageRef!)
+      .then(() => {
+        setShowAlert({
+          success: true,
+          message: "File is deleted Successfully!",
+          show: true,
+          type: "",
+        });
+        setIsFileUploading([false, ""]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleAssignmentSubmit = async (
@@ -156,6 +206,8 @@ export default function Assignments({
       const storageRef = ref(
         storage,
         courseDetailAssign.title +
+          "/" +
+          displayOnModal.uuid +
           "/" +
           userDataStore.role +
           "/" +
@@ -250,6 +302,19 @@ export default function Assignments({
                   </td>
                 </tr>
                 <tr>
+                  <th>Type of File Submission:</th>
+                  <td>
+                    <Form.Select
+                      name="submissiontType"
+                      onChange={handleInputChange}
+                      aria-label="Default select example"
+                    >
+                      <option value="text">Text</option>
+                      <option value="file">File</option>
+                    </Form.Select>
+                  </td>
+                </tr>
+                <tr>
                   <th>Upload your files (.pdf, .docx, .txt):</th>
                   <td className="d-flex flex-row">
                     <input
@@ -259,12 +324,35 @@ export default function Assignments({
                       name="file"
                       onChange={handleFileSubmission}
                     />
-                    {isFileUploading ? <Spinner animation="border" /> : <></>}
+                    {isFileUploading[0] ? (
+                      <Spinner animation="border" />
+                    ) : (
+                      <></>
+                    )}
+                    {!isFileUploading[0] &&
+                    isFileUploading[1] === "uploaded" ? (
+                      <FontAwesomeIcon
+                        onClick={() => handleDeleteFileSubmission()}
+                        className="p-3"
+                        icon={faTrashCan}
+                      />
+                    ) : (
+                      <></>
+                    )}
                   </td>
                 </tr>
                 <tr>
                   <td colSpan={2} className="submit-btn-container">
-                    <button className="submit-btn" type="submit">
+                    <button
+                      disabled={isFileUploading[0]}
+                      style={{
+                        backgroundColor: isFileUploading[0]
+                          ? "grey"
+                          : "#081f38",
+                      }}
+                      className="submit-btn"
+                      type="submit"
+                    >
                       Submit
                     </button>
                   </td>
@@ -353,10 +441,10 @@ export default function Assignments({
                       />
                     </>
                   ) : (
-                    <div>
+                    <div className="d-flex flex-row">
                       <Form.Label>
                         Upload your files (.pdf, .docx, .txt):
-                        {isFileUploading ? (
+                        {isFileUploading[0] ? (
                           <Spinner animation="border" />
                         ) : (
                           <></>
@@ -370,6 +458,16 @@ export default function Assignments({
                         name="studentFile"
                         onChange={handleFileSubmission}
                       />
+                      {!isFileUploading[0] &&
+                      isFileUploading[1] === "uploaded" ? (
+                        <FontAwesomeIcon
+                          onClick={() => handleDeleteFileSubmission()}
+                          className="pe-3"
+                          icon={faTrashCan}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   )}
                 </Form.Group>
@@ -381,9 +479,12 @@ export default function Assignments({
               ) : (
                 <></>
               )}
-              {userDataStore.role !== "Student" ? (
+              {userDataStore.role !== "Student" &&
+              ((displayOnModal?.submissiontType === "file" &&
+                isFileUploading[1] === "student") ||
+                displayOnModal?.submissiontType === "text") ? (
                 <Button
-                  disabled={isFileUploading}
+                  disabled={isFileUploading[0]}
                   onClick={handleSubmissionStudent}
                 >
                   Submit Assignment
