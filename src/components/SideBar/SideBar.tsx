@@ -147,7 +147,7 @@ function SideBar() {
                           dispatchStore(
                             componentToggle("subcourseview " + element)
                           );
-                          dispatchStore(modifyHeading("Couse Details"));
+                          dispatchStore(modifyHeading("Course Details"));
                         }}
                       >
                         <FontAwesomeIcon className="pe-3" icon={faBook} />{" "}
