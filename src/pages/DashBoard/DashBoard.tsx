@@ -31,6 +31,7 @@ type courseDetails = {
   assignments: string[];
   description: string;
   syllabus: string | string[];
+  schedule: string;
   title: string;
 };
 
@@ -80,6 +81,8 @@ const DashBoard = () => {
         syllabus: data["syllabus"],
         //@ts-ignore
         title: data["title"],
+        //@ts-ignore
+        schedule: data["schedule"],
       });
       setCourseDetials(courseDetailsTemp);
     });
@@ -101,7 +104,11 @@ const DashBoard = () => {
       <SideBar />
       <div className="DashBoardContainer__main d-flex flex-column">
         <NavDashboard />
-        {dashboardVals.showComponent === "calendar" ? <Calendar /> : <></>}
+        {dashboardVals.showComponent === "calendar" ? (
+          <Calendar courseDetailsarr={courseDetails} />
+        ) : (
+          <></>
+        )}
         {dashboardVals.showComponent === "announcements" ? (
           <Announcements />
         ) : (
