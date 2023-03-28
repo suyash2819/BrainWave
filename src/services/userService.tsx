@@ -9,6 +9,10 @@ import {
   doc,
   getDoc,
   updateDoc,
+  arrayRemove,
+  arrayUnion,
+  setDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
@@ -113,4 +117,50 @@ export async function approveUser(email: string, decision: string) {
           });
     });
   });
+}
+
+export async function approveUserEnrollment(
+  email: string,
+  decision: string,
+  course: string
+) {
+  const enrollmentRef = doc(db, "courses_for_enrollment", email);
+  const enrollmentDocSnap = await getDoc(enrollmentRef);
+
+  const userCoursesRef = doc(db, "user_courses", email);
+  const userCoursesDocSnap = await getDoc(userCoursesRef);
+
+  if (decision === "approved") {
+    if (enrollmentDocSnap.exists()) {
+      let countEnrollmentCourses = enrollmentDocSnap.data()["courses"].length;
+
+      await updateDoc(enrollmentRef, {
+        courses: arrayRemove(course),
+      });
+      countEnrollmentCourses -= 1;
+      if (countEnrollmentCourses === 0) {
+        await deleteDoc(doc(db, "courses_for_enrollment", email));
+      }
+      if (userCoursesDocSnap.exists()) {
+        await updateDoc(userCoursesRef, {
+          courses: arrayUnion(course),
+        });
+      } else {
+        await setDoc(doc(db, "user_courses", email), {
+          courses: [course],
+        });
+      }
+    }
+  } else {
+    if (enrollmentDocSnap.exists()) {
+      let countEnrollmentCourses = enrollmentDocSnap.data()["courses"].length;
+      await updateDoc(enrollmentRef, {
+        courses: arrayRemove(course),
+      });
+      countEnrollmentCourses -= 1;
+      if (countEnrollmentCourses === 0) {
+        await deleteDoc(doc(db, "courses_for_enrollment", email));
+      }
+    }
+  }
 }

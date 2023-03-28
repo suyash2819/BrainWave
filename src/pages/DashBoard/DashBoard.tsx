@@ -16,6 +16,7 @@ import Calendar from "../../components/calendar/Calendar";
 import Announcements from "../Announcements/Announcements";
 import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
 import CoursesView from "../../components/CoursesView/CoursesView";
+import ApproveEnrollments from "../Admin/ApproveEnrollments/ApproveEnrollments";
 import {
   getUserCoursesApi,
   modifyAnnouncements,
@@ -114,6 +115,14 @@ const DashBoard = () => {
         ) : (
           <></>
         )}
+
+        {userDataStore.role === "Administrator" &&
+        dashboardVals.showComponent === "reviewEnrollments" ? (
+          <ApproveEnrollments />
+        ) : (
+          <></>
+        )}
+
         {dashboardVals.showComponent === "dashboard" ? (
           <>
             {" "}

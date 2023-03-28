@@ -82,19 +82,7 @@ export async function storeCoursesEnrollent(userEmail: string, course: string) {
   }
 }
 
-export async function getCoursesEnrollent(userEmail: string) {
-  const coursesDoc = doc(db, "courses_for_enrollment", userEmail);
-  const docSnap = await getDoc(coursesDoc);
-  if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
-    docSnap.data()["courses"].map((course: string) => {
-      //To Do to take all the courses into array and return
-
-      getCourseDetails(course).then((data) => {
-        console.log(data);
-      });
-    });
-  } else {
-    console.log("No such document!");
-  }
+export async function getAllCoursesEnrollments() {
+  const docSnap = await getDocs(collection(db, "courses_for_enrollment"));
+  return docSnap;
 }

@@ -49,16 +49,28 @@ const NavDashboard = () => {
             </Nav.Link>
             <Navbar.Collapse className="justify-content-end">
               {userDetails.role === "Administrator" ? (
-                <Nav.Link
-                  title="Review new users"
-                  onClick={() => {
-                    dispatchStore(componentToggle("reviewUsers"));
-                    dispatchStore(modifyHeading("Review Users"));
-                  }}
-                  className="m-1"
-                >
-                  <FontAwesomeIcon className="m-2 fa-xl" icon={faListCheck} />
-                </Nav.Link>
+                <>
+                  <Nav.Link
+                    title="Review new users"
+                    onClick={() => {
+                      dispatchStore(componentToggle("reviewUsers"));
+                      dispatchStore(modifyHeading("Review Users"));
+                    }}
+                    className="m-1"
+                  >
+                    <FontAwesomeIcon className="m-2 fa-xl" icon={faListCheck} />
+                  </Nav.Link>
+                  <Nav.Link
+                    title="Review new enrollments"
+                    onClick={() => {
+                      dispatchStore(componentToggle("reviewEnrollments"));
+                      dispatchStore(modifyHeading("Review Enrollments"));
+                    }}
+                    className="m-1"
+                  >
+                    <FontAwesomeIcon className="m-2 fa-xl" icon={faListCheck} />
+                  </Nav.Link>
+                </>
               ) : (
                 <></>
               )}
