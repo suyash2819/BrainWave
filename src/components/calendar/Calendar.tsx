@@ -38,6 +38,7 @@ type Event = {
 export default function Calendar({ courseDetailsarr }: courseDetailsArr) {
   const events: Event[] = [];
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
+  const userDataStore = useAppSelector((state) => state.userLoginAPI);
   const [showAlert, setShowAlert] = useState<IAlertProps>({
     success: null || true || false,
     message: "",
@@ -47,6 +48,7 @@ export default function Calendar({ courseDetailsarr }: courseDetailsArr) {
   // eslint-disable-next-line no-lone-blocks
   {
     fetchCourses.coursesAbbrv &&
+      userDataStore.role !== "Administrator" &&
       courseDetailsarr.forEach((element) => {
         const title = element.title;
         const description = element.description;
