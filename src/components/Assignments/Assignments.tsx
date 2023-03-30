@@ -453,8 +453,8 @@ export default function Assignments({
                   Date Posted : {displayOnModal?.datePosted?.substring(0, 10)}
                 </p>
                 <Form.Group controlId="formFileSm" className="mb-3">
-                  {submittedAssignments.indexOf(displayOnModal?.uuid!) ===
-                  -1 ? (
+                  {submittedAssignments.indexOf(displayOnModal?.uuid!) === -1 &&
+                  userDataStore.role === "Student" ? (
                     displayOnModal?.submissiontType === "text" ? (
                       <>
                         <Form.Label>Enter your text:</Form.Label>
