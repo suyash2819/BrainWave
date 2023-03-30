@@ -46,12 +46,8 @@ const getUserCoursesSlice = createSlice({
     modifyAssignments: (state, action) => {
       state.assignment = action.payload;
     },
-    resetCourseData: (state) => {
-      state.allAnnouncements = [];
-      state.courseDetails = [];
-      state.coursesAbbrv = [];
-      state.status = "";
-      state.messageLog = "";
+    modifyCourseAbbrv: (state, action) => {
+      state.coursesAbbrv = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -76,7 +72,7 @@ const getUserCoursesSlice = createSlice({
 export const {
   modifyCourseDetails,
   modifyAnnouncements,
-  resetCourseData,
+  modifyCourseAbbrv,
   modifyAssignments,
 } = getUserCoursesSlice.actions;
 export default getUserCoursesSlice.reducer;

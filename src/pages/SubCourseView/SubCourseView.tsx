@@ -7,6 +7,7 @@ import "./SubCourseView.scss";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Announcements from "../Announcements/Announcements";
+import { Spinner } from "react-bootstrap";
 
 let tempCourseDetail: courseDetail;
 function SubCourseView() {
@@ -59,6 +60,14 @@ function SubCourseView() {
 
   return (
     <>
+      <div>
+        {subCourseDetails.title?.length === 0 ? (
+          <Spinner className="" animation="border" />
+        ) : (
+          <></>
+        )}
+      </div>
+
       <div ref={scrollRefToTop}>
         <h2 style={{ paddingTop: "3%", marginLeft: "40px" }}>
           {subCourseDetails?.title}

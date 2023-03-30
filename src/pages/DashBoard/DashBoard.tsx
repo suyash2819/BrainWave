@@ -21,15 +21,15 @@ import {
   getUserCoursesApi,
   modifyAnnouncements,
   modifyAssignments,
+  modifyCourseAbbrv,
   modifyCourseDetails,
 } from "../../reducers/getCourses";
 import UserAccount from "../UserAccount/UserAccount";
-import { getCourseDetails } from "../../services/courseService";
+import { getAllCourses, getCourseDetails } from "../../services/courseService";
 import BrowseCousrses from "../BrowseCourses/BrowseCousrses";
 import SubCourseView from "../SubCourseView/SubCourseView";
 
 type courseDetails = {
-  randomColor: string;
   announcements: string[];
   assignments: string[];
   description: string;
@@ -63,17 +63,35 @@ const DashBoard = () => {
     });
   });
   useEffect(() => {
-    dispatchStore(
-      getUserCoursesApi(userDataStore.email ? userDataStore.email : userEmail)
-    );
+    if (userDataStore.role === "Administrator") {
+      const dataAllCoursesAdmin = fetchCourseAdminMode();
+      dataAllCoursesAdmin.then((res) => {
+        dispatchStore(modifyCourseAbbrv(res));
+        console.log(res);
+      });
+    } else {
+      dispatchStore(
+        getUserCoursesApi(userDataStore.email ? userDataStore.email : userEmail)
+      );
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userDataStore]);
+
+  const fetchCourseAdminMode = async () => {
+    let courseAbbrvArr: string[] = [];
+    const tempAllCourses = getAllCourses();
+    (await tempAllCourses).forEach((doc) => {
+      const dataDoc: any = doc.data();
+      courseAbbrvArr.push(dataDoc.code);
+    });
+    return courseAbbrvArr;
+  };
 
   useEffect(() => {
     fetchCourses.coursesAbbrv.forEach(async (e) => {
       const data = await getCourseDetails(e);
       courseDetailsTemp.push({
-        randomColor: Math.floor(Math.random() * 16777215).toString(16),
         //@ts-ignore
         announcements: data["announcements"],
         //@ts-ignore
@@ -89,9 +107,11 @@ const DashBoard = () => {
       });
       setCourseDetials(courseDetailsTemp);
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchCourses.coursesAbbrv]);
   useEffect(() => {
+    console.log(courseDetails);
     dispatchStore(modifyCourseDetails(courseDetails.map((e: any) => e.title)));
     let announcements: any = [];
     courseDetails.forEach((e) => {

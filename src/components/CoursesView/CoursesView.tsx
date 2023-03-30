@@ -13,7 +13,6 @@ interface courseDetailsArr {
 }
 
 type courseDetails = {
-  randomColor: string;
   announcements: string[];
   assignments: string[];
   description: string;
@@ -52,8 +51,8 @@ export default function CoursesView({ courseDetailsarr }: courseDetailsArr) {
                 />
                 <Card.Body>
                   <Card.Title>{element.title}</Card.Title>
-                  <Card.Text title={element.description} className="">
-                    {element.description.substring(0, 100) + "..."}
+                  <Card.Text title={element.description} className="fst-italic">
+                    {element.description.substring(0, 70) + "..."}
                   </Card.Text>
                 </Card.Body>
               </Card>
