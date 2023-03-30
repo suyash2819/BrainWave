@@ -46,7 +46,7 @@ const LoginPage = () => {
     password: "",
   });
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
-  
+
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
@@ -184,7 +184,7 @@ const LoginPage = () => {
       navigate(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLoginlog.status, navigate]);
+  }, [userLoginlog.status]);
 
   const checkUser = (e: { preventDefault: () => void }) => {
     e.preventDefault();

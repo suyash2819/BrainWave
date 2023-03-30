@@ -67,12 +67,13 @@ const userSlice = createSlice({
             localStorage.setItem("bwUser", token);
           });
           localStorage.setItem("uuid", state.email);
+          state.status = "success";
         } else {
           signOut(auth);
           state.messageLog =
             "Please verify your email address from the link sent in mail by Brainwave!";
+          state.status = "";
         }
-        state.status = "success";
       })
       .addCase(userLogIn.rejected, (state, action) => {
         console.log(action.error.message);
