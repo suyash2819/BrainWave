@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import Switch from "../Switch/switch";
 import "./NavDashboard.scss";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -23,6 +24,22 @@ const NavDashboard = () => {
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dispatchStore = useAppDispatch();
   const navigate = useNavigate();
+  
+  //dark-mode- light mode
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    if (theme === 'light') {
+    setTheme('dark');
+    } else {
+    setTheme('light');
+    }
+    };
+    
+  useEffect(() => {
+    document.body.className = theme;
+    document.body.classList.toggle('dark-mode', theme === 'dark');
+  }, [theme]);
 
   const UserSignOut = async () => {
     signOut(auth)
@@ -78,6 +95,7 @@ const NavDashboard = () => {
               ) : (
                 <></>
               )}
+              <Switch isOn={theme === "dark"} handleToggle={toggleTheme} />
               <Nav.Link
                 title="Calendar"
                 onClick={() => {
