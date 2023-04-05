@@ -34,16 +34,20 @@ export default function UserAccount() {
             <td>University ID:</td>
             <td>{userDetails.uid}</td>
           </tr>
-          <tr>
-            <td>Courses Enrolled:</td>
-            <td>
-              <ul>
-                {coursesData.courseDetails.map((course) => (
-                  <li key={course}>{course}</li>
-                ))}
-              </ul>
-            </td>
-          </tr>
+          {userDetails.role !== "Administrator" ? (
+            <tr>
+              <td>Courses Enrolled:</td>
+              <td>
+                <ul>
+                  {coursesData.courseDetails.map((course) => (
+                    <li key={course}>{course}</li>
+                  ))}
+                </ul>
+              </td>
+            </tr>
+          ) : (
+            <></>
+          )}
         </tbody>
       </table>
     </div>
