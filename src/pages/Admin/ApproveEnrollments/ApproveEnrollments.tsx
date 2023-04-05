@@ -22,12 +22,12 @@ export default function ApproveEnrollments() {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
 
-  const handleReviewButton = (
+  const handleReviewButton = async (
     email: string,
     decision: string,
     course: string
   ) => {
-    approveUserEnrollment(email, decision, course);
+    await approveUserEnrollment(email, decision, course);
     dispatchFetchEnrollment(reviewEnrollments());
     console.log(decision === "rejected" ? "danger" : "success");
     setShowAlert({
@@ -37,6 +37,7 @@ export default function ApproveEnrollments() {
       type: decision === "rejected" ? "danger" : "success",
     });
   };
+
   const [showAlert, setShowAlert] = useState<IAlertProps>({
     success: null || true || false,
     message: "",
