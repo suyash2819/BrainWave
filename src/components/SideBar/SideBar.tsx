@@ -30,6 +30,7 @@ function SideBar() {
   const userLoginlog = useAppSelector((state) => state.userLoginAPI);
   const dispatchStore = useAppDispatch();
   const [rotateCourse, setRotateCourse] = useState<boolean>(false);
+  const [rotateChat, setRotateChat] = useState<boolean>(false);
   const navigate = useNavigate();
   const UserSignOut = async () => {
     signOut(auth)
@@ -158,9 +159,50 @@ function SideBar() {
                 </Accordion.Item>
               </Accordion>
 
-              <p className="sidebarContainer__options__navs">
+              {/* <p
+                onClick={() => {
+                  dispatchStore(componentToggle("chat"));
+                  dispatchStore(modifyHeading("Chat"));
+                }}
+                className="sidebarContainer__options__navs"
+              >
                 <FontAwesomeIcon className="pe-3" icon={faMessage} /> Messages
-              </p>
+              </p> */}
+
+              <Accordion flush className="my-accordion">
+                {/* MESSAGES _ START */}
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header onClick={() => setRotateChat(!rotateChat)}>
+                    <p className="sidebarContainer__options__navs">
+                      <FontAwesomeIcon className="pe-3" icon={faMessage} />{" "}
+                      Messages
+                    </p>
+                    <FontAwesomeIcon
+                      style={{
+                        transform: rotateChat ? "rotate(180deg)" : "rotate(0)",
+                        transition: "all 0.2s linear",
+                      }}
+                      className="px-4 mb-3 ms-5"
+                      icon={faCaretDown}
+                    />
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {coursesData.courseDetails.map((element, index) => (
+                      <p
+                        key={index}
+                        className="sidebarContainer__options__navs_courses"
+                        onClick={() => {
+                          dispatchStore(componentToggle("chat " + element));
+                          dispatchStore(modifyHeading("Chat"));
+                        }}
+                      >
+                        <FontAwesomeIcon className="pe-3" icon={faBook} />{" "}
+                        {element}
+                      </p>
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
 
               <p
                 className="sidebarContainer__options__navs"
@@ -268,9 +310,39 @@ function SideBar() {
                 </Accordion.Item>
               </Accordion>
 
-              <p className="sidebarContainer__options__navs">
-                <FontAwesomeIcon className="pe-3" icon={faMessage} />
-              </p>
+              <Accordion flush className="my-accordion">
+                {/* MESSAGES _ START */}
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header onClick={togglesideBar}>
+                    <p className="sidebarContainer__options__navs">
+                      <FontAwesomeIcon className="pe-3" icon={faMessage} />{" "}
+                    </p>
+                    <FontAwesomeIcon
+                      style={{
+                        transform: rotateChat ? "rotate(180deg)" : "rotate(0)",
+                        transition: "all 0.2s linear",
+                      }}
+                      className="px-4 mb-3 ms-5"
+                      icon={faCaretDown}
+                    />
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {coursesData.courseDetails.map((element, index) => (
+                      <p
+                        key={index}
+                        className="sidebarContainer__options__navs_courses"
+                        onClick={() => {
+                          dispatchStore(componentToggle("chat " + element));
+                          dispatchStore(modifyHeading("Chat"));
+                        }}
+                      >
+                        <FontAwesomeIcon className="pe-3" icon={faBook} />{" "}
+                        {element}
+                      </p>
+                    ))}
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
 
               <p
                 className="sidebarContainer__options__navs"
