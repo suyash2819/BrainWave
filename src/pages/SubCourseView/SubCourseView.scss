@@ -1,22 +1,15 @@
 .assignment-table {
   width: 92%;
-  background-color: transparent;
   margin-left: 4%;
-  margin-right: 4%;
-  padding-top: 1%;
 
   th {
-    background-color: #f7f7f7;
     font-weight: bold;
     text-align: left;
-    border: 2px solid #dee2e6;
     padding: 0.95rem;
   }
 
   td {
     padding: 0.75rem;
-    vertical-align: top;
-    border: 1px solid #dee2e6;
 
     input,
     textarea {
@@ -24,7 +17,6 @@
       padding: 10px;
       border: none;
       border-radius: 5px;
-      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 
       &:focus {
         outline: none;
@@ -69,7 +61,6 @@
   margin-top: 20px;
 
   th {
-    background-color: #f7f7f7;
     font-weight: bold;
     text-align: left;
     border: 1px solid #dee2e6;
@@ -106,4 +97,16 @@
     color: #aaa;
     padding-top: 1rem;
   }
+}
+
+.nav-link {
+  color: #459fff;
+  font-size: large;
+}
+.nav-link:hover {
+  color: rgb(70, 187, 255);
+}
+.nav-link.active {
+  color: rgb(255, 255, 255) !important;
+  background-color: #081f38 !important;
 }

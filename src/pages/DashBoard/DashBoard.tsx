@@ -28,6 +28,7 @@ import UserAccount from "../UserAccount/UserAccount";
 import { getAllCourses, getCourseDetails } from "../../services/courseService";
 import BrowseCousrses from "../BrowseCourses/BrowseCousrses";
 import SubCourseView from "../SubCourseView/SubCourseView";
+import Grading from "../Grading/Grading";
 
 type courseDetails = {
   announcements: string[];
@@ -170,6 +171,14 @@ const DashBoard = () => {
           <>
             {" "}
             <BrowseCousrses />
+          </>
+        ) : (
+          <></>
+        )}
+        {dashboardVals.showComponent === "grading" ? (
+          <>
+            {" "}
+            <Grading />
           </>
         ) : (
           <></>

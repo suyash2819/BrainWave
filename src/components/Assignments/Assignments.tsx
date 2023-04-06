@@ -16,7 +16,7 @@ import {
   updateAssignmentArray,
 } from "../../services/assignmentService";
 import Card from "react-bootstrap/esm/Card";
-import { Button, Form, ListGroup, Spinner } from "react-bootstrap";
+import { Button, Form, ListGroup, Spinner, Table } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { modifyAssignments } from "../../reducers/getCourses";
 import AlertMessage from "../AlertMessage/AlertMessage";
@@ -56,6 +56,7 @@ export default function Assignments({
   const dispatchStore = useAppDispatch();
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const [storageRef, setStorageRef] = useState<StorageReference>();
+  const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const [submittedAssignments, setSubmittedAssignments] = useState<string[]>(
     []
   );
@@ -260,7 +261,10 @@ export default function Assignments({
       <div>
         {userDataStore.role !== "Student" ? (
           <form onSubmit={handleAssignmentSubmit}>
-            <table className="assignment-table">
+            <Table
+              variant={dashboardVals.darkMode === "dark" ? "dark" : ""}
+              className="assignment-table"
+            >
               <tbody>
                 <tr>
                   <th>Assignment Name</th>
@@ -362,7 +366,7 @@ export default function Assignments({
                   </td>
                 </tr>
               </tbody>
-            </table>
+            </Table>
           </form>
         ) : (
           <></>
@@ -374,7 +378,13 @@ export default function Assignments({
         {fetchCourses.assignment.filter((e) => e.courseName === subCourseCode)
           .length ? (
           <div className="ms-5 col-10">
-            <Card className="ms-5">
+            <Card
+              className={
+                dashboardVals.darkMode === "dark"
+                  ? "bg-dark text-white ms-5"
+                  : "ms-5"
+              }
+            >
               <ListGroup variant="flush">
                 {fetchCourses.assignment
                   .filter((e) => e.courseName === subCourseCode)
