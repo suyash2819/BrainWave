@@ -9,7 +9,9 @@ import {
   faBullhorn,
   faCalendarWeek,
   faListCheck,
+  faMoon,
   faPersonCircleCheck,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import Dropdown from "react-bootstrap/Dropdown";
 import defaultpfp from "../../assets/defaultPfp.jpg";
@@ -96,6 +98,12 @@ const NavDashboard = () => {
               ) : (
                 <></>
               )}
+              {theme === "dark" ? (
+                <FontAwesomeIcon className="mx-3" icon={faMoon} />
+              ) : (
+                <FontAwesomeIcon className="mx-3" icon={faSun} />
+              )}
+
               <Switch isOn={theme === "dark"} handleToggle={toggleTheme} />
               <Nav.Link
                 title="Calendar"
