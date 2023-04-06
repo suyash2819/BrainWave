@@ -18,6 +18,7 @@ import "./BrowseCourses.scss";
 let tempCourseDetail: courseDetail[] = [];
 export default function BrowseCousrses() {
   const [AllCourses, setAllCourses] = useState<courseDetail[]>([]);
+  const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const [displayOnModal, setDisplayOnModal] = useState<courseDetail>({
     title: "",
     description: "",
@@ -140,11 +141,21 @@ export default function BrowseCousrses() {
             </Form>
           </div>
           <div className="ms-5 col-10">
-            <Card className="ms-5">
+            <Card
+              className={
+                dashboardVals.darkMode === "dark"
+                  ? "bg-dark text-white ms-5"
+                  : "ms-5"
+              }
+            >
               <ListGroup variant="flush">
                 {AllCourses.map((element, index) => (
                   <ListGroup.Item
-                    className="my-1 d-flex justify-content-between"
+                    className={
+                      dashboardVals.darkMode === "dark"
+                        ? "bg-dark text-white my-1 d-flex justify-content-between"
+                        : "my-1 d-flex justify-content-between"
+                    }
                     key={index}
                   >
                     <p className="h5">{element.title}</p>
@@ -185,7 +196,7 @@ export default function BrowseCousrses() {
 
       {show ? (
         <Modal
-          className="mt-5 ms-5"
+          className="mt-5 ms-5 text-black"
           size="lg"
           show={show}
           backdrop="static"

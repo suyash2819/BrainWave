@@ -424,7 +424,7 @@ export default function Assignments({
       <div>
         {isModalOpen ? (
           <Modal
-            className="mt-5 ms-5"
+            className="mt-5 ms-5 text-black"
             size="lg"
             show={isModalOpen}
             backdrop="static"
