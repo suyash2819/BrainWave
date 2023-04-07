@@ -201,6 +201,15 @@ export default function BrowseCousrses() {
           show={show}
           backdrop="static"
           keyboard={false}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backdropFilter: "blur(8px) brightness(0.2)",
+            zIndex: 99999,
+            top: -25,
+            bottom: 0,
+            left: -35,
+            right: 0,
+            position: "fixed",marginTop: "100px"}}
         >
           <Modal.Header className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}  onClick={handleClose} closeButton>
             <Modal.Title className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>{displayOnModal.title}</Modal.Title>

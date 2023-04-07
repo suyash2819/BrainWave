@@ -437,6 +437,16 @@ export default function Assignments({
             show={isModalOpen}
             backdrop="static"
             keyboard={false}
+            style={dashboardVals.darkMode === "dark" ? {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              backdropFilter: "blur(8px) brightness(0.2)",
+              zIndex: 99999,
+              top: -30,
+              bottom: 0,
+              left: -30,
+              right: 0,
+              position: "fixed",
+            } : {}}
           >
             {showAlert.show ? (
               <AlertMessage
@@ -523,11 +533,11 @@ export default function Assignments({
               </>
             </Modal.Body>
             <Modal.Footer className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
-              {userDataStore.role === "Student" ? (
+              {/* {userDataStore.role === "Student" ? (
                 <Button>Delete</Button>
               ) : (
                 <></>
-              )}
+              )} */}
               {userDataStore.role === "Student" &&
               ((displayOnModal?.submissiontType === "file" &&
                 isFileUploading[1] === "uploaded") ||
