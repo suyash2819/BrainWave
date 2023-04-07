@@ -128,15 +128,24 @@ export default function BrowseCousrses() {
       {AllCourses.length || searchCourse.length ? (
         <div className="mb-5">
           <div className="m-5">
-            <Form className="d-flex ps-5 col-11">
+            <Form className={`d-flex ps-5 col-11 ${dashboardVals.darkMode === 'dark' ? 'text-white' : ''}`}>
               <Form.Control
                 type="search"
                 placeholder="Search..."
                 className="me-2"
                 aria-label="Search"
+                style={{
+                  backgroundColor: dashboardVals.darkMode === 'dark' ? '#212529' : '',
+                  borderColor: dashboardVals.darkMode === 'dark' ? 'white' : 'white',
+                  color: dashboardVals.darkMode === 'dark' ? 'white' : '',
+                  borderWidth: '2px',
+                  boxShadow: dashboardVals.darkMode === 'dark' ? '1 2 5px white' : '0 0 5px black',
+                  fontSize: '20px'
+                }}
                 onChange={(e) => {
                   setSeachCourse(e.target.value);
                 }}
+                
               />
             </Form>
           </div>
