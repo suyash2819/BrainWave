@@ -387,15 +387,15 @@ export default function Assignments({
           .length ? (
 
           <div className="ms-5 col-10">
-              <ListGroup variant="flush" >
+              <ListGroup variant="flush">
                 {fetchCourses.assignment
                   .filter((e) => e.courseName === subCourseCode)
                   .map((element, index) => (
                     <ListGroup.Item
                       className={
                         dashboardVals.darkMode === "dark"
-                          ? "bg-dark text-white my-1 d-flex justify-content-between"
-                          :"my-1 d-flex justify-content-between"}
+                          ? "bg-dark text-white  my-1 d-flex justify-content-between border border-white"
+                          :"my-1 d-flex justify-content-between border border-white"}
                       key={index}
                     >
                       <p className="h5 col-4">{element.name}</p>
@@ -432,7 +432,7 @@ export default function Assignments({
       <div>
         {isModalOpen ? (
           <Modal
-            className="mt-5 ms-5 text-black"
+          className="mt-5 ms-5 text-black"
             size="lg"
             show={isModalOpen}
             backdrop="static"
@@ -446,10 +446,10 @@ export default function Assignments({
                 type=""
               />
             ) : null}
-            <Modal.Header onClick={() => setIsModalOpen(false)} closeButton>
-              <Modal.Title>{displayOnModal?.name}</Modal.Title>
+            <Modal.Header className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""} onClick={() => setIsModalOpen(false)} closeButton>
+              <Modal.Title className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>{displayOnModal?.name}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
               <>
                 <p className="text-justify font-weight-light">
                   {displayOnModal?.description}
@@ -470,7 +470,7 @@ export default function Assignments({
                 <p>
                   Date Posted : {displayOnModal?.datePosted?.substring(0, 10)}
                 </p>
-                <Form.Group controlId="formFileSm" className="mb-3">
+                <Form.Group controlId="formFileSm" className={`mb-3 ${dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}`}>
                   {submittedAssignments.indexOf(displayOnModal?.uuid!) === -1 &&
                   userDataStore.role === "Student" ? (
                     displayOnModal?.submissiontType === "text" ? (
@@ -522,7 +522,7 @@ export default function Assignments({
                 </Form.Group>
               </>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
               {userDataStore.role === "Student" ? (
                 <Button>Delete</Button>
               ) : (

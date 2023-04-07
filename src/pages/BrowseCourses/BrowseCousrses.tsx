@@ -202,10 +202,10 @@ export default function BrowseCousrses() {
           backdrop="static"
           keyboard={false}
         >
-          <Modal.Header onClick={handleClose} closeButton>
-            <Modal.Title>{displayOnModal.title}</Modal.Title>
+          <Modal.Header className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}  onClick={handleClose} closeButton>
+            <Modal.Title className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>{displayOnModal.title}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
             <p className="text-justify font-weight-light">
               {displayOnModal.description}
             </p>
@@ -213,7 +213,7 @@ export default function BrowseCousrses() {
             <p>Semester : {displayOnModal.sem}</p>
           </Modal.Body>
           {userDataStore.role !== "Administrator" ? (
-            <Modal.Footer>
+            <Modal.Footer className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
               {coursesData.courseDetails.indexOf(displayOnModal.title || "") >
               -1 ? (
                 <Button disabled variant="primary">
@@ -226,7 +226,7 @@ export default function BrowseCousrses() {
                     : "Enroll"}
                 </Button>
               )}
-            </Modal.Footer>
+            </Modal.Footer >
           ) : (
             <></>
           )}
