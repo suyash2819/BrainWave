@@ -201,15 +201,23 @@ export default function BrowseCousrses() {
           show={show}
           backdrop="static"
           keyboard={false}
-          style={{
+          style={dashboardVals.darkMode === "dark" ? {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             backdropFilter: "blur(8px) brightness(0.2)",
             zIndex: 99999,
-            top: -25,
+            top: -50,
             bottom: 0,
-            left: -35,
+            left: -30,
             right: 0,
-            position: "fixed",marginTop: "100px"}}
+            position: "fixed",
+          } : {backgroundColor: "rgba(255, 255, 255, 0.5)",
+          backdropFilter: "blur(8px) brightness(0.1)",
+          zIndex: 99999,
+          top: -50,
+          bottom: 0,
+          left: -30,
+          right: 0,
+          position: "fixed"}}
         >
           <Modal.Header className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}  onClick={handleClose} closeButton>
             <Modal.Title className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>{displayOnModal.title}</Modal.Title>

@@ -441,12 +441,20 @@ export default function Assignments({
               backgroundColor: "rgba(0, 0, 0, 0.5)",
               backdropFilter: "blur(8px) brightness(0.2)",
               zIndex: 99999,
-              top: -30,
+              top: -50,
               bottom: 0,
               left: -30,
               right: 0,
-              position: "fixed",
-            } : {}}
+              position: "fixed"
+            } : {backgroundColor: "rgba(255, 255, 255, 0.5)",
+            backdropFilter: "blur(8px) brightness(0.1)",
+            zIndex: 99999,
+            top: -50,
+            bottom: 0,
+            left: -30,
+            right: 0,
+            position: "fixed"}}
+
           >
             {showAlert.show ? (
               <AlertMessage
