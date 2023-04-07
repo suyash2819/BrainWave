@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./Assignment.scss";
 import {
   getStorage,
   ref,
@@ -372,25 +373,30 @@ export default function Assignments({
           <></>
         )}
       </div>
-
+      
+      <Card
+        className={
+          dashboardVals.darkMode === "dark"
+            ? "bg-dark text-white ms-5"
+            : "ms-5"
+        }
+      >
       <div className="mb-5">
+        
         <h2 className="mt-4 text-center">Assignments</h2>
         {fetchCourses.assignment.filter((e) => e.courseName === subCourseCode)
           .length ? (
+
           <div className="ms-5 col-10">
-            <Card
-              className={
-                dashboardVals.darkMode === "dark"
-                  ? "bg-dark text-white ms-5"
-                  : "ms-5"
-              }
-            >
-              <ListGroup variant="flush">
+              <ListGroup variant="flush" >
                 {fetchCourses.assignment
                   .filter((e) => e.courseName === subCourseCode)
                   .map((element, index) => (
                     <ListGroup.Item
-                      className="my-1 d-flex justify-content-between"
+                      className={
+                        dashboardVals.darkMode === "dark"
+                          ? "bg-dark text-white my-1 d-flex justify-content-between"
+                          :"my-1 d-flex justify-content-between"}
                       key={index}
                     >
                       <p className="h5 col-4">{element.name}</p>
@@ -402,6 +408,7 @@ export default function Assignments({
                             icon={faCircleCheck}
                           />
                         </div>
+                  
                       ) : (
                         <></>
                       )}
@@ -415,12 +422,14 @@ export default function Assignments({
                     </ListGroup.Item>
                   ))}
               </ListGroup>
-            </Card>
-          </div>
+          </div>  
+                 
         ) : (
           <h5 className="text-center">No assignments has been posted yet!</h5>
         )}
+       
       </div>
+      </Card>
       <div>
         {isModalOpen ? (
           <Modal
