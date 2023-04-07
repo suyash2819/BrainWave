@@ -162,9 +162,10 @@ export default function BrowseCousrses() {
                   <ListGroup.Item
                     className={
                       dashboardVals.darkMode === "dark"
-                        ? "bg-dark text-white my-1 d-flex justify-content-between"
-                        : "my-1 d-flex justify-content-between"
+                        ? "bg-dark text-white my-1 d-flex justify-content-between mt-2 shadow-white border-white"
+                        : "my-1 d-flex justify-content-between mt-2 shadow-black border-dark"
                     }
+  
                     key={index}
                   >
                     <p className="h5">{element.title}</p>
