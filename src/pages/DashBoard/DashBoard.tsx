@@ -16,6 +16,7 @@ import Calendar from "../../components/calendar/Calendar";
 import Announcements from "../Announcements/Announcements";
 import ApproveUsers from "../Admin/ApproveUsers/ApproveUsers";
 import CoursesView from "../../components/CoursesView/CoursesView";
+import Chat from "../Chat/Chat";
 import ApproveEnrollments from "../Admin/ApproveEnrollments/ApproveEnrollments";
 import {
   getUserCoursesApi,
@@ -183,6 +184,14 @@ const DashBoard = () => {
           <></>
         )}
         {dashboardVals.showComponent === "account" ? <UserAccount /> : <></>}
+        {dashboardVals.showComponent.includes("chat") ? (
+          <>
+            {" "}
+            <Chat />
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
