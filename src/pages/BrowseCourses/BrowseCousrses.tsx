@@ -128,24 +128,32 @@ export default function BrowseCousrses() {
       {AllCourses.length || searchCourse.length ? (
         <div className="mb-5">
           <div className="m-5">
-            <Form className={`d-flex ps-5 col-11 ${dashboardVals.darkMode === 'dark' ? 'text-white' : ''}`}>
+            <Form
+              className={`d-flex ps-5 col-11 ${
+                dashboardVals.darkMode === "dark" ? "text-white" : ""
+              }`}
+            >
               <Form.Control
                 type="search"
                 placeholder="Search..."
                 className="me-2"
                 aria-label="Search"
                 style={{
-                  backgroundColor: dashboardVals.darkMode === 'dark' ? '#212529' : '',
-                  borderColor: dashboardVals.darkMode === 'dark' ? 'white' : 'white',
-                  color: dashboardVals.darkMode === 'dark' ? 'white' : '',
-                  borderWidth: '2px',
-                  boxShadow: dashboardVals.darkMode === 'dark' ? '1 2 5px white' : '0 0 5px black',
-                  fontSize: '20px'
+                  backgroundColor:
+                    dashboardVals.darkMode === "dark" ? "#212529" : "",
+                  borderColor:
+                    dashboardVals.darkMode === "dark" ? "white" : "white",
+                  color: dashboardVals.darkMode === "dark" ? "white" : "",
+                  borderWidth: "2px",
+                  boxShadow:
+                    dashboardVals.darkMode === "dark"
+                      ? "1 2 5px white"
+                      : "0 0 5px black",
+                  fontSize: "20px",
                 }}
                 onChange={(e) => {
                   setSeachCourse(e.target.value);
                 }}
-                
               />
             </Form>
           </div>
@@ -165,7 +173,6 @@ export default function BrowseCousrses() {
                         ? "bg-dark text-white my-1 d-flex justify-content-between mt-2 shadow-white border-white"
                         : "my-1 d-flex justify-content-between mt-2 shadow-black border-dark"
                     }
-  
                     key={index}
                   >
                     <p className="h5">{element.title}</p>
@@ -211,28 +218,36 @@ export default function BrowseCousrses() {
           show={show}
           backdrop="static"
           keyboard={false}
-          style={dashboardVals.darkMode === "dark" ? {
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            backdropFilter: "blur(8px) brightness(0.2)",
-            zIndex: 99999,
-            top: -50,
-            bottom: 0,
-            left: -30,
-            right: 0,
-            position: "fixed",
-          } : {backgroundColor: "rgba(255, 255, 255, 0.5)",
-          backdropFilter: "blur(8px) brightness(0.1)",
-          zIndex: 99999,
-          top: -50,
-          bottom: 0,
-          left: -30,
-          right: 0,
-          position: "fixed"}}
+          style={
+            dashboardVals.darkMode === "dark"
+              ? {
+                  backgroundColor: "black",
+                }
+              : {
+                  backgroundColor: "white",
+                }
+          }
         >
-          <Modal.Header className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}  onClick={handleClose} closeButton>
-            <Modal.Title className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>{displayOnModal.title}</Modal.Title>
+          <Modal.Header
+            className={
+              dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""
+            }
+            onClick={handleClose}
+            closeButton
+          >
+            <Modal.Title
+              className={
+                dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""
+              }
+            >
+              {displayOnModal.title}
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Body className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
+          <Modal.Body
+            className={
+              dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""
+            }
+          >
             <p className="text-justify font-weight-light">
               {displayOnModal.description}
             </p>
@@ -240,7 +255,11 @@ export default function BrowseCousrses() {
             <p>Semester : {displayOnModal.sem}</p>
           </Modal.Body>
           {userDataStore.role !== "Administrator" ? (
-            <Modal.Footer className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
+            <Modal.Footer
+              className={
+                dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""
+              }
+            >
               {coursesData.courseDetails.indexOf(displayOnModal.title || "") >
               -1 ? (
                 <Button disabled variant="primary">
@@ -253,7 +272,7 @@ export default function BrowseCousrses() {
                     : "Enroll"}
                 </Button>
               )}
-            </Modal.Footer >
+            </Modal.Footer>
           ) : (
             <></>
           )}

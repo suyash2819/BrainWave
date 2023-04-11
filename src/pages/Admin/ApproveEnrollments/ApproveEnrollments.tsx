@@ -14,6 +14,7 @@ export default function ApproveEnrollments() {
   const getPendingEnrollments = useAppSelector(
     (state) => state.reviewEnrollmentReducer
   );
+  const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   useEffect(() => {
     dispatchFetchEnrollment(reviewEnrollments());
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,7 +64,15 @@ export default function ApproveEnrollments() {
           <></>
         )}
         {getPendingEnrollments.courseDetails.length ? (
-          <Table className="approveUsers__container" striped bordered>
+          <Table
+            className={
+              dashboardVals.darkMode === "dark"
+                ? " text-white table-bordered approveUsers__container"
+                : " table-bordered approveUsers__container"
+            }
+            striped
+            bordered
+          >
             <thead>
               <tr className="text-center">
                 <th>#</th>
