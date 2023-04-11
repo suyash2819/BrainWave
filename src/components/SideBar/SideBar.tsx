@@ -169,16 +169,6 @@ function SideBar() {
               >
                 <FontAwesomeIcon className="pe-3" icon={faCheck} /> Grading
               </p>
-              <p className="sidebarContainer__options__navs">
-              {/* <p
-                onClick={() => {
-                  dispatchStore(componentToggle("chat"));
-                  dispatchStore(modifyHeading("Chat"));
-                }}
-                className="sidebarContainer__options__navs"
-              >
-                <FontAwesomeIcon className="pe-3" icon={faMessage} /> Messages
-              </p> */}
 
               <Accordion flush className="my-accordion">
                 {/* MESSAGES _ START */}
