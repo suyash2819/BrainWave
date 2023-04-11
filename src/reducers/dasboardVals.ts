@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   showComponent: "dashboard",
   heading: "Dashboard",
+  darkMode: "light",
 };
 export const dashboardVals = createSlice({
   name: "dashboardVals",
@@ -13,11 +14,18 @@ export const dashboardVals = createSlice({
     modifyHeading: (state, action) => {
       state.heading = action.payload;
     },
+    modifyDarkMode: (state, action) => {
+      state.darkMode = action.payload;
+    },
     resetDashboardVals: () => initialState,
   },
 });
 
-export const { componentToggle, modifyHeading, resetDashboardVals } =
-  dashboardVals.actions;
+export const {
+  componentToggle,
+  modifyHeading,
+  resetDashboardVals,
+  modifyDarkMode,
+} = dashboardVals.actions;
 
 export default dashboardVals.reducer;

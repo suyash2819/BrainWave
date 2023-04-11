@@ -16,7 +16,7 @@ import {
   updateAssignmentArray,
 } from "../../services/assignmentService";
 import Card from "react-bootstrap/esm/Card";
-import { Button, Form, ListGroup, Spinner } from "react-bootstrap";
+import { Button, Form, ListGroup, Spinner, Table } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { modifyAssignments } from "../../reducers/getCourses";
 import AlertMessage from "../AlertMessage/AlertMessage";
@@ -56,6 +56,7 @@ export default function Assignments({
   const dispatchStore = useAppDispatch();
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const [storageRef, setStorageRef] = useState<StorageReference>();
+  const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const [submittedAssignments, setSubmittedAssignments] = useState<string[]>(
     []
   );
@@ -260,7 +261,10 @@ export default function Assignments({
       <div>
         {userDataStore.role !== "Student" ? (
           <form onSubmit={handleAssignmentSubmit}>
-            <table className="assignment-table">
+            <Table
+              variant={dashboardVals.darkMode === "dark" ? "dark" : ""}
+              className="assignment-table"
+            >
               <tbody>
                 <tr>
                   <th>Assignment Name</th>
@@ -362,25 +366,36 @@ export default function Assignments({
                   </td>
                 </tr>
               </tbody>
-            </table>
+            </Table>
           </form>
         ) : (
           <></>
         )}
       </div>
-
+      
+      <Card
+        className={
+          dashboardVals.darkMode === "dark"
+            ? "bg-dark text-white ms-5"
+            : "ms-5"
+        }
+      >
       <div className="mb-5">
+        
         <h2 className="mt-4 text-center">Assignments</h2>
         {fetchCourses.assignment.filter((e) => e.courseName === subCourseCode)
           .length ? (
+
           <div className="ms-5 col-10">
-            <Card className="ms-5">
               <ListGroup variant="flush">
                 {fetchCourses.assignment
                   .filter((e) => e.courseName === subCourseCode)
                   .map((element, index) => (
                     <ListGroup.Item
-                      className="my-1 d-flex justify-content-between"
+                      className={
+                        dashboardVals.darkMode === "dark"
+                          ? "bg-dark text-white  my-1 d-flex justify-content-between border border-white"
+                          :"my-1 d-flex justify-content-between border border-white"}
                       key={index}
                     >
                       <p className="h5 col-4">{element.name}</p>
@@ -392,6 +407,7 @@ export default function Assignments({
                             icon={faCircleCheck}
                           />
                         </div>
+                  
                       ) : (
                         <></>
                       )}
@@ -405,20 +421,40 @@ export default function Assignments({
                     </ListGroup.Item>
                   ))}
               </ListGroup>
-            </Card>
-          </div>
+          </div>  
+                 
         ) : (
           <h5 className="text-center">No assignments has been posted yet!</h5>
         )}
+       
       </div>
+      </Card>
       <div>
         {isModalOpen ? (
           <Modal
-            className="mt-5 ms-5"
+          className="mt-5 ms-5 text-black"
             size="lg"
             show={isModalOpen}
             backdrop="static"
             keyboard={false}
+            style={dashboardVals.darkMode === "dark" ? {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              backdropFilter: "blur(8px) brightness(0.2)",
+              zIndex: 99999,
+              top: -50,
+              bottom: 0,
+              left: -30,
+              right: 0,
+              position: "fixed"
+            } : {backgroundColor: "rgba(255, 255, 255, 0.5)",
+            backdropFilter: "blur(8px) brightness(0.1)",
+            zIndex: 99999,
+            top: -50,
+            bottom: 0,
+            left: -30,
+            right: 0,
+            position: "fixed"}}
+
           >
             {showAlert.show ? (
               <AlertMessage
@@ -428,10 +464,10 @@ export default function Assignments({
                 type=""
               />
             ) : null}
-            <Modal.Header onClick={() => setIsModalOpen(false)} closeButton>
-              <Modal.Title>{displayOnModal?.name}</Modal.Title>
+            <Modal.Header className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""} onClick={() => setIsModalOpen(false)} closeButton>
+              <Modal.Title className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>{displayOnModal?.name}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
               <>
                 <p className="text-justify font-weight-light">
                   {displayOnModal?.description}
@@ -452,7 +488,7 @@ export default function Assignments({
                 <p>
                   Date Posted : {displayOnModal?.datePosted?.substring(0, 10)}
                 </p>
-                <Form.Group controlId="formFileSm" className="mb-3">
+                <Form.Group controlId="formFileSm" className={`mb-3 ${dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}`}>
                   {submittedAssignments.indexOf(displayOnModal?.uuid!) === -1 &&
                   userDataStore.role === "Student" ? (
                     displayOnModal?.submissiontType === "text" ? (
@@ -504,12 +540,12 @@ export default function Assignments({
                 </Form.Group>
               </>
             </Modal.Body>
-            <Modal.Footer>
-              {userDataStore.role === "Student" ? (
+            <Modal.Footer className={dashboardVals.darkMode === "dark" ? "bg-dark text-white" : ""}>
+              {/* {userDataStore.role === "Student" ? (
                 <Button>Delete</Button>
               ) : (
                 <></>
-              )}
+              )} */}
               {userDataStore.role === "Student" &&
               ((displayOnModal?.submissiontType === "file" &&
                 isFileUploading[1] === "uploaded") ||

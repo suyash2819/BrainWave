@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Switch from "../Switch/switch";
 import "./NavDashboard.scss";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
@@ -8,13 +9,19 @@ import {
   faBullhorn,
   faCalendarWeek,
   faListCheck,
+  faMoon,
   faPersonCircleCheck,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import Dropdown from "react-bootstrap/Dropdown";
 import defaultpfp from "../../assets/defaultPfp.jpg";
 import Image from "react-bootstrap/Image";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { componentToggle, modifyHeading } from "../../reducers/dasboardVals";
+import {
+  componentToggle,
+  modifyDarkMode,
+  modifyHeading,
+} from "../../reducers/dasboardVals";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
@@ -23,6 +30,19 @@ const NavDashboard = () => {
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dispatchStore = useAppDispatch();
   const navigate = useNavigate();
+
+  //dark-mode- light mode
+  const [theme, setTheme] = useState("light");
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+    dispatchStore(modifyDarkMode(theme === "light" ? "dark" : "light"));
+  };
+
+  useEffect(() => {
+    document.body.className = theme;
+    document.body.classList.toggle("dark-mode", theme === "dark");
+  }, [theme]);
 
   const UserSignOut = async () => {
     signOut(auth)
@@ -78,6 +98,13 @@ const NavDashboard = () => {
               ) : (
                 <></>
               )}
+              {theme === "dark" ? (
+                <FontAwesomeIcon className="mx-3" icon={faMoon} />
+              ) : (
+                <FontAwesomeIcon className="mx-3" icon={faSun} />
+              )}
+
+              <Switch isOn={theme === "dark"} handleToggle={toggleTheme} />
               <Nav.Link
                 title="Calendar"
                 onClick={() => {

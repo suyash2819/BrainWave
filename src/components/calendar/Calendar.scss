@@ -19,3 +19,25 @@
 .fc-button-primary {
   text-transform: capitalize;
 }
+
+.dark-mode .fc-col-header-cell-cushion {
+  color: white !important;
+  }
+  
+  .dark-mode .fc-daygrid-day-number {
+  color: white !important;
+  }
+  
+  .dark-mode .calendar__container {
+  background-color: #090101;
+  }
+  
+  .dark-mode .fc {
+  color: white;
+  }
+  
+  .dark-mode .fc-button-primary {
+  background-color: #090101;
+  border-color: #040000;
+  color: white;
+  }

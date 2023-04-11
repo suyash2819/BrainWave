@@ -10,6 +10,7 @@ import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { modifyAnnouncements } from "../../reducers/getCourses";
 import "./Announcements.scss";
+import { Card } from "react-bootstrap";
 
 interface annoucementCourseFlag {
   isCourseView: [boolean, string, string];
@@ -18,6 +19,7 @@ interface annoucementCourseFlag {
 const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
+  const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
   const dispatchStore = useAppDispatch();
 
   const [announcement, setAnnouncement] = useState<Announcement>({
@@ -126,7 +128,6 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
       });
     }
   };
-
   return (
     <div className="mx-5 p-3">
       <div className="approvePageAlert">
@@ -143,10 +144,16 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
       userDetails.role === "Faculty" ? (
         <div className="teacherAnnouncements_Container d-flex flex-row">
           <div className="teacherAnnouncements_form col-11 card m-3 row">
-            <div className="card-header ">
-              <h5>Create Announcements</h5>
-            </div>
-            <div className="card-body">
+            <Card
+              className={
+                dashboardVals.darkMode === "dark"
+                  ? "bg-dark text-white p-3"
+                  : "p-3"
+              }
+            >
+              <div className="card-header ">
+                <h5>Create Announcements</h5>
+              </div>
               <form onSubmit={handleSubmit}>
                 <div className="form-row">
                   <div className="d-flex mb-3 flex-row justify-content-around">
@@ -258,19 +265,31 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
                   </div>
                 </div>
               </form>
-            </div>
+            </Card>
           </div>
         </div>
       ) : (
         <></>
       )}
-      <div className="announcements_table  m-3 card col-11">
+      <Card
+        className={
+          dashboardVals.darkMode === "dark"
+            ? "bg-dark text-white p-3 announcements_table m-3 col-11"
+            : "p-3 announcements_table m-3 col-11"
+        }
+      >
         <div className="card-header">
           <h5>Announcements</h5>
         </div>
         <div className="card-body">
           {fetchCourses.allAnnouncements.length ? (
-            <table className="table table-bordered">
+            <table
+              className={
+                dashboardVals.darkMode === "dark"
+                  ? "table text-white table-bordered"
+                  : "table table-bordered"
+              }
+            >
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -344,7 +363,7 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
             <h3>No Annoucements!</h3>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
