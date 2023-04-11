@@ -22,6 +22,7 @@ function SubCourseView() {
         )
       )
     ];
+
   const [subCourseDetails, setSubCourseDetails] = useState<courseDetail>({
     title: "",
     professor: "",
