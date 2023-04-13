@@ -66,6 +66,7 @@ export default function Chat() {
     setSubCourseDetails(tempCourseDetail);
   };
   const messagesEndRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const messageBoxScroll = useRef() as MutableRefObject<HTMLDivElement>;
   useEffect(() => {
     fetchingCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +134,7 @@ export default function Chat() {
           <></>
         )}
       </div>
-      <div ref={messageInputRef} className="chat-container">
+      <div ref={messageBoxScroll} className="chat-container">
         <h2 style={{ paddingTop: "3%", marginLeft: "40px" }}>
           {subCourseDetails?.title} Course Discussions
         </h2>
@@ -168,6 +169,7 @@ export default function Chat() {
 
         <div className="input-panel">
           <Form.Control
+            ref={messageInputRef}
             type="text"
             placeholder="Type a message..."
             onKeyDown={(e) => {
