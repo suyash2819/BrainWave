@@ -99,7 +99,10 @@ export default function Chat() {
   }
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }
   }, [messages]);
 
@@ -130,7 +133,7 @@ export default function Chat() {
           <></>
         )}
       </div>
-      <div className="chat-container">
+      <div ref={messageInputRef} className="chat-container">
         <h2 style={{ paddingTop: "3%", marginLeft: "40px" }}>
           {subCourseDetails?.title} Course Discussions
         </h2>
@@ -165,9 +168,13 @@ export default function Chat() {
 
         <div className="input-panel">
           <Form.Control
-            ref={messageInputRef}
             type="text"
             placeholder="Type a message..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleMessageSend();
+              }
+            }}
           />
           <Button variant="dark" onClick={handleMessageSend}>
             Send
