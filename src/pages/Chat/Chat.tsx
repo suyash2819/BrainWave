@@ -142,8 +142,8 @@ export default function Chat() {
                 ? message.timestamp.toDate()
                 : null;
               const messageClass = isSentByCurrentUser
-                ? "message-right"
-                : "message-left";
+                ? "message-right bg-primary text-white"
+                : "message-left bg-secondary text-white";
               return (
                 <div key={message.id} className={`message ${messageClass}`}>
                   <div className="message-text">{message.message}</div>
