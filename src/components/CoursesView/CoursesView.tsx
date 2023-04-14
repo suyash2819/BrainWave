@@ -25,7 +25,7 @@ export default function CoursesView({ courseDetailsarr }: courseDetailsArr) {
   const dispatchStore = useAppDispatch();
   return (
     <>
-      <Row md={3} className="g-5 my-5 mx-3">
+      <Row md={2} sm={1} lg={3} className="g-5 my-5 mx-3">
         {fetchCourses.coursesAbbrv &&
           courseDetailsarr.map((element, index: number) => (
             <Col key={index}>

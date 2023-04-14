@@ -218,15 +218,6 @@ export default function BrowseCousrses() {
           show={show}
           backdrop="static"
           keyboard={false}
-          style={
-            dashboardVals.darkMode === "dark"
-              ? {
-                  backgroundColor: "black",
-                }
-              : {
-                  backgroundColor: "white",
-                }
-          }
         >
           <Modal.Header
             className={
