@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Grading.scss";
-import { Alert, Button, Modal } from "react-bootstrap";
+import { Alert, Button, Table, Modal } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { fetchFacultyGradingAssignments } from "../../services/assignmentService";
 import { modifyallSubmittedAssignments } from "../../reducers/submittedAssignments";
@@ -78,15 +78,24 @@ export default function Grading() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>
-              Ipsum molestiae natus adipisci modi eligendi? Debitis amet quae
-              unde commodi aspernatur enim, consectetur. Cumque deleniti
-              temporibus ipsam atque a dolores quisquam quisquam adipisci
-              possimus laboriosam. Quibusdam facilis doloribus debitis! Sit
-              quasi quod accusamus eos quod. Ab quos consequuntur eaque quo rem!
-              Mollitia reiciendis porro quo magni incidunt dolore amet atque
-              facilis ipsum deleniti rem!
-            </p>
+            <Table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Student Name</th>
+                  <th>Files</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </Table>
           </Modal.Body>
         </Modal>
       ) : (

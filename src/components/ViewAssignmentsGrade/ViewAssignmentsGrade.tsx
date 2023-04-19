@@ -15,7 +15,7 @@ function ViewAssignmentGrade({
   assignments,
 }: PropsViewAssignmentGrade) {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-  //   const [subjectName, setSubjectName] = useState<string>();
+
   const [assignmentsForSubject, setAssignmentsForSubject] = useState<
     Assignment[]
   >([]);
@@ -27,22 +27,25 @@ function ViewAssignmentGrade({
       );
       setAssignmentsForSubject(assignemntToShow);
     }
-  }, [assignmentsForSubject, fetchCourses.assignment, subjectToShow]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       <div className="m-3">
         <Table responsive="md" striped="columns">
           <thead>
-            <th>#</th>
-            <th>Assignment Name</th>
-            <th>Assignment Date</th>
-            <th>View Submissions</th>
+            <tr>
+              <th>#</th>
+              <th>Assignment Name</th>
+              <th>Assignment Date</th>
+              <th>View Submissions</th>
+            </tr>
           </thead>
           <tbody>
             {assignmentsForSubject.map((assignment, index) => (
-              <tr>
-                <td>{index}</td>
+              <tr key={index}>
+                <td>{index + 1}</td>
                 <td>{assignment.name}</td>
                 <td>{assignment.deadlineDate}</td>
                 <td>
