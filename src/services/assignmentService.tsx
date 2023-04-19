@@ -1,4 +1,13 @@
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  DocumentData,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { Assignment } from "../components/Assignments/IAssignments";
 import { db } from "../config/firebase";
 
@@ -39,4 +48,15 @@ export async function fetchStudentSubmittedAssignment(email: string) {
   } else {
     return {};
   }
+}
+
+export async function fetchFacultyGradingAssignments() {
+  const allSubmissionsbyStudents = await getDocs(
+    collection(db, "submissionAssignments")
+  );
+  const allSubmittedAssignments: (string | DocumentData)[][] = [];
+  allSubmissionsbyStudents.forEach((e) => {
+    allSubmittedAssignments.push([e.id, e.data()]);
+  });
+  return allSubmittedAssignments;
 }
