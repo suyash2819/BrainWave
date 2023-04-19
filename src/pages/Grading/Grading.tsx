@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Grading.scss";
-import { Alert, Button } from "react-bootstrap";
+import { Alert, Button, Modal } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { fetchFacultyGradingAssignments } from "../../services/assignmentService";
 import { modifyallSubmittedAssignments } from "../../reducers/submittedAssignments";
@@ -18,10 +18,10 @@ export default function Grading() {
   const [assignments, setAssignments] = useState({
     show: false,
     subject: "",
+    showGraderModal: false,
   });
 
   const changeHandler = (subject: string) => {
-    console.log("hi");
     setAssignments({ ...assignments, subject: subject, show: true });
   };
 
@@ -50,11 +50,49 @@ export default function Grading() {
 
       <div>
         {assignments.show ? (
-          <ViewAssignmentGrade subjectToShow = {assignments.subject}/>
+          <>
+            <ViewAssignmentGrade subjectToShow={assignments.subject} />
+            <Button
+              onClick={() =>
+                setAssignments({ ...assignments, showGraderModal: true })
+              }
+            >
+              Grade
+            </Button>
+          </>
         ) : (
           <p>No assignments posted</p>
         )}
       </div>
+      {assignments.showGraderModal ? (
+        <Modal
+          show={assignments.showGraderModal}
+          onHide={() =>
+            setAssignments({ ...assignments, showGraderModal: false })
+          }
+          size="xl"
+          aria-labelledby="example-custom-modal-styling-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-custom-modal-styling-title">
+              Subject Name
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              Ipsum molestiae natus adipisci modi eligendi? Debitis amet quae
+              unde commodi aspernatur enim, consectetur. Cumque deleniti
+              temporibus ipsam atque a dolores quisquam quisquam adipisci
+              possimus laboriosam. Quibusdam facilis doloribus debitis! Sit
+              quasi quod accusamus eos quod. Ab quos consequuntur eaque quo rem!
+              Mollitia reiciendis porro quo magni incidunt dolore amet atque
+              facilis ipsum deleniti rem!
+            </p>
+          </Modal.Body>
+        </Modal>
+      ) : (
+        <></>
+      )}
     </>
   );
 }
