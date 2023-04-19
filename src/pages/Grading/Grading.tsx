@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { fetchFacultyGradingAssignments } from "../../services/assignmentService";
 import { modifyallSubmittedAssignments } from "../../reducers/submittedAssignments";
 import ViewAssignmentGrade from "../../components/ViewAssignmentsGrade/ViewAssignmentsGrade";
+
 export default function Grading() {
   const dispatchReducer = useAppDispatch();
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
@@ -19,6 +20,7 @@ export default function Grading() {
     show: false,
     subject: "",
     showGraderModal: false,
+    displayDataOnModal: [],
   });
 
   const changeHandler = (subject: string) => {
@@ -51,14 +53,11 @@ export default function Grading() {
       <div>
         {assignments.show ? (
           <>
-            <ViewAssignmentGrade subjectToShow={assignments.subject} />
-            <Button
-              onClick={() =>
-                setAssignments({ ...assignments, showGraderModal: true })
-              }
-            >
-              Grade
-            </Button>
+            <ViewAssignmentGrade
+              subjectToShow={assignments.subject}
+              assignments={assignments}
+              setAssignments={setAssignments}
+            />
           </>
         ) : (
           <p>No assignments posted</p>

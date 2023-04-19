@@ -5,9 +5,15 @@ import { Assignment } from "../Assignments/IAssignments";
 
 interface PropsViewAssignmentGrade {
   subjectToShow: string;
+  setAssignments: any;
+  assignments: any;
 }
 
-function ViewAssignmentGrade({ subjectToShow }: PropsViewAssignmentGrade) {
+function ViewAssignmentGrade({
+  subjectToShow,
+  setAssignments,
+  assignments,
+}: PropsViewAssignmentGrade) {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   //   const [subjectName, setSubjectName] = useState<string>();
   const [assignmentsForSubject, setAssignmentsForSubject] = useState<
@@ -34,20 +40,19 @@ function ViewAssignmentGrade({ subjectToShow }: PropsViewAssignmentGrade) {
             <th>View Submissions</th>
           </thead>
           <tbody>
-            {/* {assignmentsForSubject.map((element,index)=>(
-
-
-
-                )} */}
             {assignmentsForSubject.map((assignment, index) => (
-              //   <p key={index}>{assignment.name}</p>
-
               <tr>
                 <td>{index}</td>
                 <td>{assignment.name}</td>
                 <td>{assignment.deadlineDate}</td>
                 <td>
-                  <Button>View</Button>
+                  <Button
+                    onClick={() =>
+                      setAssignments({ ...assignments, showGraderModal: true })
+                    }
+                  >
+                    View
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -59,4 +64,3 @@ function ViewAssignmentGrade({ subjectToShow }: PropsViewAssignmentGrade) {
 }
 
 export default ViewAssignmentGrade;
-
