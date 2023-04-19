@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { fetchFacultyGradingAssignments } from "../../services/assignmentService";
 import { modifyallSubmittedAssignments } from "../../reducers/submittedAssignments";
 import ViewAssignmentGrade from "../../components/ViewAssignmentsGrade/ViewAssignmentsGrade";
+type DisplayData = { email: string; assignment: number };
 
 export default function Grading() {
   const dispatchReducer = useAppDispatch();
@@ -20,12 +21,14 @@ export default function Grading() {
     show: false,
     subject: "",
     showGraderModal: false,
-    displayDataOnModal: [],
+    displayDataOnModal: [] as DisplayData[],
+    assigmentId: "",
   });
 
   const changeHandler = (subject: string) => {
     setAssignments({ ...assignments, subject: subject, show: true });
   };
+  console.log(assignments.displayDataOnModal);
 
   return (
     <>
@@ -85,15 +88,44 @@ export default function Grading() {
                   <th>Student Name</th>
                   <th>Files</th>
                   <th>Grade</th>
+                  <th>Change grade</th>
+                  <th>Publish grade changes</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+                {assignments.displayDataOnModal.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index}</td>
+                    <td>{item.email}</td>
+                    <td></td>
+                    <td>
+                      {item.assignment === 9999
+                        ? "Not Graded"
+                        : item.assignment}
+                    </td>
+                    <td>
+                      {" "}
+                      {item.assignment === 9999 ? (
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="gradeFor"
+                          placeholder="gradeFor"
+                        />
+                      ) : (
+                        "graded"
+                      )}
+                    </td>
+                    <td>
+                      {" "}
+                      {item.assignment === 9999 ? (
+                        <Button> Publish Grade</Button>
+                      ) : (
+                        "graded"
+                      )}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Modal.Body>

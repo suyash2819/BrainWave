@@ -3,7 +3,7 @@ const initialState = {
   allSubmittedAssignments: [],
 };
 export const allSubmittedAssignmentsVals = createSlice({
-  name: "dashboardVals",
+  name: "allSubmittedAssignmentsVals",
   initialState,
   reducers: {
     modifyallSubmittedAssignments: (state, action) => {

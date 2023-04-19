@@ -15,11 +15,28 @@ function ViewAssignmentGrade({
   assignments,
 }: PropsViewAssignmentGrade) {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-
+  const allSubmittedAssignmentsVals = useAppSelector(
+    (state) => state.allSubmittedAssignmentsRedudcer
+  );
   const [assignmentsForSubject, setAssignmentsForSubject] = useState<
     Assignment[]
   >([]);
 
+  const filteredAssignments = (assignmentId: string) => {
+    const displayDataOnModala =
+      allSubmittedAssignmentsVals.allSubmittedAssignments
+        .filter((item: any) => Object.keys(item[1]).includes(assignmentId))
+        .map((item: any) => ({
+          email: item[0],
+          assignment: item[1][assignmentId],
+        }));
+    setAssignments({
+      ...assignments,
+      displayDataOnModal: displayDataOnModala,
+      assignmentId: assignmentId,
+      showGraderModal: true,
+    });
+  };
   useEffect(() => {
     if (subjectToShow) {
       const assignemntToShow = fetchCourses.assignment.filter(
@@ -49,12 +66,8 @@ function ViewAssignmentGrade({
                 <td>{assignment.name}</td>
                 <td>{assignment.deadlineDate}</td>
                 <td>
-                  <Button
-                    onClick={() =>
-                      setAssignments({ ...assignments, showGraderModal: true })
-                    }
-                  >
-                    View
+                  <Button onClick={() => filteredAssignments(assignment.uuid)}>
+                    Grade
                   </Button>
                 </td>
               </tr>
