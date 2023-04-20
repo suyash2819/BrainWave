@@ -214,6 +214,7 @@ export default function Assignments({
   };
 
   const handleSubmissionStudent = () => {
+    let textSubmissionUrl = "";
     if (displayOnModal?.submissiontType === "text") {
       let textFile = new Blob([studentAssignentText], { type: "text/plain" });
       const storageRef = ref(
@@ -229,7 +230,23 @@ export default function Assignments({
           "/textSubmission.txt"
       );
       uploadBytes(storageRef, textFile).then(() => {
-        console.log(textFile);
+        getDownloadURL(
+          ref(
+            storage,
+            courseDetailAssign.title +
+              "/" +
+              displayOnModal.uuid +
+              "/" +
+              userDataStore.role +
+              "/" +
+              userDataStore.email +
+              "/" +
+              "/textSubmission.txt"
+          )
+        ).then((url) => {
+          console.log(url);
+          textSubmissionUrl = url;
+        });
       });
     }
     setIsModalOpen(false);
@@ -243,7 +260,12 @@ export default function Assignments({
     fetchStudentSubmittedAssignment(userDataStore.email).then((data) => {
       updateAssignmentArray(userDataStore.email, {
         ...data,
-        [displayOnModal?.uuid!]: 9999,
+        [displayOnModal?.uuid!]: [
+          9999,
+          displayOnModal?.submissiontType === "text"
+            ? textSubmissionUrl
+            : Assignment.file,
+        ],
       });
     });
   };

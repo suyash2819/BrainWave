@@ -28,7 +28,8 @@ function ViewAssignmentGrade({
         .filter((item: any) => Object.keys(item[1]).includes(assignmentId))
         .map((item: any) => ({
           email: item[0],
-          assignment: item[1][assignmentId],
+          assignment: item[1][assignmentId][0],
+          assignmentSubmittedFile: item[1][assignmentId][1],
         }));
     setAssignments({
       ...assignments,

@@ -5,7 +5,13 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { fetchFacultyGradingAssignments } from "../../services/assignmentService";
 import { modifyallSubmittedAssignments } from "../../reducers/submittedAssignments";
 import ViewAssignmentGrade from "../../components/ViewAssignmentsGrade/ViewAssignmentsGrade";
-type DisplayData = { email: string; assignment: number };
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCloudDownload } from "@fortawesome/free-solid-svg-icons";
+type DisplayData = {
+  email: string;
+  assignment: number;
+  assignmentSubmittedFile: string;
+};
 
 export default function Grading() {
   const dispatchReducer = useAppDispatch();
@@ -94,10 +100,16 @@ export default function Grading() {
               </thead>
               <tbody>
                 {assignments.displayDataOnModal.map((item, index) => (
-                  <tr key={index}>
-                    <td>{index}</td>
+                  <tr key={index + 1}>
+                    <td>{index + 1}</td>
                     <td>{item.email}</td>
-                    <td></td>
+                    <td>
+                      <Button href={item.assignmentSubmittedFile}>
+                        <FontAwesomeIcon
+                          icon={faCloudDownload}
+                        ></FontAwesomeIcon>
+                      </Button>
+                    </td>
                     <td>
                       {item.assignment === 9999
                         ? "Not Graded"
@@ -110,7 +122,7 @@ export default function Grading() {
                           type="text"
                           className="form-control"
                           id="gradeFor"
-                          placeholder="gradeFor"
+                          placeholder="out of 100"
                         />
                       ) : (
                         "graded"
@@ -136,3 +148,20 @@ export default function Grading() {
     </>
   );
 }
+
+// getDownloadURL(
+//     ref(
+//       storage,
+//       courseDetailAssign.title +
+//         "/" +
+//         Assignment.uuid +
+//         "/" +
+//         userDataStore.role +
+//         "/" +
+//         file[0].name
+//     )
+//   ).then((url) => {
+//     console.log(url);
+//     setIsFileUploading([false, "uploaded"]);
+//     setAssignment({ ...Assignment, file: url });
+//   });
