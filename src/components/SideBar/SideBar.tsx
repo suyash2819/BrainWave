@@ -46,7 +46,6 @@ function SideBar() {
         console.log(err.message);
       });
   };
-  console.log(userLoginlog);
 
   return (
     <>

@@ -41,6 +41,7 @@ export default function Grading() {
   const changeHandler = (subject: string) => {
     setAssignments({ ...assignments, subject: subject, show: true });
   };
+  console.log(assignments);
 
   const [showAlert, setShowAlert] = useState({
     success: null || true || false,

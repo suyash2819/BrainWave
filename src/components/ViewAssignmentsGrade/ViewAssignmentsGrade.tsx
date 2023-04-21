@@ -38,6 +38,7 @@ function ViewAssignmentGrade({
       showGraderModal: true,
     });
   };
+
   useEffect(() => {
     if (subjectToShow) {
       const assignemntToShow = fetchCourses.assignment.filter(
@@ -46,7 +47,7 @@ function ViewAssignmentGrade({
       setAssignmentsForSubject(assignemntToShow);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [subjectToShow]);
 
   return (
     <>
