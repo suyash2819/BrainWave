@@ -60,3 +60,27 @@ export async function fetchFacultyGradingAssignments() {
   });
   return allSubmittedAssignments;
 }
+
+export async function updateAssignmentGrades(
+  grade: number,
+  assignmentId: string,
+  email: string
+) {
+  const assignmentDoc = doc(db, "submissionAssignments", email);
+  const docSnap = await getDoc(assignmentDoc);
+  if (docSnap.exists()) {
+    const updatedGrades = [grade, docSnap.data()[assignmentId][1]];
+    return updateDoc(assignmentDoc, {
+      [assignmentId]: updatedGrades,
+    })
+      .then(() => {
+        return true;
+      })
+      .catch((e) => {
+        console.log(e);
+        return false;
+      });
+  } else {
+    return {};
+  }
+}

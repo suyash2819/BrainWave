@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 import "./Grading.scss";
 import { Alert, Button, Table, Modal } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { fetchFacultyGradingAssignments } from "../../services/assignmentService";
+import {
+  fetchFacultyGradingAssignments,
+  updateAssignmentGrades,
+} from "../../services/assignmentService";
 import { modifyallSubmittedAssignments } from "../../reducers/submittedAssignments";
 import ViewAssignmentGrade from "../../components/ViewAssignmentsGrade/ViewAssignmentsGrade";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudDownload } from "@fortawesome/free-solid-svg-icons";
+import AlertMessage from "../../components/AlertMessage/AlertMessage";
+
 type DisplayData = {
   email: string;
   assignment: number;
@@ -28,16 +33,75 @@ export default function Grading() {
     subject: "",
     showGraderModal: false,
     displayDataOnModal: [] as DisplayData[],
-    assigmentId: "",
+    assignmentId: "",
   });
+
+  const [grade, setGrade] = useState(0);
 
   const changeHandler = (subject: string) => {
     setAssignments({ ...assignments, subject: subject, show: true });
   };
-  console.log(assignments.displayDataOnModal);
 
+  const [showAlert, setShowAlert] = useState({
+    success: null || true || false,
+    message: "",
+    show: false,
+    type: "",
+  });
+
+  const alertMessageDisplay = () => {
+    setShowAlert({ success: false, show: false, message: "", type: "" });
+  };
+  console.log(showAlert);
+
+  const localGradeUpdate = (
+    grade: number,
+    assignmentId: string,
+    email: string
+  ) => {
+    if (grade < 0 || grade > 100) {
+      setAssignments({ ...assignments, showGraderModal: false });
+      setShowAlert({
+        success: false,
+        show: true,
+        message: "grade cannot be greater than 100 or less than 0",
+        type: "danger",
+      });
+    } else {
+      updateAssignmentGrades(grade, assignmentId, email).then((updated) => {
+        if (updated) {
+          console.log(updated);
+          setAssignments({ ...assignments, showGraderModal: false });
+          setShowAlert({
+            success: true,
+            show: true,
+            message: "graded successfully",
+            type: "success",
+          });
+        } else {
+          setAssignments({ ...assignments, showGraderModal: false });
+          setShowAlert({
+            success: false,
+            show: true,
+            message: "error",
+            type: "danger",
+          });
+        }
+      });
+    }
+  };
   return (
     <>
+      <div>
+        {showAlert.show ? (
+          <AlertMessage
+            success={showAlert.success}
+            message={showAlert.message}
+            alertDisplay={alertMessageDisplay}
+            type=""
+          />
+        ) : null}
+      </div>
       <div>
         {fetchCourses.courseDetails.map((element, index) => (
           <Alert
@@ -119,10 +183,13 @@ export default function Grading() {
                       {" "}
                       {item.assignment === 9999 ? (
                         <input
-                          type="text"
+                          type="number"
+                          min={0}
+                          max={100}
                           className="form-control"
                           id="gradeFor"
                           placeholder="out of 100"
+                          onChange={(e) => setGrade(parseInt(e.target.value))}
                         />
                       ) : (
                         "graded"
@@ -131,7 +198,18 @@ export default function Grading() {
                     <td>
                       {" "}
                       {item.assignment === 9999 ? (
-                        <Button> Publish Grade</Button>
+                        <Button
+                          onClick={() =>
+                            localGradeUpdate(
+                              grade,
+                              assignments.assignmentId,
+                              item.email
+                            )
+                          }
+                        >
+                          {" "}
+                          Publish Grade
+                        </Button>
                       ) : (
                         "graded"
                       )}
