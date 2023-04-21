@@ -6,7 +6,7 @@ export interface Assignment {
   courseName: string;
   deadlineDate: string;
   courseFullName: string;
-  file: string; // add a new property for the file
+  file: string[]; // add a new property for the file
   datePosted?: string;
   submissiontType: string;
   submissionsEmail: string[];

@@ -35,7 +35,7 @@ export default function Assignments({
     courseName: subCourseCode,
     courseFullName: subCourseFullHeading,
     deadlineDate: "",
-    file: "",
+    file: [],
     datePosted: new Date().toISOString(),
     submissiontType: "text",
     uuid: uuidv4(),
@@ -98,49 +98,61 @@ export default function Assignments({
     event.preventDefault();
     if (event.target.files && event.target.files.length > 0) {
       setIsFileUploading([true, ""]);
-      const file = event.target.files!;
-      setStorageRef(
-        ref(
-          storage,
-          courseDetailAssign.title +
-            "/" +
-            Assignment.uuid +
-            "/" +
-            userDataStore.role +
-            "/" +
-            file[0].name
-        )
-      );
-      const localStorageRef = ref(
-        storage,
-        courseDetailAssign.title +
-          "/" +
-          Assignment.uuid +
-          "/" +
-          userDataStore.role +
-          "/" +
-          file[0].name
-      );
+      const uuidFileUpload =
+        userDataStore.role === "Student"
+          ? displayOnModal?.uuid
+          : Assignment.uuid;
 
-      uploadBytes(localStorageRef, file[0]).then(() => {
-        console.log(file);
-        getDownloadURL(
+      const files = event.target.files!;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        setStorageRef(
           ref(
             storage,
             courseDetailAssign.title +
               "/" +
-              Assignment.uuid +
+              uuidFileUpload +
               "/" +
               userDataStore.role +
               "/" +
-              file[0].name
+              file.name
           )
-        ).then((url) => {
-          console.log(url);
-          setIsFileUploading([false, "uploaded"]);
-          setAssignment({ ...Assignment, file: url });
+        );
+        const localStorageRef = ref(
+          storage,
+          courseDetailAssign.title +
+            "/" +
+            uuidFileUpload +
+            "/" +
+            userDataStore.role +
+            "/" +
+            file.name
+        );
+
+        uploadBytes(localStorageRef, file).then(() => {
+          console.log(file);
+          getDownloadURL(
+            ref(
+              storage,
+              courseDetailAssign.title +
+                "/" +
+                uuidFileUpload +
+                "/" +
+                userDataStore.role +
+                "/" +
+                file.name
+            )
+          ).then((url) => {
+            console.log(url);
+            setIsFileUploading([false, "uploaded"]);
+            setAssignment({ ...Assignment, file: [...Assignment.file, url] });
+          });
         });
-      });
+      }
+      // file.forEach((fil) => {
+      // e;
+      // });
     }
   };
 
@@ -167,14 +179,14 @@ export default function Assignments({
     storeCourseAssignment(Assignment!)
       .then((res) => {
         console.log(res);
-        setAssignment({ ...Assignment, file: "" });
+        setAssignment({ ...Assignment, file: [] });
         setAssignment({
           name: "",
           description: "",
           courseName: subCourseCode,
           deadlineDate: "",
           courseFullName: subCourseFullHeading,
-          file: "",
+          file: [],
           datePosted: new Date().toISOString(),
           submissiontType: Assignment.submissiontType,
           submissionsEmail: [],
@@ -489,7 +501,7 @@ export default function Assignments({
 
                 <a
                   style={{ textDecoration: "none" }}
-                  href={displayOnModal?.file}
+                  href="/"
                   target="_blank"
                   rel="noreferrer"
                   className="download-btn"
