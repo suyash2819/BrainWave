@@ -46,6 +46,7 @@ function SideBar() {
         console.log(err.message);
       });
   };
+  console.log(userLoginlog);
 
   return (
     <>
@@ -159,16 +160,18 @@ function SideBar() {
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
-              <p
-                className="sidebarContainer__options__navs"
-                onClick={() => {
-                  console.log(9);
-                  dispatchStore(componentToggle("grading"));
-                  dispatchStore(modifyHeading("Grading"));
-                }}
-              >
-                <FontAwesomeIcon className="pe-3" icon={faCheck} /> Grading
-              </p>
+              {userLoginlog.role !== "Student" ? (
+                <p
+                  className="sidebarContainer__options__navs"
+                  onClick={() => {
+                    console.log(9);
+                    dispatchStore(componentToggle("grading"));
+                    dispatchStore(modifyHeading("Grading"));
+                  }}
+                >
+                  <FontAwesomeIcon className="pe-3" icon={faCheck} /> Grading
+                </p>
+              ) : null}
 
               <Accordion flush className="my-accordion">
                 {/* MESSAGES _ START */}

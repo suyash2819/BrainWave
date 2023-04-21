@@ -28,6 +28,9 @@ export default function Assignments({
   courseDetailAssign,
   subCourseFullHeading,
 }: courseDetailI) {
+  interface assignmentGrades {
+    [key: string]: any[];
+  }
   const userDataStore = useAppSelector((state) => state.userLoginAPI);
   const [Assignment, setAssignment] = useState<Assignment>({
     name: "",
@@ -60,6 +63,8 @@ export default function Assignments({
   const [submittedAssignments, setSubmittedAssignments] = useState<string[]>(
     []
   );
+
+  const [assignmentGrade, setAssignmentGrade] = useState<assignmentGrades>({});
   const storage = getStorage();
   const [isFileUploading, setIsFileUploading] = useState<[boolean, string]>([
     false,
@@ -86,7 +91,9 @@ export default function Assignments({
 
   useEffect(() => {
     fetchStudentSubmittedAssignment(userDataStore.email).then((data) => {
+      console.log(data);
       setSubmittedAssignments(Object.keys(data));
+      setAssignmentGrade(data);
     });
 
     // eslint-disable-next-line
@@ -281,6 +288,7 @@ export default function Assignments({
       });
     });
   };
+  console.log(assignmentGrade);
 
   return (
     <>
@@ -431,13 +439,28 @@ export default function Assignments({
                     >
                       <p className="h5 col-4">{element.name}</p>
                       {submittedAssignments.indexOf(element.uuid!) > -1 ? (
-                        <div style={{ color: "green" }}>
-                          Submitted!{" "}
-                          <FontAwesomeIcon
-                            className="mt-2"
-                            icon={faCircleCheck}
-                          />
-                        </div>
+                        assignmentGrade[element.uuid][0] !== 9999 ? (
+                          <>
+                            <div style={{ color: "#FFA533" }}>
+                              Graded!{" "}
+                              <FontAwesomeIcon
+                                className="mt-2"
+                                icon={faCircleCheck}
+                              />
+                            </div>
+                            <div>
+                              <h5>{assignmentGrade[element.uuid][0]}/100</h5>
+                            </div>
+                          </>
+                        ) : (
+                          <div style={{ color: "green" }}>
+                            Submitted!{" "}
+                            <FontAwesomeIcon
+                              className="mt-2"
+                              icon={faCircleCheck}
+                            />
+                          </div>
+                        )
                       ) : (
                         <></>
                       )}
