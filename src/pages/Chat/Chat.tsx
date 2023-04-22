@@ -25,6 +25,7 @@ type Message = {
   firstname: string;
   email: string;
   timestamp: Timestamp;
+  role: string;
 };
 
 let tempCourseDetail: courseDetail;
@@ -76,11 +77,12 @@ export default function Chat() {
     // const message = messageInputRef.current?.value;
     const message = messageInputRef.current?.value.trim();
     if (message) {
-      const { firstname, email } = userDetails;
+      const { firstname, email, role } = userDetails;
       const messageData = {
         message,
         firstname,
         email,
+        role,
         subject: subCourseDetails?.title,
         timestamp: serverTimestamp(),
       };
@@ -151,9 +153,10 @@ export default function Chat() {
               return (
                 <div key={message.id} className={`message ${messageClass}`}>
                   <div className="message-text">{message.message}</div>
-                  <div className="message-details">
+                  <div className="message-details" style={{ color: "white" }}>
                     {message.email} -{" "}
-                    {chatTimestamp && chatTimestamp.toLocaleString()}
+                    {chatTimestamp && chatTimestamp.toLocaleString()} -
+                    <b> {message.role ? message.role : ""}</b>
                   </div>
                 </div>
               );

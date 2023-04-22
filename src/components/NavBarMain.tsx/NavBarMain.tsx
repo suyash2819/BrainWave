@@ -28,12 +28,16 @@ const NavBarMain = () => {
               />{" "}
               <span className="navBarContainer__brand">BrainWave</span>
             </Navbar.Brand>
-            {["Courses", "Partners", "Community", "Contact Us"].map(
+            {["Courses", "Partners", "Community", "AboutUs"].map(
               (pageLink, index) => (
                 <Nav.Link
                   key={index}
                   className="acitveNavbarLink"
-                  //onClick={() => activeLinkSet(pageLink)}
+                  onClick={() =>
+                    handleNav(
+                      pageLink.slice(0, 1).toUpperCase() + pageLink.slice(1)
+                    )
+                  }
                 >
                   <span className="text-white p-2 navbarlink">
                     {pageLink.slice(0, 1).toUpperCase() + pageLink.slice(1)}
