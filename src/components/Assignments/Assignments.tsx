@@ -38,7 +38,7 @@ export default function Assignments({
     courseName: subCourseCode,
     courseFullName: subCourseFullHeading,
     deadlineDate: "",
-    file: [],
+    file: "",
     datePosted: new Date().toISOString(),
     submissiontType: "text",
     uuid: uuidv4(),
@@ -110,11 +110,34 @@ export default function Assignments({
           ? displayOnModal?.uuid
           : Assignment.uuid;
 
-      const files = event.target.files!;
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+      const file = event.target.files!;
 
-        setStorageRef(
+      setStorageRef(
+        ref(
+          storage,
+          courseDetailAssign.title +
+            "/" +
+            uuidFileUpload +
+            "/" +
+            userDataStore.role +
+            "/" +
+            file[0].name
+        )
+      );
+      const localStorageRef = ref(
+        storage,
+        courseDetailAssign.title +
+          "/" +
+          uuidFileUpload +
+          "/" +
+          userDataStore.role +
+          "/" +
+          file[0].name
+      );
+
+      uploadBytes(localStorageRef, file[0]).then(() => {
+        console.log(file);
+        getDownloadURL(
           ref(
             storage,
             courseDetailAssign.title +
@@ -123,40 +146,15 @@ export default function Assignments({
               "/" +
               userDataStore.role +
               "/" +
-              file.name
+              file[0].name
           )
-        );
-        const localStorageRef = ref(
-          storage,
-          courseDetailAssign.title +
-            "/" +
-            uuidFileUpload +
-            "/" +
-            userDataStore.role +
-            "/" +
-            file.name
-        );
-
-        uploadBytes(localStorageRef, file).then(() => {
-          console.log(file);
-          getDownloadURL(
-            ref(
-              storage,
-              courseDetailAssign.title +
-                "/" +
-                uuidFileUpload +
-                "/" +
-                userDataStore.role +
-                "/" +
-                file.name
-            )
-          ).then((url) => {
-            console.log(url);
-            setIsFileUploading([false, "uploaded"]);
-            setAssignment({ ...Assignment, file: [...Assignment.file, url] });
-          });
+        ).then((url) => {
+          console.log(url);
+          setIsFileUploading([false, "uploaded"]);
+          setAssignment({ ...Assignment, file: url });
         });
-      }
+      });
+
       // file.forEach((fil) => {
       // e;
       // });
@@ -186,14 +184,14 @@ export default function Assignments({
     storeCourseAssignment(Assignment!)
       .then((res) => {
         console.log(res);
-        setAssignment({ ...Assignment, file: [] });
+        setAssignment({ ...Assignment, file: "" });
         setAssignment({
           name: "",
           description: "",
           courseName: subCourseCode,
           deadlineDate: "",
           courseFullName: subCourseFullHeading,
-          file: [],
+          file: "",
           datePosted: new Date().toISOString(),
           submissiontType: Assignment.submissiontType,
           submissionsEmail: [],
