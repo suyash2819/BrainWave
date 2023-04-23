@@ -169,7 +169,11 @@ export default function Grading() {
                     <td>{index + 1}</td>
                     <td>{item.email}</td>
                     <td>
-                      <Button href={item.assignmentSubmittedFile}>
+                      <Button
+                        target="_blank"
+                        rel="noreferrer"
+                        href={item.assignmentSubmittedFile}
+                      >
                         <FontAwesomeIcon
                           icon={faCloudDownload}
                         ></FontAwesomeIcon>
