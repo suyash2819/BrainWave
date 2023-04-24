@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import "./Grading.scss";
 import { Alert, Button, Table, Modal } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -37,9 +37,13 @@ export default function Grading() {
   });
 
   const [grade, setGrade] = useState(0);
-
+  const scrollRefToAssignment = useRef() as MutableRefObject<HTMLDivElement>;
   const changeHandler = (subject: string) => {
     setAssignments({ ...assignments, subject: subject, show: true });
+    scrollRefToAssignment.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
   console.log(assignments);
 
@@ -124,7 +128,7 @@ export default function Grading() {
         <hr />
       </div>
 
-      <div>
+      <div ref={scrollRefToAssignment}>
         {assignments.show ? (
           <>
             <ViewAssignmentGrade
@@ -231,20 +235,3 @@ export default function Grading() {
     </>
   );
 }
-
-// getDownloadURL(
-//     ref(
-//       storage,
-//       courseDetailAssign.title +
-//         "/" +
-//         Assignment.uuid +
-//         "/" +
-//         userDataStore.role +
-//         "/" +
-//         file[0].name
-//     )
-//   ).then((url) => {
-//     console.log(url);
-//     setIsFileUploading([false, "uploaded"]);
-//     setAssignment({ ...Assignment, file: url });
-//   });
