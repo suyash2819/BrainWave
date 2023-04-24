@@ -154,9 +154,16 @@ export default function Chat() {
                 <div key={message.id} className={`message ${messageClass}`}>
                   <div className="message-text">{message.message}</div>
                   <div className="message-details" style={{ color: "white" }}>
-                    {message.email} -{" "}
+                    {message.email}{" "}
                     {chatTimestamp && chatTimestamp.toLocaleString()} -
-                    <b> {message.role ? message.role : ""}</b>
+                    <b>
+                      {" "}
+                      {message.role
+                        ? message.role === "Student"
+                          ? ""
+                          : message.role
+                        : ""}
+                    </b>
                   </div>
                 </div>
               );

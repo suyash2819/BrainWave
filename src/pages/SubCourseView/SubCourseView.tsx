@@ -34,7 +34,7 @@ function SubCourseView() {
   useEffect(() => {
     scrollRefToTop.current.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "end",
     });
   }, [subCourseDetails]);
 

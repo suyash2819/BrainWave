@@ -69,7 +69,6 @@ const DashBoard = () => {
       const dataAllCoursesAdmin = fetchCourseAdminMode();
       dataAllCoursesAdmin.then((res) => {
         dispatchStore(modifyCourseAbbrv(res));
-        console.log(res);
       });
     } else {
       dispatchStore(
@@ -93,6 +92,7 @@ const DashBoard = () => {
   useEffect(() => {
     fetchCourses.coursesAbbrv.forEach(async (e) => {
       const data = await getCourseDetails(e);
+      console.log(data);
       courseDetailsTemp.push({
         //@ts-ignore
         announcements: data["announcements"],
