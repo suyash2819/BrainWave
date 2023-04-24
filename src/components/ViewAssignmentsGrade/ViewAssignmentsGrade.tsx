@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useAppSelector } from "../../hooks";
 import { Assignment } from "../Assignments/IAssignments";
+import Card from "react-bootstrap/esm/Card";
 
 interface PropsViewAssignmentGrade {
   subjectToShow: string;
@@ -21,6 +22,8 @@ function ViewAssignmentGrade({
   const [assignmentsForSubject, setAssignmentsForSubject] = useState<
     Assignment[]
   >([]);
+
+  const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
 
   const filteredAssignments = (assignmentId: string) => {
     const displayDataOnModala =
@@ -51,8 +54,16 @@ function ViewAssignmentGrade({
 
   return (
     <>
+    <Card
+        className={
+          dashboardVals.darkMode === "dark" ? "bg-dark text-white ms-5 text-white" : "ms-5"
+        }
+      >
       <div className="m-3">
-        <Table responsive="md" striped="columns">
+        <Table responsive="md"
+          striped={dashboardVals.darkMode === "dark"}
+          bordered={dashboardVals.darkMode === "dark"}
+          className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>
           <thead>
             <tr>
               <th>#</th>
@@ -64,9 +75,9 @@ function ViewAssignmentGrade({
           <tbody>
             {assignmentsForSubject.map((assignment, index) => (
               <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{assignment.name}</td>
-                <td>{assignment.deadlineDate}</td>
+                <td className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>{index + 1}</td>
+                <td className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>{assignment.name}</td>
+                <td className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>{assignment.deadlineDate}</td>
                 <td>
                   <Button onClick={() => filteredAssignments(assignment.uuid)}>
                     Grade
@@ -77,6 +88,7 @@ function ViewAssignmentGrade({
           </tbody>
         </Table>
       </div>
+      </Card>
     </>
   );
 }
