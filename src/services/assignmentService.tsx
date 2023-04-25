@@ -54,6 +54,7 @@ export async function fetchFacultyGradingAssignments() {
   const allSubmissionsbyStudents = await getDocs(
     collection(db, "submissionAssignments")
   );
+  
   const allSubmittedAssignments: (string | DocumentData)[][] = [];
   allSubmissionsbyStudents.forEach((e) => {
     allSubmittedAssignments.push([e.id, e.data()]);

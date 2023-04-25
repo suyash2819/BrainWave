@@ -21,13 +21,7 @@ type DisplayData = {
 export default function Grading() {
   const dispatchReducer = useAppDispatch();
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
-  useEffect(() => {
-    const data = fetchFacultyGradingAssignments();
-    data.then((e) => {
-      dispatchReducer(modifyallSubmittedAssignments(e));
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
   const [assignments, setAssignments] = useState({
     show: false,
     subject: "",
@@ -35,6 +29,13 @@ export default function Grading() {
     displayDataOnModal: [] as DisplayData[],
     assignmentId: "",
   });
+  useEffect(() => {
+    const data = fetchFacultyGradingAssignments();
+    data.then((e) => {
+      dispatchReducer(modifyallSubmittedAssignments(e));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assignments]);
 
   const [grade, setGrade] = useState(0);
   const scrollRefToAssignment = useRef() as MutableRefObject<HTMLDivElement>;
@@ -45,7 +46,6 @@ export default function Grading() {
       block: "start",
     });
   };
-  console.log(assignments);
 
   const [showAlert, setShowAlert] = useState({
     success: null || true || false,
@@ -57,7 +57,6 @@ export default function Grading() {
   const alertMessageDisplay = () => {
     setShowAlert({ success: false, show: false, message: "", type: "" });
   };
-  console.log(showAlert);
 
   const localGradeUpdate = (
     grade: number,
@@ -76,11 +75,14 @@ export default function Grading() {
       updateAssignmentGrades(grade, assignmentId, email).then((updated) => {
         if (updated) {
           console.log(updated);
-          setAssignments({ ...assignments, showGraderModal: false });
+          setAssignments({
+            ...assignments,
+            showGraderModal: false,
+          });
           setShowAlert({
             success: true,
             show: true,
-            message: "graded successfully",
+            message: "Graded Successfully",
             type: "success",
           });
         } else {
@@ -97,16 +99,6 @@ export default function Grading() {
   };
   return (
     <>
-      <div>
-        {showAlert.show ? (
-          <AlertMessage
-            success={showAlert.success}
-            message={showAlert.message}
-            alertDisplay={alertMessageDisplay}
-            type=""
-          />
-        ) : null}
-      </div>
       <div>
         {fetchCourses.courseDetails.map((element, index) => (
           <Alert
@@ -127,7 +119,16 @@ export default function Grading() {
         ))}
         <hr />
       </div>
-
+      <div>
+        {showAlert.show ? (
+          <AlertMessage
+            success={showAlert.success}
+            message={showAlert.message}
+            alertDisplay={alertMessageDisplay}
+            type=""
+          />
+        ) : null}
+      </div>
       <div ref={scrollRefToAssignment}>
         {assignments.show ? (
           <>
@@ -138,7 +139,10 @@ export default function Grading() {
             />
           </>
         ) : (
-          <p>No assignments posted</p>
+          <h2 className="text-center mt-4">
+            {" "}
+            Please click on view Assignments
+          </h2>
         )}
       </div>
       {assignments.showGraderModal ? (
@@ -201,7 +205,7 @@ export default function Grading() {
                           onChange={(e) => setGrade(parseInt(e.target.value))}
                         />
                       ) : (
-                        "graded"
+                        "Graded"
                       )}
                     </td>
                     <td>
@@ -220,7 +224,7 @@ export default function Grading() {
                           Publish Grade
                         </Button>
                       ) : (
-                        "graded"
+                        "Graded"
                       )}
                     </td>
                   </tr>

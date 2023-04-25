@@ -99,25 +99,25 @@ export default function Assignments({
     // eslint-disable-next-line
   }, [isModalOpen, displayOnModal]);
 
+  useEffect(() => {}, [submittedAssignments, assignmentGrade]);
   const handleFileSubmission = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     event.preventDefault();
     if (event.target.files && event.target.files.length > 0) {
       setIsFileUploading([true, ""]);
-      const uuidFileUpload =
-        userDataStore.role === "Student"
-          ? displayOnModal?.uuid
-          : Assignment.uuid;
+      // const uuidFileUpload =
+      //   userDataStore.role === "Student"
+      //     ? displayOnModal?.uuid
+      //     : Assignment.uuid;
 
       const file = event.target.files!;
-
       setStorageRef(
         ref(
           storage,
           courseDetailAssign.title +
             "/" +
-            uuidFileUpload +
+            Assignment.uuid +
             "/" +
             userDataStore.role +
             "/" +
@@ -128,7 +128,7 @@ export default function Assignments({
         storage,
         courseDetailAssign.title +
           "/" +
-          uuidFileUpload +
+          Assignment.uuid +
           "/" +
           userDataStore.role +
           "/" +
@@ -142,7 +142,7 @@ export default function Assignments({
             storage,
             courseDetailAssign.title +
               "/" +
-              uuidFileUpload +
+              Assignment.uuid +
               "/" +
               userDataStore.role +
               "/" +
@@ -231,14 +231,13 @@ export default function Assignments({
   };
 
   const handleSubmissionStudent = () => {
-    let textSubmissionUrl = "";
     if (displayOnModal?.submissiontType === "text") {
       let textFile = new Blob([studentAssignentText], { type: "text/plain" });
       const storageRef = ref(
         storage,
         courseDetailAssign.title +
           "/" +
-          displayOnModal.uuid +
+          Assignment.uuid +
           "/" +
           userDataStore.role +
           "/" +
@@ -252,7 +251,7 @@ export default function Assignments({
             storage,
             courseDetailAssign.title +
               "/" +
-              displayOnModal.uuid +
+              Assignment.uuid +
               "/" +
               userDataStore.role +
               "/" +
@@ -260,12 +259,24 @@ export default function Assignments({
               "/" +
               "/textSubmission.txt"
           )
-        ).then((url) => {
-          console.log(url);
-          textSubmissionUrl = url;
+        ).then((url: string) => {
+          fetchStudentSubmittedAssignment(userDataStore.email).then((data) => {
+            updateAssignmentArray(userDataStore.email, {
+              ...data,
+              [displayOnModal?.uuid!]: [9999, url],
+            });
+          });
+        });
+      });
+    } else {
+      fetchStudentSubmittedAssignment(userDataStore.email).then((data) => {
+        updateAssignmentArray(userDataStore.email, {
+          ...data,
+          [displayOnModal?.uuid!]: [9999, Assignment.file],
         });
       });
     }
+
     setIsModalOpen(false);
     setIsFileUploading([false, ""]);
     setShowAlert({
@@ -274,19 +285,7 @@ export default function Assignments({
       show: true,
       type: "",
     });
-    fetchStudentSubmittedAssignment(userDataStore.email).then((data) => {
-      updateAssignmentArray(userDataStore.email, {
-        ...data,
-        [displayOnModal?.uuid!]: [
-          9999,
-          displayOnModal?.submissiontType === "text"
-            ? textSubmissionUrl
-            : Assignment.file,
-        ],
-      });
-    });
   };
-  console.log(assignmentGrade);
 
   return (
     <>
@@ -522,7 +521,7 @@ export default function Assignments({
 
                 <a
                   style={{ textDecoration: "none" }}
-                  href="/"
+                  href={displayOnModal?.file}
                   target="_blank"
                   rel="noreferrer"
                   className="download-btn"

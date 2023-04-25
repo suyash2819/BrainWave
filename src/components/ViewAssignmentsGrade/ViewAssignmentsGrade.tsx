@@ -54,40 +54,64 @@ function ViewAssignmentGrade({
 
   return (
     <>
-    <Card
+      <Card
         className={
-          dashboardVals.darkMode === "dark" ? "bg-dark text-white ms-5 text-white" : "ms-5"
+          dashboardVals.darkMode === "dark"
+            ? "bg-dark text-white ms-5 text-white"
+            : "ms-5"
         }
       >
-      <div className="m-3">
-        <Table responsive="md"
-          striped={dashboardVals.darkMode === "dark"}
-          bordered={dashboardVals.darkMode === "dark"}
-          className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Assignment Name</th>
-              <th>Assignment Date</th>
-              <th>View Submissions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assignmentsForSubject.map((assignment, index) => (
-              <tr key={index}>
-                <td className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>{index + 1}</td>
-                <td className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>{assignment.name}</td>
-                <td className={dashboardVals.darkMode === "dark" ? "text-white" : ""}>{assignment.deadlineDate}</td>
-                <td>
-                  <Button onClick={() => filteredAssignments(assignment.uuid)}>
-                    Grade
-                  </Button>
-                </td>
+        <div className="m-3">
+          <Table
+            responsive="md"
+            striped={dashboardVals.darkMode === "dark"}
+            bordered={dashboardVals.darkMode === "dark"}
+            className={dashboardVals.darkMode === "dark" ? "text-white" : ""}
+          >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Assignment Name</th>
+                <th>Assignment Date</th>
+                <th>View Submissions</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+            </thead>
+            <tbody>
+              {assignmentsForSubject.map((assignment, index) => (
+                <tr key={index}>
+                  <td
+                    className={
+                      dashboardVals.darkMode === "dark" ? "text-white" : ""
+                    }
+                  >
+                    {index + 1}
+                  </td>
+                  <td
+                    className={
+                      dashboardVals.darkMode === "dark" ? "text-white" : ""
+                    }
+                  >
+                    {assignment.name}
+                  </td>
+                  <td
+                    className={
+                      dashboardVals.darkMode === "dark" ? "text-white" : ""
+                    }
+                  >
+                    {assignment.deadlineDate}
+                  </td>
+                  <td>
+                    <Button
+                      onClick={() => filteredAssignments(assignment.uuid)}
+                    >
+                      Grade
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       </Card>
     </>
   );
