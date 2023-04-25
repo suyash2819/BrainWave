@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -10,7 +10,7 @@ import AlertMessage from "../../components/AlertMessage/AlertMessage";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { modifyAnnouncements } from "../../reducers/getCourses";
 import "./Announcements.scss";
-import { Card } from "react-bootstrap";
+import { Card, Form } from "react-bootstrap";
 
 interface annoucementCourseFlag {
   isCourseView: [boolean, string, string];
@@ -20,7 +20,11 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
   const fetchCourses = useAppSelector((state) => state.fetchCoursesReducer);
   const userDetails = useAppSelector((state) => state.userLoginAPI);
   const dashboardVals = useAppSelector((state) => state.dashboardValsReducer);
+  const [searchFilteredAnnoucement, setSearchFilteredAnnoucement] = useState<
+    Announcement[]
+  >(fetchCourses.allAnnouncements);
   const dispatchStore = useAppDispatch();
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const [announcement, setAnnouncement] = useState<Announcement>({
     announcement_heading: "",
@@ -29,6 +33,14 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
     announcement_description: "",
     annoucement_date: "",
   });
+
+  useEffect(() => {
+    setSearchFilteredAnnoucement(
+      fetchCourses.allAnnouncements.filter(
+        (e) => e.announcement_heading.indexOf(searchValue) !== -1
+      )
+    );
+  }, [searchValue]);
 
   const [showAlert, setShowAlert] = useState({
     success: null || true || false,
@@ -281,6 +293,26 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
         <div className="card-header">
           <h5>Announcements</h5>
         </div>
+        <Form.Control
+          type="search"
+          placeholder="Search by title..."
+          className=" mt-2"
+          aria-label="Search"
+          style={{
+            backgroundColor: dashboardVals.darkMode === "dark" ? "#212529" : "",
+            borderColor: dashboardVals.darkMode === "dark" ? "white" : "white",
+            color: dashboardVals.darkMode === "dark" ? "white" : "",
+            borderWidth: "2px",
+            boxShadow:
+              dashboardVals.darkMode === "dark"
+                ? "1 2 2px white"
+                : "0 0 2px black",
+            fontSize: "15px",
+          }}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+          }}
+        />
         <div className="card-body">
           {fetchCourses.allAnnouncements.length ? (
             <table
@@ -306,61 +338,129 @@ const Announcements = ({ isCourseView }: annoucementCourseFlag) => {
                 </tr>
               </thead>
               <tbody>
-                {fetchCourses.allAnnouncements.map(
-                  (ann: Announcement, index) =>
-                    (!isCourseView[0] ||
-                      ann.announcement_subject === isCourseView[2]) && (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
+                {!searchValue.length &&
+                  fetchCourses.allAnnouncements.map(
+                    (ann: Announcement, index) =>
+                      (!isCourseView[0] ||
+                        ann.announcement_subject === isCourseView[2]) && (
+                        <tr key={index}>
+                          <th scope="row">{index + 1}</th>
 
-                        <>
-                          <td>{ann.announcement_name}</td>
-                          <td>{ann.announcement_heading}</td>
-                          <td>
-                            {
-                              fetchCourses.courseDetails[
-                                fetchCourses.coursesAbbrv.indexOf(
-                                  ann.announcement_subject
-                                )
-                              ]
-                            }
-                          </td>
-                          <td>
-                            {ann.announcement_description.length > 40
-                              ? ann.announcement_description.substring(0, 30) +
-                                "..."
-                              : ann.announcement_description}
-                          </td>
-                        </>
-                        {userDetails.role === "Administrator" ||
-                        userDetails.role === "Faculty" ? (
-                          <td>
-                            <button
-                              className="btn btn-danger form-control"
-                              onClick={() => {
-                                deleteAnnouncements(
-                                  index,
-                                  ann.announcement_subject,
-                                  ann
-                                );
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                className="m-1 fa-s"
-                                icon={faTrash}
-                              />
-                            </button>
-                          </td>
-                        ) : (
-                          <></>
-                        )}
-                      </tr>
-                    )
+                          <>
+                            <td>{ann.announcement_name}</td>
+                            <td>{ann.announcement_heading}</td>
+                            <td>
+                              {
+                                fetchCourses.courseDetails[
+                                  fetchCourses.coursesAbbrv.indexOf(
+                                    ann.announcement_subject
+                                  )
+                                ]
+                              }
+                            </td>
+                            <td>
+                              {ann.announcement_description.length > 40
+                                ? ann.announcement_description.substring(
+                                    0,
+                                    30
+                                  ) + "..."
+                                : ann.announcement_description}
+                            </td>
+                          </>
+                          {userDetails.role === "Administrator" ||
+                          userDetails.role === "Faculty" ? (
+                            <td>
+                              <button
+                                className="btn btn-danger form-control"
+                                onClick={() => {
+                                  deleteAnnouncements(
+                                    index,
+                                    ann.announcement_subject,
+                                    ann
+                                  );
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  className="m-1 fa-s"
+                                  icon={faTrash}
+                                />
+                              </button>
+                            </td>
+                          ) : (
+                            <></>
+                          )}
+                        </tr>
+                      )
+                  )}
+                {searchValue.length ? (
+                  searchFilteredAnnoucement.map(
+                    (ann: Announcement, index) =>
+                      (!isCourseView[0] ||
+                        ann.announcement_subject === isCourseView[2]) && (
+                        <tr key={index}>
+                          <th scope="row">{index + 1}</th>
+
+                          <>
+                            <td>{ann.announcement_name}</td>
+                            <td>{ann.announcement_heading}</td>
+                            <td>
+                              {
+                                fetchCourses.courseDetails[
+                                  fetchCourses.coursesAbbrv.indexOf(
+                                    ann.announcement_subject
+                                  )
+                                ]
+                              }
+                            </td>
+                            <td>
+                              {ann.announcement_description.length > 40
+                                ? ann.announcement_description.substring(
+                                    0,
+                                    30
+                                  ) + "..."
+                                : ann.announcement_description}
+                            </td>
+                          </>
+                          {userDetails.role === "Administrator" ||
+                          userDetails.role === "Faculty" ? (
+                            <td>
+                              <button
+                                className="btn btn-danger form-control"
+                                onClick={() => {
+                                  deleteAnnouncements(
+                                    index,
+                                    ann.announcement_subject,
+                                    ann
+                                  );
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  className="m-1 fa-s"
+                                  icon={faTrash}
+                                />
+                              </button>
+                            </td>
+                          ) : (
+                            <></>
+                          )}
+                        </tr>
+                      )
+                  )
+                ) : (
+                  <></>
                 )}
               </tbody>
             </table>
           ) : (
             <h3>No Annoucements!</h3>
+          )}
+          {searchFilteredAnnoucement.length === 0 ? (
+            <h4 className="text-center">
+              {" "}
+              No annoucements found with this title!
+            </h4>
+          ) : (
+            <></>
           )}
         </div>
       </Card>
