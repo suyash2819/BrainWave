@@ -1,3 +1,7 @@
+# Description
+
+This application is a made to help students enroll for subjects for a particular semester just like it happens in any of the university. When the students are enrolled, they will be able to see the assignments, announcements and will be able to have discussions with other students too. This application also supports the functionality to upload the solutions for the assignments given to the students and the professor or the teaching assistants can then grade the assignments which will be then visible to the students.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
